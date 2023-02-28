@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.33414.496
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BugTracker", "BugTracker.csproj", "{C54CE27B-3D12-450B-9B63-442F95F8D310}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C54CE27B-3D12-450B-9B63-442F95F8D310}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C54CE27B-3D12-450B-9B63-442F95F8D310}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C54CE27B-3D12-450B-9B63-442F95F8D310}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C54CE27B-3D12-450B-9B63-442F95F8D310}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {01D896A9-3F09-43D4-A398-B06B56401868}
+	EndGlobalSection
+EndGlobal
