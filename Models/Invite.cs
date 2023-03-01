@@ -21,8 +21,8 @@ namespace BugTracker.Models
         public int ProjectId { get; set; }
 
         [Required]
-        public int InvitorId { get; set; }
-        public int InviteeId { get; set; }
+        public string? InvitorId { get; set; }
+        public string? InviteeId { get; set; }
 
         [Required]
         public string? InviteeEmail { get; set; }
@@ -49,9 +49,9 @@ namespace BugTracker.Models
 
         public virtual Project? Project { get; set; }
 
-        public virtual string? Invitor { get; set; }
+        public virtual BTUser? Invitor { get; set; }
 
-        public virtual string? Invitee { get; set; }
+        public virtual BTUser? Invitee { get; set; }
 
 
     }
