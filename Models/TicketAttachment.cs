@@ -32,6 +32,6 @@ namespace BugTracker.Models
         public virtual Ticket? Ticket { get; set; }
 
         //one ticket to many users? one user? going with 1
-        public virtual BTUser? User { get; set; }
+        public virtual BTUser? BTUser { get; set; }
     }
 }

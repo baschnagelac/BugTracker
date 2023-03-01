@@ -11,7 +11,7 @@ namespace BugTracker.Models
         public DateTime InviteDate { get; set; }
 
         [DataType(DataType.Date)]
-        public DateTime JoinDate { get; set; }
+        public DateTime? JoinDate { get; set; }
 
         public Guid CompanyToken { get; set; }
 
@@ -21,8 +21,8 @@ namespace BugTracker.Models
         public int ProjectId { get; set; }
 
         [Required]
-        public string? InvitorId { get; set; }
-        public string? InviteeId { get; set; }
+        public int InvitorId { get; set; }
+        public int InviteeId { get; set; }
 
         [Required]
         public string? InviteeEmail { get; set; }

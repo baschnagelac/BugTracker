@@ -19,6 +19,7 @@ namespace BugTracker.Models
 
         public int TicketId { get; set; }
 
+        [Required]
         public string? UserId { get; set; }
 
         //navigational properties T

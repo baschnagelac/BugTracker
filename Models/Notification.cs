@@ -48,9 +48,10 @@ namespace BugTracker.Models
         
         public virtual Project? Project { get; set; }
 
-        public virtual string? Sender  { get; set; }
 
-        public virtual string? Recipient { get; set; }
+        public virtual BTUser? Sender { get; set; }
+
+        public virtual BTUser? Recipient { get; set; }
 
 
     }

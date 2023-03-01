@@ -11,10 +11,8 @@ namespace BugTracker.Models
         public int TicketId { get; set; }
 
         [Display(Name = "Property Name")]
-        [StringLength(30, ErrorMessage = "The {0} must be at least {2} and at most {1} characters", MinimumLength = 2)]
         public string? PropertyName { get; set; }
 
-        [StringLength(200, ErrorMessage = "The {0} must be at least {2} and at most {1} characters", MinimumLength = 2)]
         public string? Description { get; set; }
 
 
