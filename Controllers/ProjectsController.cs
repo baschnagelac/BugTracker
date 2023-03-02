@@ -35,7 +35,7 @@ namespace BugTracker.Controllers
             //List<Project> projects = new List<Project>();
 
 
-
+            ViewData["ProjectPriorityId"] = new SelectList(_context.ProjectPriorities, "Id", "Name");
 
             var applicationDbContext = _context.Projects.Include(p => p.Company).Include(p => p.ProjectPriority);
             return View(await applicationDbContext.ToListAsync());
@@ -68,9 +68,9 @@ namespace BugTracker.Controllers
             string? userId = _userManager.GetUserId(User);
 
 
-            
-            
-            ViewData["ProjectPriorityId"] = new SelectList(_context.ProjectPriorities, "Id", "Id");
+            ViewData["CompanyId"] = new SelectList(_context.Companies, "Id", "Name");
+
+            ViewData["ProjectPriorityId"] = new SelectList(_context.ProjectPriorities, "Id", "Name");
             return View();
         }
 
