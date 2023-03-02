@@ -9,6 +9,7 @@ using BugTracker.Data;
 using BugTracker.Models;
 using Microsoft.AspNetCore.Identity;
 using BugTracker.Services.Interfaces;
+using Microsoft.EntityFrameworkCore.ValueGeneration;
 
 namespace BugTracker.Controllers
 {
@@ -38,6 +39,7 @@ namespace BugTracker.Controllers
             ViewData["ProjectPriorityId"] = new SelectList(_context.ProjectPriorities, "Id", "Name");
 
             var applicationDbContext = _context.Projects.Include(p => p.Company).Include(p => p.ProjectPriority);
+            ViewData["ProjectPriorityId"] = new SelectList(_context.ProjectPriorities, "Id", "Name");
             return View(await applicationDbContext.ToListAsync());
         }
 
@@ -57,21 +59,16 @@ namespace BugTracker.Controllers
             {
                 return NotFound();
             }
-
+            ViewData["ProjectPriorityId"] = new SelectList(_context.ProjectPriorities, "Id", "Name");
             return View(project);
         }
 
         // GET: Projects/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            
-            string? userId = _userManager.GetUserId(User);
-
-
-            ViewData["CompanyId"] = new SelectList(_context.Companies, "Id", "Name");
 
             ViewData["ProjectPriorityId"] = new SelectList(_context.ProjectPriorities, "Id", "Name");
-            return View();
+            return View(new Project());
         }
 
         // POST: Projects/Create
@@ -82,25 +79,21 @@ namespace BugTracker.Controllers
         public async Task<IActionResult> Create([Bind("Id,BTUserId,CompanyId,Name,Description,Created,StartDate,EndDate,ProjectPriorityId,ImageFileData,ImageFileType,Archived")] Project project)
         {
             ModelState.Remove("CompanyId");
-            ModelState.Remove("ProjectPriorityId");
             
             if (ModelState.IsValid)
             {
 
-                string? userId = _userManager.GetUserId(User);
-                ViewData["CompanyId"] = new SelectList(_context.Companies, "Id", "Name", project.CompanyId);
+                BTUser? btUser = await _userManager.GetUserAsync(User);
 
+                project.CompanyId = btUser!.CompanyId;
+   
                 //format date(s)
-                project.Created = DataUtility.GetPostGresDate(DateTime.UtcNow);
-                //project.StartDate = DataUtility.GetPostGresDate(DateTime.UtcNow);
-                //project.EndDate = DataUtility.GetPostGresDate(DateTime.UtcNow);
+                project.Created = DataUtility.GetPostGresDate(DateTime.Now);
 
-                //project.Created = DateTime.UtcNow;
-                //project.StartDate = DateTime.UtcNow;
-                //project.EndDate = DateTime.UtcNow;
 
-                project.StartDate = DateTime.SpecifyKind(project.StartDate, DateTimeKind.Utc);
-                project.EndDate = DateTime.SpecifyKind(project.EndDate, DateTimeKind.Utc);
+                project.StartDate = DataUtility.GetPostGresDate(project.StartDate);
+                project.EndDate = DataUtility.GetPostGresDate(project.EndDate);
+
 
                 if (project.ImageFormFile != null)
                 {
@@ -137,7 +130,7 @@ namespace BugTracker.Controllers
                 return NotFound();
             }
             ViewData["CompanyId"] = new SelectList(_context.Companies, "Id", "Name", project.CompanyId);
-            ViewData["ProjectPriorityId"] = new SelectList(_context.ProjectPriorities, "Id", "Id", project.ProjectPriorityId);
+            ViewData["ProjectPriorityId"] = new SelectList(_context.ProjectPriorities, "Id", "Name", project.ProjectPriorityId);
             return View(project);
         }
 
@@ -162,8 +155,9 @@ namespace BugTracker.Controllers
 
                     //reformat created date
                     project.Created = DataUtility.GetPostGresDate(DateTime.UtcNow);
-                    project.StartDate = DataUtility.GetPostGresDate(DateTime.UtcNow);
-                    project.EndDate = DataUtility.GetPostGresDate(DateTime.UtcNow);
+                    project.StartDate = DateTime.SpecifyKind(project.StartDate, DateTimeKind.Utc);
+                    project.EndDate = DateTime.SpecifyKind(project.EndDate, DateTimeKind.Utc);
+
 
 
                     if (project.ImageFormFile != null)
@@ -190,7 +184,7 @@ namespace BugTracker.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewData["CompanyId"] = new SelectList(_context.Companies, "Id", "Name", project.CompanyId);
-            ViewData["ProjectPriorityId"] = new SelectList(_context.ProjectPriorities, "Id", "Id", project.ProjectPriorityId);
+            ViewData["ProjectPriorityId"] = new SelectList(_context.ProjectPriorities, "Id", "Name", project.ProjectPriorityId);
             return View(project);
         }
 

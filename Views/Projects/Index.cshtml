@@ -1,7 +1,10 @@
 ﻿@model IEnumerable<BugTracker.Models.Project>
 
+
 @{
     ViewData["Title"] = "Index";
+
+    
 }
 
 <h1>Index</h1>
@@ -15,9 +18,9 @@
             <th>
                 @Html.DisplayNameFor(model => model.Name)
             </th>
-            <th>
+@*            <th>
                 @Html.DisplayNameFor(model => model.Description)
-            </th>
+            </th>*@
             <th>
                 @Html.DisplayNameFor(model => model.Created)
             </th>
@@ -33,9 +36,9 @@
             <th>
                 @Html.DisplayNameFor(model => model.ImageFileType)
             </th>*@
-            <th>
+@*            <th>
                 @Html.DisplayNameFor(model => model.Archived)
-            </th>
+            </th>*@
             <th>
                 @Html.DisplayNameFor(model => model.Company)
             </th>
@@ -51,9 +54,9 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Name)
             </td>
-            <td>
+@*            <td>
                 @Html.DisplayFor(modelItem => item.Description)
-            </td>
+            </td>*@
             <td>
                 @Html.DisplayFor(modelItem => item.Created)
             </td>
@@ -69,14 +72,14 @@
             <td>
                 @Html.DisplayFor(modelItem => item.ImageFileType)
             </td>*@
-            <td>
+@*            <td>
                 @Html.DisplayFor(modelItem => item.Archived)
-            </td>
+            </td>*@
             <td>
                 @Html.DisplayFor(modelItem => item.Company.Name)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.ProjectPriority.Id)
+                @Html.DisplayFor(modelItem => item.ProjectPriority.Name)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
