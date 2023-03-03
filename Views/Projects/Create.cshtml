@@ -4,55 +4,72 @@
     ViewData["Title"] = "Create";
 }
 
-<h1>Create</h1>
-
-<h4>Project</h4>
-<hr />
+<!-- Row -->
 <div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Create a New Ticket</h4>
+                <h6 class="card-subtitle">For Development</h6>
             </div>
-            <div class="form-group">
-                <label asp-for="Description" class="control-label"></label>
-                <input asp-for="Description" class="form-control" />
-                <span asp-validation-for="Description" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="StartDate" class="control-label"></label>
-                <input asp-for="StartDate" class="form-control" />
-                <span asp-validation-for="StartDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="EndDate" class="control-label"></label>
-                <input asp-for="EndDate" class="form-control" />
-                <span asp-validation-for="EndDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="ProjectPriorityId"  class="control-label"></label>
-                <select asp-for="ProjectPriorityId" class ="form-control" asp-items="ViewBag.ProjectPriorityId"></select>
-            </div>
-            <div class="form-group">
-                <label asp-for="ImageFormFile" class="control-label">Project Image</label>
-                <img class="img-fluid border rounded-3 m-2" style="max-height: 250px;" src="~/img/DefaultProjectImage.jpg" id="projectImage">
-                <input asp-for="ImageFormFile" type="file" class="form-control mt-3 pt-2" accept=".png,.jpg,.jpeg,.gif"
-                       onchange="document.getElementById('projectImage').src = window.URL.createObjectURL(this.files[0])" />
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
+            <form asp-action="Create" class="form-horizontal r-separator border-top">
+                <input type="hidden" asp-for="Id" name="ProjectId" />
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="card-body">
+                    <div class="form-group row align-items-center mb-0">
+                        <label asp-for="Name" class="col-3 text-end control-label col-form-label">Project Name</label>
+                        <div class="col-9 border-start pb-2 pt-2">
+                            <input type="text" asp-for="Name" class="form-control" placeholder="Project Name">
+                            <span asp-validation-for="Name" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="form-group row align-items-center mb-0">
+                        <label asp-for="Description" class="col-3 text-end control-label col-form-label">Description</label>
+                        <div class="col-9 border-start pb-2 pt-2">
+                            <input type="text" class="form-control" asp-for="Description" placeholder="Description ">
+                            <span asp-validation-for="Description" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="form-group row align-items-center mb-0">
+                        <label asp-for="StartDate" class="col-3 text-end control-label col-form-label">Start Date</label>
+                        <div class="col-9 border-start pb-2 pt-2">
+                            <input type="date" class="form-control" asp-for="StartDate" >
+                            <span asp-validation-for="StartDate" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="form-group row align-items-center mb-0">
+                        <label asp-for="EndDate" class="col-3 text-end control-label col-form-label">End Date</label>
+                        <div class="col-9 border-start pb-2 pt-2">
+                            <input type="date" class="form-control" asp-for="EndDate">
+                            <span asp-validation-for="EndDate" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group row align-items-center mb-0">
+                        <label asp-for="ProjectPriorityId" class="col-3 text-end control-label col-form-label">Project Priority </label>
+                        <div class="col-9 border-start pb-2 pt-2">
+                            <select asp-for="ProjectPriorityId" class="form-control" asp-items="ViewBag.ProjectPriorityId"></select>
+                        </div>
+                    </div>
+                    <div class="form-group row align-items-center mb-0">
+                        <label asp-for="ImageFormFile" class="control-label">Project Image</label>
+                        <div class="col-9 border-start pb-2 pt-2">
+                            <img class="img-fluid border rounded-3 m-2" style="max-height: 250px;" src="~/img/DefaultProjectImage.jpg" id="projectImage">
+                            <input asp-for="ImageFormFile" type="file" class="form-control mt-3 pt-2" accept=".png,.jpg,.jpeg,.gif"
+                                   onchange="document.getElementById('projectImage').src = window.URL.createObjectURL(this.files[0])" />
+                        </div>
+                    </div>
+
+
+
+                </div>
+                <div class="p-3 border-top">
+                    <div class="form-group mb-0 text-end">
+                        <button type="submit" value="Create class="btn btn-info rounded-pill px-4 waves-effect waves-light">Create New Project</button>
+                        @*                        <button type="submit" class="btn btn-dark rounded-pill px-4 waves-effect waves-light">Cancel</button>*@
+                    </div>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
