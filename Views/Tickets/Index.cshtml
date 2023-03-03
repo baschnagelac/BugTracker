@@ -4,6 +4,11 @@
     ViewData["Title"] = "Index";
 }
 
+
+<p>
+    <a value="Create" class="btn btn-info rounded-pill px-4 waves-effect waves-light" asp-action="Create">Create New</a>
+
+</p>
 <!-- -------------------------------------------------------------- -->
 <!-- Container fluid  -->
 <!-- -------------------------------------------------------------- -->
@@ -66,8 +71,8 @@
                                     <th>@Html.DisplayNameFor(model => model.Created)</th>
                                     <th>@Html.DisplayNameFor(model => model.Updated)</th>
                                     <th>@Html.DisplayNameFor(model => model.TicketType)</th>
-                                    <th>@Html.DisplayNameFor(model => model.TicketPriority)y</th>
-                                    <th>Details, Edit, Delete</th>
+                                    <th>@Html.DisplayNameFor(model => model.TicketPriority)</th>
+                                    <th>Edit | Details | Delete</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -82,13 +87,14 @@
                                         <td>@Html.DisplayFor(modelItem => item.Updated)</td>
                                         <td>@Html.DisplayFor(modelItem => item.TicketType.Name)</td>
                                         <td>@Html.DisplayFor(modelItem => item.TicketPriority.Name)</td>
-                                        <td class="fs-1 mt-3 mb-0 pb-0">
-                                            <a asp-action="Edit" asp-route-id="@item.Id"><i class="bi bi-info-circle text-info"></i></a> |
-                                            <a asp-action="Details" asp-route-id="@item.Id"><i class="bi bi-pencil-fill text-warning "></i></a> |
-                                            <a asp-action="Delete" asp-route-id="@item.Id"><i class="bi bi-trash-fill text-danger "></i></a>
+                                        <td>
+                                            <a asp-action="Edit" asp-route-id="@item.Id"><i class="bi bi-pencil-fill text-warning fs-6 p-2"></i></a> 
+                                            <a asp-action="Details" asp-route-id="@item.Id"><i class="bi bi-info-circle text-info fs-6 p-2"></i></a> 
+                                            <a asp-action="Delete" asp-route-id="@item.Id"><i class="bi bi-trash-fill text-danger fs-6 p-2"></i></a>
                                         </td>
                                      </tr>
                                 }
+                                <i class="bi bi-info-circle text-info fs-6"></i>
                             </tbody>
                             <tfoot>
                                 <tr>
@@ -99,6 +105,7 @@
                                     <th>Updated</th>
                                     <th>Ticket Type</th>
                                     <th>Ticket Priority</th>
+                                    <th>Edit | Details | Delete</th>
                                 </tr>
                             </tfoot>
                         </table>

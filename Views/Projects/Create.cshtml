@@ -33,7 +33,7 @@
                     <div class="form-group row align-items-center mb-0">
                         <label asp-for="StartDate" class="col-3 text-end control-label col-form-label">Start Date</label>
                         <div class="col-9 border-start pb-2 pt-2">
-                            <input type="date" class="form-control" asp-for="StartDate" >
+                            <input type="date" class="form-control" asp-for="StartDate">
                             <span asp-validation-for="StartDate" class="text-danger"></span>
                         </div>
                     </div>
@@ -52,7 +52,7 @@
                         </div>
                     </div>
                     <div class="form-group row align-items-center mb-0">
-                        <label asp-for="ImageFormFile" class="control-label">Project Image</label>
+                        <label asp-for="ImageFormFile" class="col-3 text-end control-label col-form-label">Project Image</label>
                         <div class="col-9 border-start pb-2 pt-2">
                             <img class="img-fluid border rounded-3 m-2" style="max-height: 250px;" src="~/img/DefaultProjectImage.jpg" id="projectImage">
                             <input asp-for="ImageFormFile" type="file" class="form-control mt-3 pt-2" accept=".png,.jpg,.jpeg,.gif"
@@ -65,8 +65,8 @@
                 </div>
                 <div class="p-3 border-top">
                     <div class="form-group mb-0 text-end">
-                        <button type="submit" value="Create class="btn btn-info rounded-pill px-4 waves-effect waves-light">Create New Project</button>
-                        @*                        <button type="submit" class="btn btn-dark rounded-pill px-4 waves-effect waves-light">Cancel</button>*@
+                        <button type="submit" value="Create" class="btn btn-info rounded-pill px-4 waves-effect waves-light">Create New Project</button>
+                        <button type="submit" asp-action="Index" asp-controller="Projects" class="btn btn-dark rounded-pill px-4 waves-effect waves-light">Cancel</button>
                     </div>
                 </div>
             </form>
