@@ -10,6 +10,7 @@ using BugTracker.Models;
 using Microsoft.AspNetCore.Identity;
 using BugTracker.Services.Interfaces;
 using Microsoft.EntityFrameworkCore.ValueGeneration;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BugTracker.Controllers
 {
@@ -32,8 +33,6 @@ namespace BugTracker.Controllers
 
             string userId = _userManager.GetUserId(User)!;
 
-            //get list of projects 
-            //List<Project> projects = new List<Project>();
 
 
             ViewData["ProjectPriorityId"] = new SelectList(_context.ProjectPriorities, "Id", "Name");
@@ -41,6 +40,31 @@ namespace BugTracker.Controllers
             var applicationDbContext = _context.Projects.Include(p => p.Company).Include(p => p.ProjectPriority);
             ViewData["ProjectPriorityId"] = new SelectList(_context.ProjectPriorities, "Id", "Name");
             return View(await applicationDbContext.ToListAsync());
+        }
+
+        //GET: My Projects
+        public async Task<IActionResult> MyProjectsIndex(int? ticketId)
+        {
+            //BTUser? btUser = await _userManager.GetUserAsync(User);
+
+            string userId = _userManager.GetUserId(User)!;
+
+
+            List<Project> projects = new List<Project>();
+            List<BTUser> users = new List<BTUser>();
+
+
+            projects = await _context.Projects
+                                     .Where(p => p.Members.Any(users => users.Id == userId))
+                                     .Include(p => p.Company)
+                                     .Include(p => p.ProjectPriority)
+                                     .ToListAsync();
+
+
+
+            ViewData["ProjectPriorityId"] = new SelectList(_context.ProjectPriorities, "Id", "Name");
+            return View(projects);
+
         }
 
         // GET: Projects/Details/5
@@ -79,14 +103,14 @@ namespace BugTracker.Controllers
         public async Task<IActionResult> Create([Bind("Id,BTUserId,CompanyId,Name,Description,Created,StartDate,EndDate,ProjectPriorityId,ImageFileData,ImageFileType,Archived")] Project project)
         {
             ModelState.Remove("CompanyId");
-            
+
             if (ModelState.IsValid)
             {
 
                 BTUser? btUser = await _userManager.GetUserAsync(User);
 
                 project.CompanyId = btUser!.CompanyId;
-   
+
                 //format date(s)
                 project.Created = DataUtility.GetPostGresDate(DateTime.Now);
 
@@ -123,8 +147,8 @@ namespace BugTracker.Controllers
             }
 
             var project = await _context.Projects.FindAsync(id);
-            
-            
+
+
             if (project == null)
             {
                 return NotFound();
@@ -222,14 +246,14 @@ namespace BugTracker.Controllers
             {
                 _context.Projects.Remove(project);
             }
-            
+
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool ProjectExists(int id)
         {
-          return (_context.Projects?.Any(e => e.Id == id)).GetValueOrDefault();
+            return (_context.Projects?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }
