@@ -11,9 +11,11 @@ using Microsoft.AspNetCore.Identity;
 using BugTracker.Services.Interfaces;
 using Microsoft.EntityFrameworkCore.ValueGeneration;
 using Microsoft.AspNetCore.Authorization;
+using BugTracker.Extensions;
 
 namespace BugTracker.Controllers
 {
+    [Authorize]
     public class ProjectsController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -31,15 +33,27 @@ namespace BugTracker.Controllers
         public async Task<IActionResult> Index(int? ticketId)
         {
 
-            string userId = _userManager.GetUserId(User)!;
+            //string userId = _userManager.GetUserId(User)!;
 
 
 
-            ViewData["ProjectPriorityId"] = new SelectList(_context.ProjectPriorities, "Id", "Name");
+            //ViewData["ProjectPriorityId"] = new SelectList(_context.ProjectPriorities, "Id", "Name");
 
-            var applicationDbContext = _context.Projects.Include(p => p.Company).Include(p => p.ProjectPriority);
-            ViewData["ProjectPriorityId"] = new SelectList(_context.ProjectPriorities, "Id", "Name");
-            return View(await applicationDbContext.ToListAsync());
+            //var applicationDbContext = _context.Projects.Include(p => p.Company).Include(p => p.ProjectPriority);
+            //ViewData["ProjectPriorityId"] = new SelectList(_context.ProjectPriorities, "Id", "Name");
+            //return View(await applicationDbContext.ToListAsync());
+
+            int companyId = User.Identity!.GetCompanyId();
+            
+            IEnumerable<Project> projects = await _context.Projects
+                                                          .Where(p=> p.Archived == false && p.CompanyId == companyId)
+                                                          .Include(p=>p.Members)
+                                                          .Include(p=>p.ProjectPriority)
+                                                          .Include(p=>p.Tickets)
+                                                          .ToListAsync();
+
+            return View(projects);
+
         }
 
         //GET: My Projects
@@ -75,14 +89,25 @@ namespace BugTracker.Controllers
                 return NotFound();
             }
 
-            var project = await _context.Projects
-                .Include(p => p.Company)
-                .Include(p => p.ProjectPriority)
-                .FirstOrDefaultAsync(m => m.Id == id);
+            int companyId = User.Identity.GetCompanyId();
+
+            Project? project = await _context.Projects
+                                             .Where(p=>p.CompanyId == companyId)
+                                             .Include(p => p.Company)
+                                             .Include(p => p.ProjectPriority)
+							                 .Include(p => p.Members)
+										     .Include(p => p.Tickets)
+                                                 .ThenInclude(t=>t.DeveloperUser)
+										     .Include(p => p.Tickets)
+											     .ThenInclude(t => t.SubitterUser)
+										     .FirstOrDefaultAsync(m => m.Id == id);
+
+            //in service, two int parameters _projectService.GetProjectById(companyId, id)
             if (project == null)
             {
                 return NotFound();
             }
+
             ViewData["ProjectPriorityId"] = new SelectList(_context.ProjectPriorities, "Id", "Name");
             return View(project);
         }
