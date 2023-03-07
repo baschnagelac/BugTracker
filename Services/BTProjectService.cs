@@ -1,5 +1,6 @@
 ﻿using BugTracker.Data;
 using BugTracker.Models;
+using BugTracker.Models.Enums.Enums;
 using BugTracker.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
@@ -8,14 +9,75 @@ namespace BugTracker.Services
     public class BTProjectService : IBTProjectService
     {
         private readonly ApplicationDbContext _context;
+        private readonly IBTRolesService _rolesService;
 
-        public BTProjectService(ApplicationDbContext context)
+        public BTProjectService(ApplicationDbContext context, IBTRolesService roleService)
         {
             _context = context;
+            _rolesService = roleService;
         }
+
+        public async Task<bool> AddMemberToProjectAsync(BTUser? member, int? projectId)
+        {
+            try
+            {
+                Project? project = await GetProjectByIdAsync(projectId, member!.CompanyId);
+
+                bool IsOnProject = project.Members.Any(m => m.Id == member.Id);
+
+                if (!IsOnProject)
+                {
+                    project.Members.Add(member);
+                    await _context.SaveChangesAsync();
+                    return true;
+                }
+
+                return false;
+            }
+
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
         public Task AddProjectAsync(Project project)
         {
             throw new NotImplementedException();
+        }
+
+        public async Task<bool> AddProjectManagerAsync(string? userId, int? projectId)
+        {
+            try
+            {
+                BTUser? currentPM = await GetProjectManagerAsync(projectId);
+                BTUser? selectedPM = await _context.Users.FindAsync(userId);
+
+                // Remove current PM 
+                if(currentPM != null)
+                {
+                    await RemoveProjectManagerAsync(projectId);
+                }
+
+                // Add new/selected PM
+                try
+                {
+                    await AddMemberToProjectAsync(selectedPM!, projectId);
+                    return true;
+                }
+                catch (Exception)
+                {
+
+                    throw;
+                }
+
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
 
         public Task DeleteProjectAsync(Project project)
@@ -23,25 +85,107 @@ namespace BugTracker.Services
             throw new NotImplementedException();
         }
 
-        public async Task<Project> GetProjectById(int companyId, int id)
+        public async Task<Project> GetProjectByIdAsync(int? projectId, int? companyId)
         {
-            Project? project = await _context.Projects
-                                   .Where(p => p.CompanyId == companyId)
-                                   .Include(p => p.Company)
-                                   .Include(p => p.ProjectPriority)
-                                   .Include(p => p.Members)
-                                   .Include(p => p.Tickets)
-                                       .ThenInclude(t => t.DeveloperUser)
-                                   .Include(p => p.Tickets)
-                                       .ThenInclude(t => t.SubmitterUser)
-                                   .FirstOrDefaultAsync(m => m.Id == id);
+            try
+            {
+                Project? project = await _context.Projects
+                                                 .Where(p => p.CompanyId == companyId)
+                                                 .Include(p => p.Company)
+                                                 .Include(p => p.Members)
+                                                 .Include(p => p.ProjectPriority)
+                                                 .Include(p => p.Tickets)
+                                                    .ThenInclude(t => t.DeveloperUser)
+                                                 .Include(p => p.Tickets)
+                                                    .ThenInclude(t => t.SubmitterUser)
+                                                .FirstOrDefaultAsync(m => m.Id == projectId);
 
-            return project;
+                return project!;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        public async Task<BTUser> GetProjectManagerAsync(int? projectId)
+        {
+            try
+            {
+                Project? project = await _context.Projects
+                                                 .Include(p=>p.Members)
+                                                 .FirstOrDefaultAsync(p=>p.Id == projectId);
+
+                foreach (BTUser member in project!.Members)
+                {
+                    if(await _rolesService.IsUserInRoleAsync(member, nameof(BTRoles.ProjectManager)))
+                    {
+                        return member;
+                    }
+                }
+
+                return null!;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
 
         public Task<IEnumerable<Project>> GetProjectsAsync(int companyId)
         {
             throw new NotImplementedException();
+        }
+
+        public async Task<bool> RemoveMemberFromProjectAsync(BTUser? member, int? projectId)
+        {
+            try
+            {
+                Project? project = await GetProjectByIdAsync(projectId, member!.CompanyId);
+
+                bool IsOnProject = project.Members.Any(m => m.Id == member.Id);
+
+                if(IsOnProject)
+                {
+                    project.Members.Remove(member);
+                    await _context.SaveChangesAsync();
+
+                    return true;
+                }
+
+                return false;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        public async Task RemoveProjectManagerAsync(int? projectId)
+        {
+            try
+            {
+                Project? project = await _context.Projects
+                                                 .Include(p => p.Members)
+                                                 .FirstOrDefaultAsync(p => p.Id == projectId);
+
+                foreach (BTUser member in project!.Members)
+                {
+                    if (await _rolesService.IsUserInRoleAsync(member, nameof(BTRoles.ProjectManager)))
+                    {
+                        await RemoveMemberFromProjectAsync(member, projectId);
+                    }
+                }
+
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
 
         public Task UpdateProjectAsync(Project project)

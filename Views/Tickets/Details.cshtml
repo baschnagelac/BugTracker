@@ -70,13 +70,13 @@
                                     @if (User.Identity!.IsAuthenticated)
                                     {
                                         <div>
-                                            <form asp-action="Create" asp-controller="Comments" method="post">
+                                            <form asp-action="AddTicketComment" asp-controller="Tickets" method="post">
                                                 <input type="hidden" asp-for="Id" name="TicketId" />
-                                                <input type="hidden" asp-for="Slug" />
+                                                <input type="hidden" asp-for="Created" />
                                                 <div class="col-12">
                                                     <div class="form-group">
                                                         <label for="message">Leave a Reply</label>
-                                                        <textarea id="message" name="Body"></textarea>
+                                                        <textarea id="message" name="Comment"></textarea>
                                                     </div>
                                                 </div>
 
@@ -99,7 +99,7 @@
                                                 <div class="comment-body">
                                                     <div class="single-comment">
                                                         <div class="comment-img">
-                                                            <img class="userimg" src="@_BTFileService.ConvertByteArrayToFile(ticketComment.User.ImageFileData!,ticketComment.User.ImageFileType!,(int)DefaultImage.BTUserImage)" alt="Author Images">
+                                                            <img class="userimg" src="@_BTFileService.ConvertByteArrayToFile(ticketComment.User.ImageFileData!,ticketComment.User.ImageFileType!,(int)DefaultImage.BTUserImage)" alt="User Images">
                                                         </div>
                                                         <div class="comment-inner">
                                                             <h6 class="commenter">
@@ -166,7 +166,7 @@
                                             <div class="col col-sm-2">
                                                 <a asp-action="ShowFile" asp-controller="Tickets" asp-route-Id="@item.Id">
                                                     <div class="icon">
-                                                        <img src="@_BTFileService.GetFileIcon(item.FileType)" style="height:50px;width:50px" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="@item.FileType" />
+                                                        <img src="@_BTFileService.GetFileIcon(item.FileName)" style="height:50px;width:50px" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="@item.FileName" />
                                                     </div>
                                                 </a>
                                                 <div style="font-size:x-small">

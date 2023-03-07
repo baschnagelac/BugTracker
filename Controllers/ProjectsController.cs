@@ -12,6 +12,9 @@ using BugTracker.Services.Interfaces;
 using Microsoft.EntityFrameworkCore.ValueGeneration;
 using Microsoft.AspNetCore.Authorization;
 using BugTracker.Extensions;
+using BugTracker.Models.ViewModels;
+using BugTracker.Models.Enums.Enums;
+using System.Collections;
 
 namespace BugTracker.Controllers
 {
@@ -21,15 +24,72 @@ namespace BugTracker.Controllers
         private readonly ApplicationDbContext _context;
         private readonly UserManager<BTUser> _userManager;
         private readonly IBTFileService _btFileService;
-        private readonly IBTProjectService _btProjectService;
+        private readonly IBTProjectService _projectService;
+        private readonly IBTRolesService _rolesService;
 
-        public ProjectsController(ApplicationDbContext context, UserManager<BTUser> userManager, IBTFileService bTFileService, IBTProjectService btProjectService)
+        public ProjectsController(ApplicationDbContext context, UserManager<BTUser> userManager, IBTFileService bTFileService, IBTProjectService projectService, IBTRolesService rolesService)
         {
             _context = context;
             _userManager = userManager;
             _btFileService = bTFileService;
-            _btProjectService = btProjectService;
+            _projectService = projectService;
+            _rolesService = rolesService;
         }
+
+
+        //GET:
+        [HttpGet]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> AssignPM(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            // Get companyId
+            int companyId = User.Identity!.GetCompanyId();
+
+            IEnumerable<BTUser> projectManagers = await _rolesService.GetUsersInRoleAsync(nameof(BTRoles.ProjectManager), companyId);
+            BTUser? currentPM = await _projectService.GetProjectManagerAsync(id);
+            AssignPMViewModel viewModel = new()
+            {
+                Project = await _projectService.GetProjectByIdAsync(id, companyId),
+                PMList = new SelectList(projectManagers, "Id", "FullName", currentPM?.Id),
+                PMId = currentPM?.Id
+
+            };
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> AssignPM(AssignPMViewModel viewModel)
+        {
+            if(!string.IsNullOrEmpty(viewModel.PMId))
+            {
+                await _projectService.AddProjectManagerAsync(viewModel.PMId, viewModel.Project?.Id);
+
+                return RedirectToAction("Details", new { id = viewModel.Project?.Id });
+            }
+
+            ModelState.AddModelError("PMId", "No Project Manager chosen. Please select a PM.");
+
+            int companyId = User.Identity!.GetCompanyId();
+
+            IEnumerable<BTUser> projectManagers = await _rolesService.GetUsersInRoleAsync(nameof(BTRoles.ProjectManager), companyId);
+            BTUser? currentPM = await _projectService.GetProjectManagerAsync(viewModel.Project?.Id);
+
+            viewModel.Project = await _projectService.GetProjectByIdAsync(viewModel.Project?.Id, companyId);
+
+            viewModel.PMList = new SelectList(projectManagers, "Id", "FullName", currentPM?.Id);
+
+            viewModel.PMId = currentPM?.Id;
+
+            return View(viewModel);
+        }
+
 
         // GET: Projects
         public async Task<IActionResult> Index(int? ticketId)
@@ -46,12 +106,12 @@ namespace BugTracker.Controllers
             //return View(await applicationDbContext.ToListAsync());
 
             int companyId = User.Identity!.GetCompanyId();
-            
+
             IEnumerable<Project> projects = await _context.Projects
-                                                          .Where(p=> p.Archived == false && p.CompanyId == companyId)
-                                                          .Include(p=>p.Members)
-                                                          .Include(p=>p.ProjectPriority)
-                                                          .Include(p=>p.Tickets)
+                                                          .Where(p => p.Archived == false && p.CompanyId == companyId)
+                                                          .Include(p => p.Members)
+                                                          .Include(p => p.ProjectPriority)
+                                                          .Include(p => p.Tickets)
                                                           .ToListAsync();
 
             return View(projects);
@@ -59,6 +119,8 @@ namespace BugTracker.Controllers
         }
 
         //GET: My Projects
+        [HttpGet]
+        [Authorize]
         public async Task<IActionResult> MyProjectsIndex(int? ticketId)
         {
             //BTUser? btUser = await _userManager.GetUserAsync(User);
@@ -93,9 +155,11 @@ namespace BugTracker.Controllers
                 return NotFound();
             }
 
-            int companyId = User.Identity.GetCompanyId();
+            int companyId = User.Identity!.GetCompanyId();
 
-            Project? project = await _btProjectService.GetProjectById(id.Value, companyId);
+
+            Project? project = await _projectService.GetProjectByIdAsync(id.Value, companyId);
+
 
             if (project == null)
             {

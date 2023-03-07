@@ -102,7 +102,7 @@ namespace BugTracker.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddTicketComment(TicketComment ticketComment, int ticketId)
+        public async Task<IActionResult> AddTicketComment(TicketComment ticketComment, int? ticketId)
         {
             ModelState.Remove("BTUserId");
 
@@ -151,7 +151,7 @@ namespace BugTracker.Controllers
         public async Task<IActionResult> ShowFile(int id)
         {
             TicketAttachment ticketAttachment = await _BTTicketService.GetTicketAttachmentByIdAsync(id);
-            string fileName = ticketAttachment.FileType;
+            string fileName = ticketAttachment.FileName;
             byte[] fileData = ticketAttachment.FileData;
             string ext = Path.GetExtension(fileName).Replace(".", "");
 

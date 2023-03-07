@@ -32,6 +32,8 @@ namespace BugTracker.Models
         public byte[]? FileData { get; set; }
         public string? FileType { get; set; }
 
+        public string? FileName { get; set; }
+
         //navigational properties 
 
         //one ticket to many attachments 

@@ -74,6 +74,10 @@
                                         <td><span class="font-weight-medium ">@Html.DisplayFor(modelItem => item.EndDate)</span></td>
                                         <td>@Html.DisplayFor(modelItem => item.ProjectPriority.Name)</td>
                                         <td>
+                                            @if(User.IsInRole("Admin"))
+                                            {
+                                                <a asp-action="AssignPM" asp-route-id="@item.Id">Assign PM</a> <span>|</span>
+                                            }
                                             <a asp-action="Edit" asp-route-id="@item.Id"><i class="bi bi-pencil-fill text-warning fs-6 p-2"></i></a>
                                             <a asp-action="Details" asp-route-id="@item.Id"><i class="bi bi-info-circle text-info fs-6 p-2"></i></a>
                                             <a asp-action="Delete" asp-route-id="@item.Id"><i class="bi bi-trash-fill text-danger fs-6 p-2"></i></a>
