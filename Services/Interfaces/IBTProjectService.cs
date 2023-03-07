@@ -6,7 +6,7 @@ namespace BugTracker.Services.Interfaces
 	{
 
 		//get project by id 
-		public Task<Project> GetProjectById(int companyId, int Id);
+		public Task<Project> GetProjectById(int companyId, int id);
 
 		//get projectS
 		public Task<IEnumerable<Project>> GetProjectsAsync(int companyId);

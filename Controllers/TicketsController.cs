@@ -100,12 +100,26 @@ namespace BugTracker.Controllers
             
         }
 
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> AddTicketComment()
-        //{
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddTicketComment(TicketComment ticketComment, int ticketId)
+        {
+            ModelState.Remove("BTUserId");
 
-        //}
+            if (ModelState.IsValid)
+            {
+                ticketComment.UserId= _userManager.GetUserId(User);
+
+
+
+                ticketComment.Created = DateTime.UtcNow;
+
+                await _BTTicketService.AddTicketCommentAsync(ticketComment);
+
+
+            }
+            return RedirectToAction("Details", "Tickets", new { ticketId = ticketId });
+        }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -134,7 +148,18 @@ namespace BugTracker.Controllers
             return RedirectToAction("Details", new { id = ticketAttachment.TicketId, message = statusMessage });
         }
 
+        public async Task<IActionResult> ShowFile(int id)
+        {
+            TicketAttachment ticketAttachment = await _BTTicketService.GetTicketAttachmentByIdAsync(id);
+            string fileName = ticketAttachment.FileType;
+            byte[] fileData = ticketAttachment.FileData;
+            string ext = Path.GetExtension(fileName).Replace(".", "");
 
+            Response.Headers.Add("Content-Disposition", $"inline; filename={fileName}");
+            return File(fileData, $"application/{ext}");
+        }
+        
+        
         // GET: Tickets/Details/5
         public async Task<IActionResult> Details(int? id)
         {

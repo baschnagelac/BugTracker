@@ -3,7 +3,6 @@
 @using BugTracker.Models.Enums.Enums
 
 @inject IBTFileService _BTFileService
-
 @{
     ViewData["Title"] = "Details";
 }
@@ -27,8 +26,8 @@
                                 <div class="progress">
                                     @*Progress bar logic*@
                                     @*Variable from razor logic*@
-                                    <div class="progress-bar" role="progressbar" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100" style="width: [Percent]%;">
-                                        @*Variable from razor logic*@
+                                    <div class="progress-bar" role="progressbar" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100" @*style="width: [Percent]%;*@">
+                                    @*Variable from razor logic*@
                                         <span class="progress-value">[Percent]%</span>
                                     </div>
                                 </div>
@@ -38,15 +37,15 @@
                     <div class="card col m-1 p-2">
                         <div class="card-body">
                             <ul class="list-unstyled">
-                                @*Ticket date*@
+                                    @*Ticket date*@
                                 <li><strong>Date Entered:</strong> <span class="">  @Html.DisplayFor(model => model.Created)</</span></li>
-                                @*Project end date*@
+                                    @*Project end date*@
                                 <li><strong>Deadline:</strong> <span class="">  @Model.Project.EndDate</</span></li>
-                                @*Ticket type*@
+                                    @*Ticket type*@
                                 <li><strong>Type:</strong> <span class="">  @Html.DisplayFor(model => model.TicketType.Name)</span></li>
-                                @*Ticket priority*@
+                                    @*Ticket priority*@
                                 <li><strong>Priority:</strong> <span class="">  @Html.DisplayFor(model => model.TicketPriority.Name)</span></li>
-                                @*Ticket status*@
+                                    @*Ticket status*@
                                 <li><strong>Status:</strong> <span class="">  @Html.DisplayFor(model => model.TicketStatus.Name)</span></li>
                             </ul>
                         </div>
@@ -61,106 +60,109 @@
                                 <h2>Comments</h2>
                             </div>
                             <div class="card-body" style="overflow-y:auto;height:600px;">
-                                @if (User.Identity!.IsAuthenticated)
-                                {
-                                    <form asp-action="Details" asp-controller="Tickets" method="post">
-                                        <input type="hidden" asp-for="Id" name="TicketId" />
-                                        <input type="hidden" asp-for="ProjectId" />
-                                        <div class="col-12">
-                                            <div class="form-group">
-                                                <label for="message">Leave a Comment</label>
-                                                <textarea id="message" name="Comment"></textarea>
-                                            </div>
-                                        </div>
+                                <div class="axil-comment-area">
+                                    <div class="axil-total-comment-post">
+                                        <div class="title">
+                                            <h4 class="mb--0">Comment Below</h4>
 
-                                        <div class="col-lg-12">
-                                            <div class="form-submit cerchio">
-                                                <input name="submit" type="submit" id="submit" class="axil-button button-rounded" value="Post Comment">
-                                            </div>
                                         </div>
-                                    </form>
-                                }
-                                <hr />
-                                <h6>Comments</h6>
-                                <ul class="right_chat list-unstyled mb-0">
+                                    </div>
+                                    @if (User.Identity!.IsAuthenticated)
+                                    {
+                                        <div>
+                                            <form asp-action="Create" asp-controller="Comments" method="post">
+                                                <input type="hidden" asp-for="Id" name="TicketId" />
+                                                <input type="hidden" asp-for="Slug" />
+                                                <div class="col-12">
+                                                    <div class="form-group">
+                                                        <label for="message">Leave a Reply</label>
+                                                        <textarea id="message" name="Body"></textarea>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-lg-12">
+                                                    <div class="form-submit cerchio">
+                                                        <input name="submit" type="submit" id="submit" class="axil-button button-rounded" value="Post Comment">
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    }
+                                    @*Form and Logic for authorized users to add comments*@
+
+                                    <hr />
+                                    <h6>Comments</h6>
+                                    <ul class="right_chat list-unstyled mb-0">
                                     @foreach (TicketComment ticketComment in Model.Comments)
                                     {
-
-
-                                        <li class="comment">
-                                            <div class="comment-body">
-                                                <div class="single-comment">
-                                                    <div class="comment-img">
-                                                        <img class="userimg" src="@_BTFileService.ConvertByteArrayToFile(ticketComment.User.ImageFileData!,ticketComment.User.ImageFileType!,(int)DefaultImage.BTUserImage)" alt="Author Images">
-                                                    </div>
-                                                    <div class="comment-inner">
-                                                        <h6 class="commenter">
-                                                            <a class="hover-flip-item-wrapper" href="#">
-                                                                <span class="hover-flip-item">
-                                                                    <span data-text="@ticketComment.User.FullName">@ticketComment.User.FullName</span>
-                                                                </span>
-                                                            </a>
-                                                        </h6>
-                                                        <div class="comment-meta">
-                                                            <div class="time-spent">@ticketComment.Created.ToString("MMM dd, yyyy hh:mm tt")</div>
+                                            <li class="comment">
+                                                <div class="comment-body">
+                                                    <div class="single-comment">
+                                                        <div class="comment-img">
+                                                            <img class="userimg" src="@_BTFileService.ConvertByteArrayToFile(ticketComment.User.ImageFileData!,ticketComment.User.ImageFileType!,(int)DefaultImage.BTUserImage)" alt="Author Images">
                                                         </div>
-                                                        <div class="comment-text">
-                                                            <p class="b2">
+                                                        <div class="comment-inner">
+                                                            <h6 class="commenter">
+                                                                <a class="hover-flip-item-wrapper" href="#">
+                                                                    <span class="hover-flip-item">
+                                                                        <span data-text="@ticketComment.User.FullName">@ticketComment.User.FullName</span>
+                                                                    </span>
+                                                                </a>
+                                                            </h6>
+                                                            <div class="comment-meta">
+                                                                <div class="time-spent">@ticketComment.Created.ToString("MMM dd, yyyy hh:mm tt")</div>
+                                                            </div>
+                                                            <div class="comment-text">
+                                                                <p class="b2">
                                                                 @Html.Raw(ticketComment.Comment)
-                                                            </p>
+                                                                </p>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                        </li>
-
-                                        @*Loop to show comments made for the Ticket*@
+                                            </li>
                                     }
-                                </ul>
-                            </div>
-                            <div class="card-footer">
+
+                                    </ul>
+                                </div>
+                                <div class="card-footer">
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="col">
-                    <div class="bg-secondary">
-                        <div class="card m-1 p-2">
-                            <div class="card-header">
-                                <h2>Attachments</h2>
-                            </div>
-                            <div class="card-body" style="overflow-y:auto;height:300px;">
-
-                                @* Refer to the Ticket Attachments document for this section *@
-
-                                @* Ticket attachments part 1 here *@
-                                <div class="row clearfix">
-                                    <div>
-                                        <form asp-action="AddTicketAttachment" asp-controller="Tickets" enctype="multipart/form-data" method="post">
-                                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                                            <input type="hidden" asp-for="@Model.Id" name="TicketId">
-                                            <div class="media-body ml-3">
-                                                <label>
-                                                    Description
-                                                    <input asp-for="@Model.Attachments.FirstOrDefault().Description" type="text" class="form-control" />
-                                                </label><br />
-                                                <label class="btn btn-outline-primary btn-sm">
-                                                    <input asp-for="@Model.Attachments.FirstOrDefault().FormFile" type="file" class="form-control-file" />
-                                                </label>
-                                                <button type="submit" class="btn btn-outline-secondary btn-sm md-btn-flat">Submit</button>
-                                            </div>
-                                        </form>
+                    <div class="col">
+                        <div class="bg-secondary">
+                            <div class="card m-1 p-2">
+                                <div class="card-header">
+                                    <h2>Attachments</h2>
+                                </div>
+                                <div class="card-body" style="overflow-y:auto;height:300px;">
+                                    <div class="row clearfix">
+                                        <div>
+@*                                            <form asp-action="AddTicketAttachment" asp-controller="Tickets" enctype="multipart/form-data" method="post">
+                                                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                                <input type="hidden" asp-for="@Model.Id" name="TicketId">
+                                                <div class="media-body ml-3">
+                                                    <label>
+                                                        Description
+                                                        <input asp-for="@Model.Attachments.FirstOrDefault().Description" type="text" class="form-control" />
+                                                    </label><br />
+                                                    <label class="btn btn-outline-primary btn-sm">
+                                                        <input asp-for="@Model.Attachments.FirstOrDefault().FormFile" type="file" class="form-control-file" />
+                                                    </label>
+                                                    <button type="submit" class="btn btn-outline-secondary btn-sm md-btn-flat">Submit</button>
+                                                </div>
+                                            </form>*@
+                                        </div>
                                     </div>
                                 </div>
 
-
-                                @* Ticket attachments part 2 here *@
                                 <hr />
                                 <h6>Attachments</h6>
                                 <div class="container">
                                     <div class="row">
-                                        @foreach (TicketAttachment item in Model.Attachments)
-                                        {
+                                    @foreach (TicketAttachment item in Model.Attachments)
+                                    {
                                             <div class="col col-sm-2">
                                                 <a asp-action="ShowFile" asp-controller="Tickets" asp-route-Id="@item.Id">
                                                     <div class="icon">
@@ -174,25 +176,25 @@
                                                     <small>Size: @_BTFileService.FormatFileSize(item.FileData.Length) </small>
                                                 </div>
                                             </div>
-                                        }
+                                    }
                                     </div>
                                 </div>
-                            </div>
-                            <div class="card-footer">
+                                <div class="card-footer">
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-md-4 col mt-5 ">
-                <div class="bg-dark">
-                    <div class="card m-1 p-2">
-                        <div class="card-header">
-                            <h2>History</h2>
-                            <hr />
-                        </div>
-                        <div class="card-body" style="overflow-y:auto;height:1000px;background-color:antiquewhite">
+                <div class="col-md-4 col mt-5 ">
+                    <div class="bg-dark">
+                        <div class="card m-1 p-2">
+                            <div class="card-header">
+                                <h2>History</h2>
+                                <hr />
+                            </div>
+                            <div class="card-body" style="overflow-y:auto;height:1000px;background-color:antiquewhite">
                             @*Loop to show the history entries for the Ticket*@
+                            </div>
                         </div>
                     </div>
                 </div>

@@ -126,14 +126,10 @@
                                     <tbody>
                                         @* Table body *@
                                         <tr>
-                                            @*<td><span class="font-weight-medium">@Model.Ticket.TicketStatus)</span></td>*@
-@*                                            <td><a href="ticket-detail.html" class="font-weight-medium link">@Html.DisplayFor(modelItem => item.Title)</a></td>
-                                            <td><a href="ticket-detail.html" class="font-weight-medium link">@Html.DisplayFor(modelItem => item.Description)</a></td>
-                                            <td><a href="ticket-detail.html" class="fw-bold link">@Html.DisplayFor(modelItem => item.Project.Name)</a></td>
-                                            <td>@Html.DisplayFor(modelItem => item.Created)</td>
-                                            <td>@Html.DisplayFor(modelItem => item.Updated)</td>
-                                            <td>@Html.DisplayFor(modelItem => item.TicketType.Name)</td>
-                                            <td>@Html.DisplayFor(modelItem => item.TicketPriority.Name)</td>*@
+                                            @foreach (Ticket ticket in Model.Tickets)
+                                            {
+                                                @Model.Tickets
+                                            }
                                         </tr>
                                     </tbody>
                                 </table>

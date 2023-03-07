@@ -21,12 +21,14 @@ namespace BugTracker.Controllers
         private readonly ApplicationDbContext _context;
         private readonly UserManager<BTUser> _userManager;
         private readonly IBTFileService _btFileService;
+        private readonly IBTProjectService _btProjectService;
 
-        public ProjectsController(ApplicationDbContext context, UserManager<BTUser> userManager, IBTFileService bTFileService)
+        public ProjectsController(ApplicationDbContext context, UserManager<BTUser> userManager, IBTFileService bTFileService, IBTProjectService btProjectService)
         {
             _context = context;
             _userManager = userManager;
             _btFileService = bTFileService;
+            _btProjectService = btProjectService;
         }
 
         // GET: Projects
@@ -93,18 +95,8 @@ namespace BugTracker.Controllers
 
             int companyId = User.Identity.GetCompanyId();
 
-            Project? project = await _context.Projects
-                                             .Where(p=>p.CompanyId == companyId)
-                                             .Include(p => p.Company)
-                                             .Include(p => p.ProjectPriority)
-							                 .Include(p => p.Members)
-										     .Include(p => p.Tickets)
-                                                 .ThenInclude(t=>t.DeveloperUser)
-										     .Include(p => p.Tickets)
-											     .ThenInclude(t => t.SubmitterUser)
-										     .FirstOrDefaultAsync(m => m.Id == id);
+            Project? project = await _btProjectService.GetProjectById(id.Value, companyId);
 
-            //in service, two int parameters _projectService.GetProjectById(companyId, id)
             if (project == null)
             {
                 return NotFound();

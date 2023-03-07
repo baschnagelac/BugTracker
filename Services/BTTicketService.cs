@@ -32,24 +32,39 @@ namespace BugTracker.Services
 			}
 		}
 
-        public Task AddTicketCommentAsync(TicketComment ticketComment)
+        public async Task AddTicketCommentAsync(TicketComment ticketComment)
         {
-			//try
-			//{
-			//	_context.Add(comment);
-			//	await _context.SaveChangesAsync();
-			//}
-			//catch (Exception)
-			//{
+			try
+			{
+				_context.Add(ticketComment);
+				await _context.SaveChangesAsync();
+			}
+			catch (Exception)
+			{
 
-			//	throw;
-			//}
-			throw new NotImplementedException();
+				throw;
+			}
 		}
 
         public Task DeleteTicketAsync(Ticket ticket)
         {
             throw new NotImplementedException();
+        }
+
+        public async Task<TicketAttachment> GetTicketAttachmentByIdAsync(int ticketAttachmentId)
+        {
+            try
+            {
+                TicketAttachment? ticketAttachment = await _context.TicketAttachments
+                                                                  .Include(t => t.BTUser!)
+                                                                  .FirstOrDefaultAsync(t => t.Id == ticketAttachmentId);
+                return ticketAttachment!;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
 
         public Task<Ticket> GetTicketById(int companyId, int id)

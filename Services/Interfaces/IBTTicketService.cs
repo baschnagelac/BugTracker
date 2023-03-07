@@ -26,7 +26,7 @@ namespace BugTracker.Services.Interfaces
 		//add ticket comment 
 		public Task AddTicketCommentAsync(TicketComment ticketComment);
 
-	
-		
-	}
+        public Task<TicketAttachment> GetTicketAttachmentByIdAsync(int ticketAttachmentId);
+
+    }
 }
