@@ -10,10 +10,12 @@
 }
 
 
+@{
+ 
+}
 
 
-
-<h1>Details</h1>
+<h1>Project Details</h1>
 
 <div>
     <div class="container-fluid">
@@ -23,9 +25,9 @@
                     <div class="card col m-1 p-2">
                         <div class="body">
                             @* Project Name *@
-                            <h5>[Project Name]</h5>
+                            <h4>@Html.DisplayFor(model => model.Name)</h4>
                             @* Project Description *@
-                            <p>[Project description]</p>
+                            <p>@Html.DisplayFor(model => model.Description)</p>
                             <div class="progress-container progress-info m-b-25">
                                 <span class="progress-badge" style="font-size:small">Project Status</span>
                                 <div class="progress">
@@ -42,9 +44,9 @@
                     <div class="card col m-1 p-2">
                         <div class="body">
                             <ul class=" list-unstyled basic-list">
-                                <li>Start Date: <span class="">[Project Start Date]</span></li>
-                                <li>Deadline: <span class="">[Project End Date]</span></li>
-                                <li>Priority: <span class="">[Project Priority? Name]</span></li>
+                                <li>Start Date: <span class="">@Html.DisplayFor(model => model.StartDate)</span></li>
+                                <li>Deadline: <span class="">@Html.DisplayFor(model => model.EndDate)</span></li>
+                                <li>Priority: <span class="">@Html.DisplayFor(model => model.ProjectPriority.Name)</span></li>
                                 @* if() logic *@
                                 [Project Active/Inactive]
                             </ul>
@@ -112,12 +114,27 @@
                                     <thead class="">
                                         <tr>
                                             @* Table header *@
-                                            [Ticket Table header]
+                                            <th>Ticket Status</th>
+                                            <th>Title</th>
+                                            <th>Description</th>
+                                            <th>Created</th>
+                                            <th>Updated</th>
+                                            <th>Ticket Type</th>
+                                            <th>Ticket Priority</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         @* Table body *@
-                                        [Ticket Table body]
+                                        <tr>
+                                            @*<td><span class="font-weight-medium">@Model.Ticket.TicketStatus)</span></td>*@
+@*                                            <td><a href="ticket-detail.html" class="font-weight-medium link">@Html.DisplayFor(modelItem => item.Title)</a></td>
+                                            <td><a href="ticket-detail.html" class="font-weight-medium link">@Html.DisplayFor(modelItem => item.Description)</a></td>
+                                            <td><a href="ticket-detail.html" class="fw-bold link">@Html.DisplayFor(modelItem => item.Project.Name)</a></td>
+                                            <td>@Html.DisplayFor(modelItem => item.Created)</td>
+                                            <td>@Html.DisplayFor(modelItem => item.Updated)</td>
+                                            <td>@Html.DisplayFor(modelItem => item.TicketType.Name)</td>
+                                            <td>@Html.DisplayFor(modelItem => item.TicketPriority.Name)</td>*@
+                                        </tr>
                                     </tbody>
                                 </table>
                             </div>

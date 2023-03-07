@@ -11,6 +11,8 @@ using Microsoft.AspNetCore.Identity;
 using BugTracker.Services;
 using System.Net.Sockets;
 using Microsoft.AspNetCore.Authorization;
+using BugTracker.Extensions;
+using BugTracker.Services.Interfaces;
 
 namespace BugTracker.Controllers
 {
@@ -18,16 +20,23 @@ namespace BugTracker.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<BTUser> _userManager;
+        private readonly IBTFileService _BTFileService;
+        private readonly IBTTicketService _BTTicketService;
 
-        public TicketsController(ApplicationDbContext context, UserManager<BTUser> userManager)
+        public TicketsController(ApplicationDbContext context, UserManager<BTUser> userManager,
+                                 IBTFileService bTFileService,
+                                 IBTTicketService bTTicketService)
         {
             _context = context;
             _userManager = userManager;
+            _BTFileService = bTFileService;
+            _BTTicketService = bTTicketService;
         }
 
         // GET: Tickets
         public async Task<IActionResult> Index()
         {
+            int companyId = User.Identity.GetCompanyId();
             var applicationDbContext = _context.Tickets.Include(t => t.DeveloperUser).Include(t => t.Project).Include(t => t.TicketPriority).Include(t => t.TicketStatus).Include(t => t.TicketType);
             return View(await applicationDbContext.ToListAsync());
         }
@@ -36,6 +45,7 @@ namespace BugTracker.Controllers
         //GET: My Tickets
         public async Task<IActionResult> MyTicketsIndex()
         {
+            int companyId = User.Identity.GetCompanyId();
 
             string userId = _userManager.GetUserId(User)!;
 
@@ -90,6 +100,40 @@ namespace BugTracker.Controllers
             
         }
 
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> AddTicketComment()
+        //{
+
+        //}
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddTicketAttachment([Bind("Id,FormFile,Description,TicketId")] TicketAttachment ticketAttachment)
+        {
+            string statusMessage;
+
+            if (ModelState.IsValid && ticketAttachment.FormFile != null)
+            {
+                ticketAttachment.FileData = await _BTFileService.ConvertFileToByteArrayAsync(ticketAttachment.FormFile);
+                //ticketAttachment.FileName = ticketAttachment.FormFile.FileName;
+                ticketAttachment.FileType = ticketAttachment.FormFile.ContentType;
+
+                ticketAttachment.Created = DataUtility.GetPostGresDate(DateTime.Now);
+                ticketAttachment.BTUserId = _userManager.GetUserId(User);
+
+                await _BTTicketService.AddTicketAttachmentAsync(ticketAttachment);
+                statusMessage = "Success: New attachment added to Ticket.";
+            }
+            else
+            {
+                statusMessage = "Error: Invalid data.";
+
+            }
+
+            return RedirectToAction("Details", new { id = ticketAttachment.TicketId, message = statusMessage });
+        }
+
 
         // GET: Tickets/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -99,13 +143,18 @@ namespace BugTracker.Controllers
                 return NotFound();
             }
 
+            int companyId = User.Identity.GetCompanyId();
+
             var ticket = await _context.Tickets
                 .Include(t => t.DeveloperUser)
                 .Include(t => t.Project)
                 .Include(t => t.TicketPriority)
                 .Include(t => t.TicketStatus)
                 .Include(t => t.TicketType)
-                .FirstOrDefaultAsync(m => m.Id == id);
+				.Include(t => t.Comments)
+				.Include(t => t.Attachments)
+				.Include(t => t.History)
+				.FirstOrDefaultAsync(m => m.Id == id);
             if (ticket == null)
             {
                 return NotFound();
@@ -117,6 +166,7 @@ namespace BugTracker.Controllers
         // GET: Tickets/Create
         public IActionResult Create()
         {
+            int companyId = User.Identity.GetCompanyId();
             ViewData["DeveloperUserId"] = new SelectList(_context.Users, "Id", "FullName");
             ViewData["ProjectId"] = new SelectList(_context.Projects, "Id", "Description");
             ViewData["TicketPriorityId"] = new SelectList(_context.TicketPriorities, "Id", "Name");
@@ -138,6 +188,7 @@ namespace BugTracker.Controllers
 
             if (ModelState.IsValid)
             {
+                int companyId = User.Identity.GetCompanyId();
 
                 ticket.SubmitterUserId = _userManager.GetUserId(User);
 
@@ -163,7 +214,7 @@ namespace BugTracker.Controllers
             {
                 return NotFound();
             }
-
+            int companyId = User.Identity.GetCompanyId();
             var ticket = await _context.Tickets.FindAsync(id);
             if (ticket == null)
             {
@@ -193,6 +244,7 @@ namespace BugTracker.Controllers
             {
                 try
                 {
+                    int companyId = User.Identity.GetCompanyId();
                     ticket.SubmitterUserId = _userManager.GetUserId(User);
 
                     ticket.Created = DataUtility.GetPostGresDate(DateTime.UtcNow);
@@ -229,7 +281,7 @@ namespace BugTracker.Controllers
             {
                 return NotFound();
             }
-
+            int companyId = User.Identity.GetCompanyId();
             var ticket = await _context.Tickets
                 .Include(t => t.DeveloperUser)
                 .Include(t => t.Project)
@@ -254,6 +306,7 @@ namespace BugTracker.Controllers
             {
                 return Problem("Entity set 'ApplicationDbContext.Tickets'  is null.");
             }
+            int companyId = User.Identity.GetCompanyId();
             var ticket = await _context.Tickets.FindAsync(id);
             if (ticket != null)
             {
@@ -266,6 +319,7 @@ namespace BugTracker.Controllers
 
         private bool TicketExists(int id)
         {
+            int companyId = User.Identity.GetCompanyId();
             return (_context.Tickets?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }

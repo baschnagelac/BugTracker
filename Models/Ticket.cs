@@ -61,7 +61,7 @@ namespace BugTracker.Models
         public virtual BTUser? DeveloperUser { get; set; }
 
         //many tickets to one sumbitter
-        public virtual BTUser? SubitterUser { get; set; }
+        public virtual BTUser? SubmitterUser { get; set; }
 
         //one ticket to many comments 
 

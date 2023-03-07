@@ -61,6 +61,8 @@ namespace BugTracker.Controllers
         {
             //BTUser? btUser = await _userManager.GetUserAsync(User);
 
+            int companyId = User.Identity.GetCompanyId();
+
             string userId = _userManager.GetUserId(User)!;
 
 
@@ -99,7 +101,7 @@ namespace BugTracker.Controllers
 										     .Include(p => p.Tickets)
                                                  .ThenInclude(t=>t.DeveloperUser)
 										     .Include(p => p.Tickets)
-											     .ThenInclude(t => t.SubitterUser)
+											     .ThenInclude(t => t.SubmitterUser)
 										     .FirstOrDefaultAsync(m => m.Id == id);
 
             //in service, two int parameters _projectService.GetProjectById(companyId, id)
@@ -115,7 +117,7 @@ namespace BugTracker.Controllers
         // GET: Projects/Create
         public async Task<IActionResult> Create()
         {
-
+            int companyId = User.Identity.GetCompanyId();
             ViewData["ProjectPriorityId"] = new SelectList(_context.ProjectPriorities, "Id", "Name");
             return View(new Project());
         }
@@ -131,6 +133,7 @@ namespace BugTracker.Controllers
 
             if (ModelState.IsValid)
             {
+                int companyId = User.Identity.GetCompanyId();
 
                 BTUser? btUser = await _userManager.GetUserAsync(User);
 
@@ -171,6 +174,8 @@ namespace BugTracker.Controllers
                 return NotFound();
             }
 
+            int companyId = User.Identity.GetCompanyId();
+
             var project = await _context.Projects.FindAsync(id);
 
 
@@ -199,6 +204,7 @@ namespace BugTracker.Controllers
             {
                 try
                 {
+                    int companyId = User.Identity.GetCompanyId();
 
                     string? userId = _userManager.GetUserId(User);
 
@@ -245,6 +251,8 @@ namespace BugTracker.Controllers
                 return NotFound();
             }
 
+            int companyId = User.Identity.GetCompanyId();
+
             var project = await _context.Projects
                 .Include(p => p.Company)
                 .Include(p => p.ProjectPriority)
@@ -266,6 +274,7 @@ namespace BugTracker.Controllers
             {
                 return Problem("Entity set 'ApplicationDbContext.Projects'  is null.");
             }
+            int companyId = User.Identity.GetCompanyId();
             var project = await _context.Projects.FindAsync(id);
             if (project != null)
             {

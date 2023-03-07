@@ -381,9 +381,6 @@ namespace BugTracker.Data.Migrations
                     b.Property<int>("ProjectId")
                         .HasColumnType("integer");
 
-                    b.Property<string>("SubitterUserId")
-                        .HasColumnType("text");
-
                     b.Property<string>("SubmitterUserId")
                         .IsRequired()
                         .HasColumnType("text");
@@ -411,7 +408,7 @@ namespace BugTracker.Data.Migrations
 
                     b.HasIndex("ProjectId");
 
-                    b.HasIndex("SubitterUserId");
+                    b.HasIndex("SubmitterUserId");
 
                     b.HasIndex("TicketPriorityId");
 
@@ -847,9 +844,11 @@ namespace BugTracker.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("BugTracker.Models.BTUser", "SubitterUser")
+                    b.HasOne("BugTracker.Models.BTUser", "SubmitterUser")
                         .WithMany()
-                        .HasForeignKey("SubitterUserId");
+                        .HasForeignKey("SubmitterUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("BugTracker.Models.TicketPriority", "TicketPriority")
                         .WithMany()
@@ -873,7 +872,7 @@ namespace BugTracker.Data.Migrations
 
                     b.Navigation("Project");
 
-                    b.Navigation("SubitterUser");
+                    b.Navigation("SubmitterUser");
 
                     b.Navigation("TicketPriority");
 

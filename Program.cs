@@ -27,6 +27,10 @@ builder.Services.AddControllersWithViews();
 //custom services 
 builder.Services.AddScoped<IBTFileService, BTFileService>();
 
+builder.Services.AddScoped<IBTTicketService, BTTicketService>();
+
+builder.Services.AddScoped<IBTProjectService, BTProjectService>();
+
 var app = builder.Build();
 
 var scope = app.Services.CreateScope();

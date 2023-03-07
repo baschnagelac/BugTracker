@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using BugTracker.Extensions;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BugTracker.Models
@@ -21,8 +23,12 @@ namespace BugTracker.Models
         [Required]
         public string? BTUserId { get; set; }
 
-        [NotMapped]
-        public virtual IFormFile? FormFile { get; set; }
+		[NotMapped]
+		[DisplayName("Select a file")]
+		[DataType(DataType.Upload)]
+		[MaxFileSize(1024 * 1024)]
+		[AllowedExtensions(new string[] { ".jpg", ".png", ".doc", ".docx", ".xls", ".xlsx", ".pdf" })]
+		public virtual IFormFile? FormFile { get; set; }
         public byte[]? FileData { get; set; }
         public string? FileType { get; set; }
 

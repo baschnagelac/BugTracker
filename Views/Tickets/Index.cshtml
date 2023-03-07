@@ -67,6 +67,7 @@
                                 <tr class ="fs-4 font-weight-bold">
                                     <th>@Html.DisplayNameFor(model => model.TicketStatus)</th>
                                     <th>@Html.DisplayNameFor(model => model.Title)</th>
+                                    <th>@Html.DisplayNameFor(model => model.Description)</th>
                                     <th>@Html.DisplayNameFor(model => model.Project)</th>
                                     <th>@Html.DisplayNameFor(model => model.Created)</th>
                                     <th>@Html.DisplayNameFor(model => model.Updated)</th>
@@ -82,6 +83,7 @@
                                      <tr>
                                         <td><span class="badge bg-light-warning text-warning font-weight-medium">@Html.DisplayFor(modelItem => item.TicketStatus.Name)</span></td>
                                         <td><a href="ticket-detail.html" class="font-weight-medium link">@Html.DisplayFor(modelItem => item.Title)</a></td>
+                                        <td><a href="ticket-detail.html" class="font-weight-medium link">@Html.DisplayFor(modelItem => item.Description)</a></td>
                                         <td><a href="ticket-detail.html" class="fw-bold link">@Html.DisplayFor(modelItem => item.Project.Name)</a></td>
                                         <td>@Html.DisplayFor(modelItem => item.Created)</td>
                                         <td>@Html.DisplayFor(modelItem => item.Updated)</td>
@@ -100,6 +102,7 @@
                                 <tr class="fs-4 font-weight-bold">
                                     <th>Ticket Status</th>
                                     <th>Title</th>
+                                    <th>Description</th>
                                     <th>Project</th>
                                     <th>Created</th>
                                     <th>Updated</th>
