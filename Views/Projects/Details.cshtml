@@ -117,13 +117,13 @@
                                     <thead class="">
                                         <tr>
                                             @* Table header *@
-                                            @*                                            <th>Ticket Status</th>
+                                            <th>Ticket Status</th>
                                             <th>Title</th>
                                             <th>Description</th>
                                             <th>Created</th>
                                             <th>Updated</th>
                                             <th>Ticket Type</th>
-                                            <th>Ticket Priority</th>*@
+                                            <th>Ticket Priority</th>
                                             <th></th>
                                         </tr>
                                     </thead>
@@ -132,9 +132,15 @@
                                         {
                                             @* Table body *@
                                             <tr>
+                                                <td>@ticket.TicketStatus!.Name</td>
                                                 <td>
-                                                    <a class="fs-6" asp-action="Details" asp-controller="Tickets" asp-route-id="@ticket.Id">@ticket.Title</a>
+                                                    <a asp-action="Details" asp-controller="Tickets" asp-route-id="@ticket.Id">@ticket.Title</a>
                                                 </td>
+                                                <td>@ticket.Description</td>
+                                                <td>@ticket.Created</td>
+                                                <td>@ticket.Updated</td>
+                                                <td>@ticket.TicketType!.Name</td>
+                                                <td>@ticket.TicketPriority!.Name</td>
 
                                             </tr>
                                         }
