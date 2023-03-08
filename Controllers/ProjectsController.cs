@@ -62,6 +62,7 @@ namespace BugTracker.Controllers
             return View(viewModel);
         }
 
+        //POST:
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin")]
@@ -88,6 +89,74 @@ namespace BugTracker.Controllers
             viewModel.PMId = currentPM?.Id;
 
             return View(viewModel);
+        }
+
+        //GET: Assign Project Members 
+        [HttpGet]
+        [Authorize(Roles ="Admin, ProjectManager")]
+        public async Task<IActionResult> AssignProjectMembers(int? id)
+        {
+            if(id == null)
+            {
+                return NotFound();
+            }
+
+            int companyId = User.Identity!.GetCompanyId();
+
+            Project project = await _projectService.GetProjectByIdAsync(id, companyId);
+
+            List<BTUser> submitters = await _rolesService.GetUsersInRoleAsync(nameof(BTRoles.Submitter), companyId);
+            List<BTUser> developers = await _rolesService.GetUsersInRoleAsync(nameof(BTRoles.Developer), companyId);
+
+            List<BTUser> userList = submitters.Concat(developers).ToList();
+
+            List<string> currentMembers = project.Members.Select(m => m.Id).ToList();
+
+
+            ProjectMembersViewModel viewModel = new()
+            {
+                Project = project,
+                UsersList = new MultiSelectList(userList, "Id", "FullName", currentMembers)
+
+            };
+
+            return View(viewModel);
+        }
+
+        //POST: Assign Project Members 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin, ProjectManager")]
+        public async Task<IActionResult> AssignProjectMembers(ProjectMembersViewModel viewModel)
+        {
+            int companyId = User.Identity!.GetCompanyId();
+
+            if (viewModel.SelectedMembers != null)
+            {
+                //Remove current members
+                await _projectService.RemoveMembersFromProjectAsync(viewModel.Project!.Id, companyId);
+
+                //Add newly selected members 
+                await _projectService.AddMembersToProjectAsync(viewModel.SelectedMembers, viewModel.Project!.Id, companyId);
+
+                return RedirectToAction(nameof(Details), new { id = viewModel.Project!.Id });
+
+
+            }
+
+            ModelState.AddModelError("SelectedMembers", "No Users chosen. Please select Users!");
+            // Reset the form 
+
+            viewModel.Project = await _projectService.GetProjectByIdAsync(viewModel.Project!.Id, companyId);
+            List<string> currentMembers = viewModel.Project.Members.Select(m => m.Id).ToList();
+
+            List<BTUser> submitters = await _rolesService.GetUsersInRoleAsync(nameof(BTRoles.Submitter), companyId);
+            List<BTUser> developers = await _rolesService.GetUsersInRoleAsync(nameof(BTRoles.Developer), companyId);
+            List<BTUser> userList = submitters.Concat(developers).ToList();
+
+            viewModel.UsersList = new MultiSelectList(userList, "Id", "FullName", currentMembers);
+
+            return View(viewModel); 
         }
 
 

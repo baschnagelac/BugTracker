@@ -3,6 +3,7 @@ using BugTracker.Models;
 using BugTracker.Models.Enums.Enums;
 using BugTracker.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using System.Runtime.InteropServices;
 
 namespace BugTracker.Services
 {
@@ -15,6 +16,41 @@ namespace BugTracker.Services
         {
             _context = context;
             _rolesService = roleService;
+        }
+
+        public async Task AddMembersToProjectAsync(IEnumerable<string> userIds, int? projectId, int? companyId)
+        {
+            try
+            {
+                Project? project = await GetProjectByIdAsync(projectId, companyId);
+
+                foreach (string userId in userIds)
+                {
+                    BTUser? btUser = await _context.Users.FindAsync(userId);
+
+                    if (project != null && btUser != null)
+                    {
+                        bool IsOnProject = project.Members.Any(m => m.Id == userId);
+
+                        if (!IsOnProject)
+                        {
+                            project.Members.Add(btUser);
+                        }
+                        else
+                        {
+                            continue;
+                        }
+                        
+                    }
+
+                }
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
 
         public async Task<bool> AddMemberToProjectAsync(BTUser? member, int? projectId)
@@ -55,7 +91,7 @@ namespace BugTracker.Services
                 BTUser? selectedPM = await _context.Users.FindAsync(userId);
 
                 // Remove current PM 
-                if(currentPM != null)
+                if (currentPM != null)
                 {
                     await RemoveProjectManagerAsync(projectId);
                 }
@@ -120,12 +156,12 @@ namespace BugTracker.Services
             try
             {
                 Project? project = await _context.Projects
-                                                 .Include(p=>p.Members)
-                                                 .FirstOrDefaultAsync(p=>p.Id == projectId);
+                                                 .Include(p => p.Members)
+                                                 .FirstOrDefaultAsync(p => p.Id == projectId);
 
                 foreach (BTUser member in project!.Members)
                 {
-                    if(await _rolesService.IsUserInRoleAsync(member, nameof(BTRoles.ProjectManager)))
+                    if (await _rolesService.IsUserInRoleAsync(member, nameof(BTRoles.ProjectManager)))
                     {
                         return member;
                     }
@@ -153,7 +189,7 @@ namespace BugTracker.Services
 
                 bool IsOnProject = project.Members.Any(m => m.Id == member.Id);
 
-                if(IsOnProject)
+                if (IsOnProject)
                 {
                     project.Members.Remove(member);
                     await _context.SaveChangesAsync();
@@ -162,6 +198,28 @@ namespace BugTracker.Services
                 }
 
                 return false;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        public async Task RemoveMembersFromProjectAsync(int? projectId, int? companyId)
+        {
+            try
+            {
+                Project? project = await GetProjectByIdAsync(projectId, companyId);
+
+                foreach (BTUser member in project.Members)
+                {
+                    if(!await _rolesService.IsUserInRoleAsync(member, nameof(BTRoles.ProjectManager)))
+                    {
+                        project.Members.Remove(member);
+                    }
+                }
+                await _context.SaveChangesAsync();
             }
             catch (Exception)
             {

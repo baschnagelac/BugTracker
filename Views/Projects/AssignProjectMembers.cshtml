@@ -1,0 +1,26 @@
+﻿@model ProjectMembersViewModel
+
+
+@{
+    ViewData["Title"] = "Assign Project Members";
+}
+
+
+<div class="d-flex justify-content-center mt-5 flex-column align-items-center">
+    <h3 class="my-5">Assign Project Members</h3>
+    <div class="card">
+        <div class="card-header">
+            <div class="card-title">@Model.Project!.Name</div>
+        </div>
+        <div class="card-body">
+            <form asp-action="AssignProjectMembers" asp-controller="Projects" method="post" class="d-flex flex-column">
+                <input type="hidden" asp-for="Project!.Id" />
+                <select asp-items="Model.UsersList" asp-for="SelectedMembers" class="form-control" multiple required>
+                </select>
+                <span asp-validation-for="SelectedMembers" class="text-danger"></span>
+                <button type="submit" class="btn btn-primary my-3">Save</button>
+                <a asp-action="Details" asp-route-id="@Model.Project?.Id" class="btn btn-secondary">Cancel</a>
+            </form>
+        </div>
+    </div>
+</div>

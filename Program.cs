@@ -33,6 +33,10 @@ builder.Services.AddScoped<IBTProjectService, BTProjectService>();
 
 builder.Services.AddScoped<IBTRolesService, BTRolesService>();
 
+builder.Services.AddScoped<IBTCompanyService, BTCompanyService>();
+
+
+
 var app = builder.Build();
 
 var scope = app.Services.CreateScope();

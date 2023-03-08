@@ -42,6 +42,11 @@
                                     </div>
                                 </div>
                             </div>
+                            <h6 class="fw-bold mt-1">Members</h6>
+                            @foreach (BTUser members in Model.Members)
+                            {
+                                <li class="mb-1 list-unstyled">@members.FullName</li>
+                            }
                         </div>
                     </div>
                     <div class="card col m-1 p-2">
@@ -50,8 +55,12 @@
                                 <li>Start Date: <span class="">@Html.DisplayFor(model => model.StartDate)</span></li>
                                 <li>Deadline: <span class="">@Html.DisplayFor(model => model.EndDate)</span></li>
                                 <li>Priority: <span class="">@Html.DisplayFor(model => model.ProjectPriority.Name)</span></li>
+                                
+                              
                                 @* if() logic *@
                                 [Project Active/Inactive]
+
+                                <li><img src="@_BTFileService.ConvertByteArrayToFile(Model.ImageFileData!,Model.ImageFileType!,(int)DefaultImage.ProjectImage)" alt="Project Image" /></li>
                             </ul>
                         </div>
                     </div>

@@ -61,10 +61,10 @@
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.ImageFileType)
         </dd>*@
-@*        @foreach (var project in Model) 
+@*        @foreach (var project in Model.) 
         {
             <div class="col-md-4 square-img-container">
-                <img src="@_BTFileService.ConvertByteArrayToFile(project.ImageFileData!,project.ImageFileType!,(int)DefaultImage.ProjectImage)" alt="Post Images" />
+                <img src="@_BTFileService.ConvertByteArrayToFile(Model.ImageFileData!,Model.ImageFileType!,(int)DefaultImage.ProjectImage)" alt="Post Images" />
             </div>
         }*@
         <dt class = "col-sm-2">
