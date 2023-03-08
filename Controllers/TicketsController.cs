@@ -102,23 +102,23 @@ namespace BugTracker.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddTicketComment(TicketComment ticketComment, int? ticketId)
+        public async Task<IActionResult> AddTicketComment([Bind("Id,Comment,Created,TicketId,UserId")] TicketComment ticketComment, int? ticketId)
         {
             ModelState.Remove("BTUserId");
 
             if (ModelState.IsValid)
+
             {
-                ticketComment.UserId= _userManager.GetUserId(User);
+                ticketComment.UserId = _userManager.GetUserId(User);
 
 
 
                 ticketComment.Created = DateTime.UtcNow;
 
                 await _BTTicketService.AddTicketCommentAsync(ticketComment);
-
-
             }
-            return RedirectToAction("Details", "Tickets", new { ticketId = ticketId });
+
+            return RedirectToAction("Details", new { id = ticketId });
         }
 
         [HttpPost]
