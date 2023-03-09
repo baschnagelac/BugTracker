@@ -1,6 +1,7 @@
 ﻿using BugTracker.Data;
 using BugTracker.Models;
 using BugTracker.Services.Interfaces;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace BugTracker.Services
@@ -8,11 +9,13 @@ namespace BugTracker.Services
     public class BTTicketService : IBTTicketService
     {
 		private readonly ApplicationDbContext _context;
+        private readonly UserManager<BTUser> _userManager;
 
-		public BTTicketService(ApplicationDbContext context)
+        public BTTicketService(ApplicationDbContext context, UserManager<BTUser> userManager)
 		{
 			_context = context;
-		}
+            _userManager = userManager;
+        }
 		public Task AddTicketAsync(Ticket ticket)
         {
             throw new NotImplementedException();
@@ -36,7 +39,11 @@ namespace BugTracker.Services
         {
 			try
 			{
-				_context.Add(ticketComment);
+
+
+
+                _context.Add(ticketComment);
+                    
 				await _context.SaveChangesAsync();
 			}
 			catch (Exception)

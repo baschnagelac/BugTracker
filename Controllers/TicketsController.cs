@@ -104,18 +104,21 @@ namespace BugTracker.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddTicketComment([Bind("Id,Comment,Created,TicketId,UserId")] TicketComment ticketComment, int? ticketId)
         {
-            ModelState.Remove("BTUserId");
+            ModelState.Remove("UserId");
 
             if (ModelState.IsValid)
 
             {
                 ticketComment.UserId = _userManager.GetUserId(User);
+                                                
 
 
 
                 ticketComment.Created = DateTime.UtcNow;
 
                 await _BTTicketService.AddTicketCommentAsync(ticketComment);
+                                      
+
             }
 
             return RedirectToAction("Details", new { id = ticketId });
@@ -126,7 +129,7 @@ namespace BugTracker.Controllers
         public async Task<IActionResult> AddTicketAttachment([Bind("Id,FormFile,Description,TicketId")] TicketAttachment ticketAttachment)
         {
             string statusMessage;
-
+            ModelState.Remove("FormFile");
             if (ModelState.IsValid && ticketAttachment.FormFile != null)
             {
                 ticketAttachment.FileData = await _BTFileService.ConvertFileToByteArrayAsync(ticketAttachment.FormFile);
@@ -176,7 +179,8 @@ namespace BugTracker.Controllers
                 .Include(t => t.TicketPriority)
                 .Include(t => t.TicketStatus)
                 .Include(t => t.TicketType)
-				.Include(t => t.Comments)
+                .Include(t => t.Comments)
+                    .ThenInclude(t => t.User)
 				.Include(t => t.Attachments)
 				.Include(t => t.History)
 				.FirstOrDefaultAsync(m => m.Id == id);

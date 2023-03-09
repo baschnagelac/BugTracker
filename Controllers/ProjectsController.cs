@@ -160,19 +160,12 @@ namespace BugTracker.Controllers
         }
 
 
+
+
         // GET: Projects
         public async Task<IActionResult> Index(int? ticketId)
         {
 
-            //string userId = _userManager.GetUserId(User)!;
-
-
-
-            //ViewData["ProjectPriorityId"] = new SelectList(_context.ProjectPriorities, "Id", "Name");
-
-            //var applicationDbContext = _context.Projects.Include(p => p.Company).Include(p => p.ProjectPriority);
-            //ViewData["ProjectPriorityId"] = new SelectList(_context.ProjectPriorities, "Id", "Name");
-            //return View(await applicationDbContext.ToListAsync());
 
             int companyId = User.Identity!.GetCompanyId();
 

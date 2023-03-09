@@ -26,8 +26,8 @@
                                 <div class="progress">
                                     @*Progress bar logic*@
                                     @*Variable from razor logic*@
-                                    <div class="progress-bar" role="progressbar" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100" @*style="width: [Percent]%;*@">
-                                    @*Variable from razor logic*@
+                                    <div class="progress-bar" role="progressbar" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100" @*style="width: [Percent]%;*@>
+                                        @*Variable from razor logic*@
                                         <span class="progress-value">[Percent]%</span>
                                     </div>
                                 </div>
@@ -37,15 +37,15 @@
                     <div class="card col m-1 p-2">
                         <div class="card-body">
                             <ul class="list-unstyled">
-                                    @*Ticket date*@
+                                @*Ticket date*@
                                 <li><strong>Date Entered:</strong> <span class="">  @Html.DisplayFor(model => model.Created)</</span></li>
-                                    @*Project end date*@
+                                @*Project end date*@
                                 <li><strong>Deadline:</strong> <span class="">  @Model.Project.EndDate</</span></li>
-                                    @*Ticket type*@
+                                @*Ticket type*@
                                 <li><strong>Type:</strong> <span class="">  @Html.DisplayFor(model => model.TicketType.Name)</span></li>
-                                    @*Ticket priority*@
+                                @*Ticket priority*@
                                 <li><strong>Priority:</strong> <span class="">  @Html.DisplayFor(model => model.TicketPriority.Name)</span></li>
-                                    @*Ticket status*@
+                                @*Ticket status*@
                                 <li><strong>Status:</strong> <span class="">  @Html.DisplayFor(model => model.TicketStatus.Name)</span></li>
                             </ul>
                         </div>
@@ -92,14 +92,14 @@
                                     <hr />
                                     <h6>Comments</h6>
                                     <ul class="right_chat list-unstyled mb-0">
-                                    @foreach (TicketComment ticketComment in Model.Comments)
-                                    {
+                                        @foreach (TicketComment ticketComment in Model.Comments)
+                                        {
                                             <li class="comment">
                                                 <div class="comment-body">
                                                     <div class="single-comment">
-                                                        <div class="comment-img">
+@*                                                        <div class="comment-img">
                                                             <img class="userimg" src="@_BTFileService.ConvertByteArrayToFile(ticketComment.User.ImageFileData!,ticketComment.User.ImageFileType!,(int)DefaultImage.BTUserImage)" alt="User Images">
-                                                        </div>
+                                                        </div>*@
                                                         <div class="comment-inner">
                                                             <h6 class="commenter">
                                                                 <a class="hover-flip-item-wrapper" href="#">
@@ -113,14 +113,14 @@
                                                             </div>
                                                             <div class="comment-text">
                                                                 <p class="b2">
-                                                                @Html.Raw(ticketComment.Comment)
+                                                                    @Html.Raw(ticketComment.Comment)
                                                                 </p>
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </li>
-                                    }
+                                        }
 
                                     </ul>
                                 </div>
@@ -138,7 +138,7 @@
                                 <div class="card-body" style="overflow-y:auto;height:300px;">
                                     <div class="row clearfix">
                                         <div>
-@*                                            <form asp-action="AddTicketAttachment" asp-controller="Tickets" enctype="multipart/form-data" method="post">
+                                            <form asp-action="AddTicketAttachment" asp-controller="Tickets" enctype="multipart/form-data" method="post">
                                                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                                                 <input type="hidden" asp-for="@Model.Id" name="TicketId">
                                                 <div class="media-body ml-3">
@@ -151,7 +151,7 @@
                                                     </label>
                                                     <button type="submit" class="btn btn-outline-secondary btn-sm md-btn-flat">Submit</button>
                                                 </div>
-                                            </form>*@
+                                            </form>
                                         </div>
                                     </div>
                                 </div>
@@ -160,8 +160,8 @@
                                 <h6>Attachments</h6>
                                 <div class="container">
                                     <div class="row">
-                                    @foreach (TicketAttachment item in Model.Attachments)
-                                    {
+                                        @foreach (TicketAttachment item in Model.Attachments)
+                                        {
                                             <div class="col col-sm-2">
                                                 <a asp-action="ShowFile" asp-controller="Tickets" asp-route-Id="@item.Id">
                                                     <div class="icon">
@@ -175,7 +175,7 @@
                                                     <small>Size: @_BTFileService.FormatFileSize(item.FileData.Length) </small>
                                                 </div>
                                             </div>
-                                    }
+                                        }
                                     </div>
                                 </div>
                                 <div class="card-footer">
@@ -192,7 +192,7 @@
                                 <hr />
                             </div>
                             <div class="card-body" style="overflow-y:auto;height:1000px;background-color:antiquewhite">
-                            @*Loop to show the history entries for the Ticket*@
+                                @*Loop to show the history entries for the Ticket*@
                             </div>
                         </div>
                     </div>
