@@ -13,6 +13,8 @@ using System.Net.Sockets;
 using Microsoft.AspNetCore.Authorization;
 using BugTracker.Extensions;
 using BugTracker.Services.Interfaces;
+using BugTracker.Models.Enums.Enums;
+using BugTracker.Models.ViewModels;
 
 namespace BugTracker.Controllers
 {
@@ -21,16 +23,19 @@ namespace BugTracker.Controllers
         private readonly ApplicationDbContext _context;
         private readonly UserManager<BTUser> _userManager;
         private readonly IBTFileService _BTFileService;
-        private readonly IBTTicketService _BTTicketService;
+        private readonly IBTTicketService _ticketService;
+        private readonly IBTRolesService _rolesService;
 
         public TicketsController(ApplicationDbContext context, UserManager<BTUser> userManager,
                                  IBTFileService bTFileService,
-                                 IBTTicketService bTTicketService)
+                                 IBTTicketService ticketService,
+                                 IBTRolesService rolesService)
         {
             _context = context;
             _userManager = userManager;
             _BTFileService = bTFileService;
-            _BTTicketService = bTTicketService;
+            _ticketService = ticketService;
+            _rolesService = rolesService;
         }
 
         // GET: Tickets
@@ -62,7 +67,7 @@ namespace BugTracker.Controllers
                                         .Include(t => t.TicketType)
                                         .ToListAsync();
 
-            
+
 
                 return View(tickets);
             }
@@ -97,7 +102,7 @@ namespace BugTracker.Controllers
 
             //return View(new IEnumerable<Ticket>());
 
-            
+
         }
 
         [HttpPost]
@@ -110,14 +115,14 @@ namespace BugTracker.Controllers
 
             {
                 ticketComment.UserId = _userManager.GetUserId(User);
-                                                
+
 
 
 
                 ticketComment.Created = DateTime.UtcNow;
 
-                await _BTTicketService.AddTicketCommentAsync(ticketComment);
-                                      
+                await _ticketService.AddTicketCommentAsync(ticketComment);
+
 
             }
 
@@ -140,7 +145,7 @@ namespace BugTracker.Controllers
                 ticketAttachment.Created = DataUtility.GetPostGresDate(DateTime.Now);
                 ticketAttachment.BTUserId = _userManager.GetUserId(User);
 
-                await _BTTicketService.AddTicketAttachmentAsync(ticketAttachment);
+                await _ticketService.AddTicketAttachmentAsync(ticketAttachment);
                 statusMessage = "Success: New attachment added to Ticket.";
             }
             else
@@ -154,7 +159,7 @@ namespace BugTracker.Controllers
 
         public async Task<IActionResult> ShowFile(int id)
         {
-            TicketAttachment ticketAttachment = await _BTTicketService.GetTicketAttachmentByIdAsync(id);
+            TicketAttachment ticketAttachment = await _ticketService.GetTicketAttachmentByIdAsync(id);
             string fileName = ticketAttachment.FileName;
             byte[] fileData = ticketAttachment.FileData;
             string ext = Path.GetExtension(fileName).Replace(".", "");
@@ -162,8 +167,78 @@ namespace BugTracker.Controllers
             Response.Headers.Add("Content-Disposition", $"inline; filename={fileName}");
             return File(fileData, $"application/{ext}");
         }
-        
-        
+
+
+        //GET: Assign Project Members 
+        [HttpGet]
+        [Authorize(Roles = "Admin, ProjectManager")]
+        public async Task<IActionResult> AssignTicketDev(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            int companyId = User.Identity!.GetCompanyId();
+
+            Ticket ticket = await _ticketService.GetTicketByIdAsync(id, companyId);
+
+
+            List<BTUser> developers = await _rolesService.GetUsersInRoleAsync(nameof(BTRoles.Developer), companyId);
+
+
+            string currentDev = ticket.DeveloperUserId!;
+
+
+            TicketDevViewModel viewModel = new()
+            {
+                Ticket = ticket,
+                DevList = new SelectList(developers, "Id", "FullName", currentDev)
+
+            };
+
+            return View(viewModel);
+        }
+
+        //POST: Assign Project Members 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin, ProjectManager")]
+        public async Task<IActionResult> AssignTicketDev(TicketDevViewModel viewModel)
+        {
+            int companyId = User.Identity!.GetCompanyId();
+
+            Ticket ticket = await _ticketService.GetTicketByIdAsync(viewModel.Ticket!.Id, companyId);
+
+            if (viewModel.SelectedDev != null)
+            {
+                //Remove current members
+                //await _projectService.RemoveMembersFromProjectAsync(viewModel.Project!.Id, companyId);
+
+                //Add newly selected members 
+                await _ticketService.AddDevToTicketAsync(viewModel.SelectedDev, viewModel.Ticket!.Id);
+
+                return RedirectToAction(nameof(Details), new { id = viewModel.Ticket!.Id });
+
+
+            }
+
+            ModelState.AddModelError("SelectedDev", "No Developer chosen. Please select a developer!");
+            // Reset the form 
+
+            viewModel.Ticket = await _ticketService.GetTicketByIdAsync(viewModel.Ticket!.Id, companyId);
+            //List<string> currentMembers = viewModel.Ticket.DeveloperUserId.Select(m => m.Id).ToList();
+           
+            string currentDev = ticket.DeveloperUserId!;
+
+            List<BTUser> developers = await _rolesService.GetUsersInRoleAsync(nameof(BTRoles.Developer), companyId);
+
+            viewModel.DevList = new SelectList(developers, "Id", "FullName", currentDev);
+
+            return View(viewModel);
+        }
+
+
         // GET: Tickets/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -182,9 +257,9 @@ namespace BugTracker.Controllers
                 .Include(t => t.TicketType)
                 .Include(t => t.Comments)
                     .ThenInclude(t => t.User)
-				.Include(t => t.Attachments)
-				.Include(t => t.History)
-				.FirstOrDefaultAsync(m => m.Id == id);
+                .Include(t => t.Attachments)
+                .Include(t => t.History)
+                .FirstOrDefaultAsync(m => m.Id == id);
 
             if (ticket == null)
             {

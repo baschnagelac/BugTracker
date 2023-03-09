@@ -2,6 +2,8 @@
 using BugTracker.Models;
 using BugTracker.Services.Interfaces;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Build.Evaluation;
+using Microsoft.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
 
 namespace BugTracker.Services
@@ -16,12 +18,38 @@ namespace BugTracker.Services
 			_context = context;
             _userManager = userManager;
         }
-		public Task AddTicketAsync(Ticket ticket)
+
+        public async Task<bool> AddDevToTicketAsync(BTUser? dev, int? ticketId)
+        {
+            try
+            {
+                Ticket? ticket = await GetTicketByIdAsync(ticketId, dev!.CompanyId);
+
+                bool IsOnTicket = ticket.DeveloperUser.Any(m => m.Id == member.Id);
+
+                if (!IsOnTicket)
+                {
+                    ticket.DeveloperUser.Add(dev);
+                    await _context.SaveChangesAsync();
+                    return true;
+                }
+
+                return false;
+            }
+
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        public Task AddTicketAsync(Ticket? ticket)
         {
             throw new NotImplementedException();
         }
 
-        public async Task AddTicketAttachmentAsync(TicketAttachment ticketAttachment)
+        public async Task AddTicketAttachmentAsync(TicketAttachment? ticketAttachment)
         {
 			try
 			{
@@ -35,7 +63,7 @@ namespace BugTracker.Services
 			}
 		}
 
-        public async Task AddTicketCommentAsync(TicketComment ticketComment)
+        public async Task AddTicketCommentAsync(TicketComment? ticketComment)
         {
 			try
 			{
@@ -53,12 +81,12 @@ namespace BugTracker.Services
 			}
 		}
 
-        public Task DeleteTicketAsync(Ticket ticket)
+        public Task DeleteTicketAsync(Ticket? ticket)
         {
             throw new NotImplementedException();
         }
 
-        public async Task<TicketAttachment> GetTicketAttachmentByIdAsync(int ticketAttachmentId)
+        public async Task<TicketAttachment> GetTicketAttachmentByIdAsync(int? ticketAttachmentId)
         {
             try
             {
@@ -74,17 +102,38 @@ namespace BugTracker.Services
             }
         }
 
-        public Task<Ticket> GetTicketById(int companyId, int id)
+        public async Task<Ticket> GetTicketByIdAsync(int? ticketId, int? companyId)
+        {
+            try
+            {
+                Ticket? ticket = await _context.Tickets
+                                                 //.Where(p => p.CompanyId == companyId)
+                                                 .Include(p => p.Title)
+                                                 .Include(p => p.Description)                                           
+                                                 .Include(p => p.TicketType)
+                                                 .Include(p => p.TicketStatus)
+                                                 .Include(p => p.TicketPriority)
+                                                 .Include(p => p.Project)
+                                                 .Include(p => p.Comments)
+                                                 .Include(p => p.Attachments)
+                                                 .Include(p => p.History)
+                                                .FirstOrDefaultAsync(m => m.Id == ticketId);
+
+                return ticket!;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        public Task<IEnumerable<Ticket>> GetTicketsAsync(int? companyId)
         {
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<Ticket>> GetTicketsAsync(int companyId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task UpdateTicketAsync(Ticket ticket)
+        public Task UpdateTicketAsync(Ticket? ticket)
         {
             throw new NotImplementedException();
         }
