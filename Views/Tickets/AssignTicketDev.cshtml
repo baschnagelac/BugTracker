@@ -7,13 +7,13 @@
 
 
 <div class="d-flex justify-content-center mt-5 flex-column align-items-center">
-    <h3 class="my-5">Assign Project Members</h3>
+    <h3 class="my-5">Assign Ticket Developer</h3>
     <div class="card">
         <div class="card-header">
             <div class="card-title">@Model.Ticket!.Title</div>
         </div>
         <div class="card-body">
-            <form asp-action="AssignProjectMembers" asp-controller="Projects" method="post" class="d-flex flex-column">
+            <form asp-action="AssignTicketDev" asp-controller="Tickets" method="post" class="d-flex flex-column">
                 <input type="hidden" asp-for="Ticket!.Id" />
                 <select asp-items="Model.DevList" asp-for="SelectedDev" class="form-control" required>
                 </select>

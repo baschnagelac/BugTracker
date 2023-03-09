@@ -216,7 +216,7 @@ namespace BugTracker.Controllers
                 //await _projectService.RemoveMembersFromProjectAsync(viewModel.Project!.Id, companyId);
 
                 //Add newly selected members 
-                await _ticketService.AddDevToTicketAsync(viewModel.SelectedDev, viewModel.Ticket!.Id);
+                //await _ticketService.AddDevToTicketAsync(viewModel.SelectedDev, viewModel.Ticket!.Id);
 
                 return RedirectToAction(nameof(Details), new { id = viewModel.Ticket!.Id });
 

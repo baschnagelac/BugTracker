@@ -19,30 +19,30 @@ namespace BugTracker.Services
             _userManager = userManager;
         }
 
-        public async Task<bool> AddDevToTicketAsync(BTUser? dev, int? ticketId)
-        {
-            try
-            {
-                Ticket? ticket = await GetTicketByIdAsync(ticketId, dev!.CompanyId);
+        //public async Task<bool> AddDevToTicketAsync(BTUser? dev, int? ticketId)
+        //{
+        //    try
+        //    {
+        //        Ticket? ticket = await GetTicketByIdAsync(ticketId, dev!.CompanyId);
 
-                bool IsOnTicket = ticket.DeveloperUser.Any(m => m.Id == member.Id);
+        //        bool IsOnTicket = ticket.DeveloperUser.Any(m => m.Id == member.Id);
 
-                if (!IsOnTicket)
-                {
-                    ticket.DeveloperUser.Add(dev);
-                    await _context.SaveChangesAsync();
-                    return true;
-                }
+        //        if (!IsOnTicket)
+        //        {
+        //            ticket.DeveloperUser.Add(dev);
+        //            await _context.SaveChangesAsync();
+        //            return true;
+        //        }
 
-                return false;
-            }
+        //        return false;
+        //    }
 
-            catch (Exception)
-            {
+        //    catch (Exception)
+        //    {
 
-                throw;
-            }
-        }
+        //        throw;
+        //    }
+        //}
 
         public Task AddTicketAsync(Ticket? ticket)
         {
