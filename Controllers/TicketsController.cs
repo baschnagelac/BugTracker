@@ -129,11 +129,12 @@ namespace BugTracker.Controllers
         public async Task<IActionResult> AddTicketAttachment([Bind("Id,FormFile,Description,TicketId")] TicketAttachment ticketAttachment)
         {
             string statusMessage;
-            ModelState.Remove("FormFile");
+            ModelState.Remove("TicketId");
+            ModelState.Remove("BTUserId");
             if (ModelState.IsValid && ticketAttachment.FormFile != null)
             {
                 ticketAttachment.FileData = await _BTFileService.ConvertFileToByteArrayAsync(ticketAttachment.FormFile);
-                //ticketAttachment.FileName = ticketAttachment.FormFile.FileName;
+                ticketAttachment.FileName = ticketAttachment.FormFile.FileName;
                 ticketAttachment.FileType = ticketAttachment.FormFile.ContentType;
 
                 ticketAttachment.Created = DataUtility.GetPostGresDate(DateTime.Now);
@@ -184,6 +185,7 @@ namespace BugTracker.Controllers
 				.Include(t => t.Attachments)
 				.Include(t => t.History)
 				.FirstOrDefaultAsync(m => m.Id == id);
+
             if (ticket == null)
             {
                 return NotFound();

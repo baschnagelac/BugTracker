@@ -1,90 +1,203 @@
 ﻿@model BugTracker.Models.Ticket
+@using BugTracker.Services.Interfaces;
+@using BugTracker.Models.Enums.Enums
 
+@inject IBTFileService _BTFileService
 @{
     ViewData["Title"] = "Details";
 }
 
-<h1>Details</h1>
+<h1>Ticket Details</h1>
 
 <div>
-    <h4>Ticket</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Title)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Title)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Description)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Description)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Created)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Created)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Updated)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Updated)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Archived)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Archived)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ArchivedByProject)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ArchivedByProject)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.SubmitterUserId)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.SubmitterUserId)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Project)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Project.Description)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.TicketPriority)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.TicketPriority.Name)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.TicketType)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.TicketType.Name)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.TicketStatus)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.TicketStatus.Name)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.DeveloperUser)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.DeveloperUser.Id)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <div classxfont-weighteighteightgetainer-fluid">
+        <div class="row gy-2">
+            <div class="col-md-12 col">
+                <div class="row col-cols-2 mt-5 bg-secondary">
+                    <div class="card col m-1 p-2">
+                        <div class="card-body">
+                            @*Title of Ticket*@
+                            <h5>@Html.DisplayFor(model => model.Title)</h5>
+                            @*Description of Ticket*@
+                            <p>@Html.DisplayFor(model => model.Description)</p>
+                            <div class="progress-container progress-info m-b-25">
+                                @*Project Name and information*@
+                                <span class="progress-badge" style="font-size:small"><strong>Project:</strong> @Html.DisplayFor(model => model.Project.Name)</span>
+                                <div class="progress">
+                                    @*Progress bar logic*@
+                                    @*Variable from razor logic*@
+                                    <div class="progress-bar" role="progressbar" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100" @*style="width: [Percent]%;*@>
+                                        @*Variable from razor logic*@
+                                        <span class="progress-value">[Percent]%</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card col m-1 p-2">
+                        <div class="card-body">
+                            <ul class="list-unstyled">
+                                @*Ticket date*@
+                                <li><strong>Date Entered:</strong> <span class="">  @Html.DisplayFor(model => model.Created)</</span></li>
+                                @*Project end date*@
+                                <li><strong>Deadline:</strong> <span class="">  @Model.Project.EndDate</</span></li>
+                                @*Ticket type*@
+                                <li><strong>Type:</strong> <span class="">  @Html.DisplayFor(model => model.TicketType.Name)</span></li>
+                                @*Ticket priority*@
+                                <li><strong>Priority:</strong> <span class="">  @Html.DisplayFor(model => model.TicketPriority.Name)</span></li>
+                                @*Ticket status*@
+                                <li><strong>Status:</strong> <span class="">  @Html.DisplayFor(model => model.TicketStatus.Name)</span></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-8 col col-cols-2 mt-5 ">
+                <div class="col">
+                    <div class="bg-secondary">
+                        <div class="card m-1 p-2">
+                            <div class="card-header">
+                                <h2>Comments</h2>
+                            </div>
+                            <div class="card-body" style="overflow-y:auto;height:600px;">
+                                <div class="axil-comment-area">
+                                    <div class="axil-total-comment-post">
+                                        <div class="title">
+                                            <h4 class="mb--0">Comment Below</h4>
+
+                                        </div>
+                                    </div>
+                                    @if (User.Identity!.IsAuthenticated)
+                                    {
+                                        <div>
+                                            <form asp-action="AddTicketComment" asp-controller="Tickets" method="post">
+                                                <input type="hidden" asp-for="Id" name="TicketId" />
+                                                <div class="col-12">
+                                                    <div class="form-group">
+                                                        <label for="message">Leave a Reply</label>
+                                                        <textarea id="message" name="Comment"></textarea>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-lg-12">
+                                                    <div class="form-submit cerchio">
+                                                        <input name="submit" type="submit" id="submit" class="axil-button button-rounded" value="Post Comment">
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    }
+                                    @*Form and Logic for authorized users to add comments*@
+
+                                    <hr />
+                                    <h6>Comments</h6>
+                                    <ul class="right_chat list-unstyled mb-0">
+                                        @foreach (TicketComment ticketComment in Model.Comments)
+                                        {
+                                            <li class="comment">
+                                                <div class="comment-body">
+                                                    <div class="single-comment">
+@*                                                        <div class="comment-img">
+                                                            <img class="userimg" src="@_BTFileService.ConvertByteArrayToFile(ticketComment.User.ImageFileData!,ticketComment.User.ImageFileType!,(int)DefaultImage.BTUserImage)" alt="User Images">
+                                                        </div>*@
+                                                        <div class="comment-inner">
+                                                            <h6 class="commenter">
+                                                                <a class="hover-flip-item-wrapper" href="#">
+                                                                    <span class="hover-flip-item">
+                                                                        <span data-text="@ticketComment.User.FullName">@ticketComment.User.FullName</span>
+                                                                    </span>
+                                                                </a>
+                                                            </h6>
+                                                            <div class="comment-meta">
+                                                                <div class="time-spent">@ticketComment.Created.ToString("MMM dd, yyyy hh:mm tt")</div>
+                                                            </div>
+                                                            <div class="comment-text">
+                                                                <p class="b2">
+                                                                    @Html.Raw(ticketComment.Comment)
+                                                                </p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                        }
+
+                                    </ul>
+                                </div>
+                                <div class="card-footer">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="bg-secondary">
+                            <div class="card m-1 p-2">
+                                <div class="card-header">
+                                    <h2>Attachments</h2>
+                                </div>
+                                <div class="card-body" style="overflow-y:auto;height:300px;">
+                                    <div class="row clearfix">
+                                        <div>
+                                            <form asp-action="AddTicketAttachment" asp-controller="Tickets" enctype="multipart/form-data" method="post">
+                                                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                                <input type="hidden" asp-for="@Model.Id" name="TicketId">
+                                                <div class="media-body ml-3">
+                                                    <label>
+                                                        Description
+                                                        <input asp-for="@Model.Attachments.FirstOrDefault().Description" type="text" class="form-control" />
+                                                    </label><br />
+                                                    <label class="btn btn-outline-primary btn-sm">
+                                                        <input asp-for="@Model.Attachments.FirstOrDefault().FormFile" type="file" class="form-control-file" />
+                                                    </label>
+                                                    <button type="submit" class="btn btn-outline-secondary btn-sm md-btn-flat">Submit</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <hr />
+                                <h6>Attachments</h6>
+                                <div class="container">
+                                    <div class="row">
+                                        @foreach (TicketAttachment item in Model.Attachments)
+                                        {
+                                            <div class="col col-sm-2">
+                                                <a asp-action="ShowFile" asp-controller="Tickets" asp-route-Id="@item.Id">
+                                                    <div class="icon">
+                                                        <img src="@_BTFileService.GetFileIcon(item.FileName)" style="height:50px;width:50px" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="@item.FileName" />
+                                                    </div>
+                                                </a>
+                                                <div style="font-size:x-small">
+                                                    <div class="file-name">
+                                                        <strong>@item.Description</strong>
+                                                    </div>
+                                                    <small>Size: @_BTFileService.FormatFileSize(item.FileData.Length) </small>
+                                                </div>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                                <div class="card-footer">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 col mt-5 ">
+                    <div class="bg-dark">
+                        <div class="card m-1 p-2">
+                            <div class="card-header">
+                                <h2>History</h2>
+                                <hr />
+                            </div>
+                            <div class="card-body" style="overflow-y:auto;height:1000px;background-color:antiquewhite">
+                                @*Loop to show the history entries for the Ticket*@
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
