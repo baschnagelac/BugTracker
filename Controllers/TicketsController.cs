@@ -15,6 +15,7 @@ using BugTracker.Extensions;
 using BugTracker.Services.Interfaces;
 using BugTracker.Models.Enums.Enums;
 using BugTracker.Models.ViewModels;
+using System.ComponentModel.Design;
 
 namespace BugTracker.Controllers
 {
@@ -25,17 +26,20 @@ namespace BugTracker.Controllers
         private readonly IBTFileService _BTFileService;
         private readonly IBTTicketService _ticketService;
         private readonly IBTRolesService _rolesService;
+        private readonly IBTTicketHistoryService _historyService;
 
         public TicketsController(ApplicationDbContext context, UserManager<BTUser> userManager,
                                  IBTFileService bTFileService,
                                  IBTTicketService ticketService,
-                                 IBTRolesService rolesService)
+                                 IBTRolesService rolesService,
+                                 IBTTicketHistoryService historyService)
         {
             _context = context;
             _userManager = userManager;
             _BTFileService = bTFileService;
             _ticketService = ticketService;
             _rolesService = rolesService;
+            _historyService = historyService;
         }
 
         // GET: Tickets
@@ -123,6 +127,10 @@ namespace BugTracker.Controllers
 
                 await _ticketService.AddTicketCommentAsync(ticketComment);
 
+                //add history 
+
+                await _historyService.AddHistoryAsync(ticketComment.TicketId, nameof(TicketComment), ticketComment.UserId);
+
 
             }
 
@@ -138,6 +146,7 @@ namespace BugTracker.Controllers
             ModelState.Remove("BTUserId");
             if (ModelState.IsValid && ticketAttachment.FormFile != null)
             {
+
                 ticketAttachment.FileData = await _BTFileService.ConvertFileToByteArrayAsync(ticketAttachment.FormFile);
                 ticketAttachment.FileName = ticketAttachment.FormFile.FileName;
                 ticketAttachment.FileType = ticketAttachment.FormFile.ContentType;
@@ -146,7 +155,13 @@ namespace BugTracker.Controllers
                 ticketAttachment.BTUserId = _userManager.GetUserId(User);
 
                 await _ticketService.AddTicketAttachmentAsync(ticketAttachment);
+
+                //add history 
+
+                await _historyService.AddHistoryAsync(ticketAttachment.TicketId, nameof(TicketComment), ticketAttachment.BTUserId);
+
                 statusMessage = "Success: New attachment added to Ticket.";
+
             }
             else
             {
@@ -181,6 +196,8 @@ namespace BugTracker.Controllers
 
             int companyId = User.Identity!.GetCompanyId();
 
+
+
             Ticket ticket = await _ticketService.GetTicketByIdAsync(id, companyId);
 
 
@@ -208,16 +225,23 @@ namespace BugTracker.Controllers
         {
             int companyId = User.Identity!.GetCompanyId();
 
+            Ticket oldTicket = await _ticketService.GetTicketAsNoTrackingAsync(viewModel.Ticket.Id, companyId);
+
             Ticket ticket = await _ticketService.GetTicketByIdAsync(viewModel.Ticket!.Id, companyId);
+
+            string? userId = _userManager.GetUserId(User);
+
+
 
             if (viewModel.SelectedDev != null)
             {
-                //Remove current members
-                //await _projectService.RemoveMembersFromProjectAsync(viewModel.Project!.Id, companyId);
+                ticket.DeveloperUserId = viewModel.SelectedDev;
+                _context.Update(ticket);
+                await _context.SaveChangesAsync();
 
-                //Add newly selected members 
-                //await _ticketService.AddDevToTicketAsync(viewModel.SelectedDev, viewModel.Ticket!.Id);
 
+
+                await _historyService.AddHistoryAsync(oldTicket, ticket, userId);
                 return RedirectToAction(nameof(Details), new { id = viewModel.Ticket!.Id });
 
 
@@ -228,7 +252,7 @@ namespace BugTracker.Controllers
 
             viewModel.Ticket = await _ticketService.GetTicketByIdAsync(viewModel.Ticket!.Id, companyId);
             //List<string> currentMembers = viewModel.Ticket.DeveloperUserId.Select(m => m.Id).ToList();
-           
+
             string currentDev = ticket.DeveloperUserId!;
 
             List<BTUser> developers = await _rolesService.GetUsersInRoleAsync(nameof(BTRoles.Developer), companyId);
@@ -237,6 +261,11 @@ namespace BugTracker.Controllers
 
             return View(viewModel);
         }
+
+        //public async Task<IActionResult> UnassignedTicketIndex()
+        //{
+
+        //}
 
 
         // GET: Tickets/Details/5
@@ -294,15 +323,43 @@ namespace BugTracker.Controllers
 
             if (ModelState.IsValid)
             {
-                int companyId = User.Identity.GetCompanyId();
 
+                string userId = _userManager.GetUserId(User)!;
                 ticket.SubmitterUserId = _userManager.GetUserId(User);
 
                 ticket.Created = DataUtility.GetPostGresDate(DateTime.UtcNow);
                 ticket.Updated = DataUtility.GetPostGresDate(DateTime.UtcNow);
 
+
+                //todo: call service
                 _context.Add(ticket);
                 await _context.SaveChangesAsync();
+
+                //todo: add history record 
+                int companyId = User.Identity.GetCompanyId();
+
+                //await _ticketService.GetTicketAsNoTrackingAsync(ticket.Id, companyId)
+                Ticket? newTicket = await _context.Tickets
+                                                 .Include(t => t.Project)
+                                                    .ThenInclude(p => p!.Company)
+                                                 .Include(t => t.Attachments)
+                                                 .Include(t => t.Comments)
+                                                 .Include(t => t.DeveloperUser)
+                                                 .Include(t => t.History)
+                                                 .Include(t => t.SubmitterUser)
+                                                 .Include(t => t.TicketPriority)
+                                                 .Include(t => t.TicketStatus)
+                                                 .Include(t => t.TicketType)
+                                                 .AsNoTracking()
+                                                 .FirstOrDefaultAsync(t => t.Id == ticket.Id && t.Project!.CompanyId == companyId && t.Archived == false);
+
+                //call to database
+                await _historyService.AddHistoryAsync(null, newTicket, userId);
+
+                //todo: notfication
+
+
+
                 return RedirectToAction(nameof(Index));
             }
             ViewData["DeveloperUserId"] = new SelectList(_context.Users, "Id", "FullName", ticket.DeveloperUserId);
@@ -345,12 +402,29 @@ namespace BugTracker.Controllers
             {
                 return NotFound();
             }
-
+            int companyId = User.Identity.GetCompanyId();
             if (ModelState.IsValid)
             {
                 try
                 {
-                    int companyId = User.Identity.GetCompanyId();
+
+
+
+
+                    Ticket? oldTicket = await _context.Tickets
+                                                 .Include(t => t.Project)
+                                                    .ThenInclude(p => p!.Company)
+                                                 .Include(t => t.Attachments)
+                                                 .Include(t => t.Comments)
+                                                 .Include(t => t.DeveloperUser)
+                                                 .Include(t => t.History)
+                                                 .Include(t => t.SubmitterUser)
+                                                 .Include(t => t.TicketPriority)
+                                                 .Include(t => t.TicketStatus)
+                                                 .Include(t => t.TicketType)
+                                                 .AsNoTracking()
+                                                 .FirstOrDefaultAsync(t => t.Id == ticket.Id && t.Project!.CompanyId == companyId && t.Archived == false);
+
                     ticket.SubmitterUserId = _userManager.GetUserId(User);
 
                     ticket.Created = DataUtility.GetPostGresDate(DateTime.UtcNow);
@@ -370,6 +444,26 @@ namespace BugTracker.Controllers
                         throw;
                     }
                 }
+                //call to database
+                string userId = _userManager.GetUserId(User)!;
+                
+
+                //call service
+                Ticket? newTicket = await _context.Tickets
+                                                 .Include(t => t.Project)
+                                                    .ThenInclude(p => p!.Company)
+                                                 .Include(t => t.Attachments)
+                                                 .Include(t => t.Comments)
+                                                 .Include(t => t.DeveloperUser)
+                                                 .Include(t => t.History)
+                                                 .Include(t => t.SubmitterUser)
+                                                 .Include(t => t.TicketPriority)
+                                                 .Include(t => t.TicketStatus)
+                                                 .Include(t => t.TicketType)
+                                                  .AsNoTracking()
+                                                 .FirstOrDefaultAsync(t => t.Id == ticket.Id && t.Project!.CompanyId == companyId && t.Archived == false);
+
+                await _historyService.AddHistoryAsync(null, newTicket, userId);
                 return RedirectToAction(nameof(Index));
             }
             ViewData["DeveloperUserId"] = new SelectList(_context.Users, "Id", "FullName", ticket.DeveloperUserId);

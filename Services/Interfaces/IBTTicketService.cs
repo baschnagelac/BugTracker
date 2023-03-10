@@ -28,7 +28,9 @@ namespace BugTracker.Services.Interfaces
 
         public Task<TicketAttachment> GetTicketAttachmentByIdAsync(int? ticketAttachmentId);
 
-		//public Task<bool> AddDevToTicketAsync(BTUser? dev, int? ticketId);
+		public Task AddDevToTicketAsync(BTUser? dev, string? selectedUserId, int? ticketId);
 
-    }
+
+
+	}
 }

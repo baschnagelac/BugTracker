@@ -3,6 +3,7 @@
 @using BugTracker.Models.Enums.Enums
 
 @inject IBTFileService _BTFileService
+@inject IBTTicketService _TicketService
 @{
     ViewData["Title"] = "Details";
 }
@@ -16,6 +17,7 @@
                 <div class="row col-cols-2 mt-5 bg-secondary">
                     <div class="card col m-1 p-2">
                         <div class="card-body">
+                            <h5>Ticket Developer: @(Model.DeveloperUser?.FullName ?? "Unassigned") </h5>
                             @*Title of Ticket*@
                             <h5>@Html.DisplayFor(model => model.Title)</h5>
                             @*Description of Ticket*@

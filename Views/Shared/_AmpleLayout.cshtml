@@ -1,4 +1,16 @@
-﻿<!DOCTYPE html>
+﻿@using BugTracker.Services.Interfaces;
+@using BugTracker.Models.Enums.Enums
+@using Microsoft.AspNetCore.Identity
+
+@inject IBTFileService _FileService
+@inject UserManager<BTUser> _UserManager
+
+@{
+    BTUser? btUser = await _UserManager.GetUserAsync(User);
+}
+
+
+<!DOCTYPE html>
 <html dir="ltr" lang="en">
 
 <head>
@@ -470,8 +482,8 @@
                     <ul id="sidebarnav">
                         <li class="sidebar-item">
                             <a class="sidebar-link has-arrow waves-effect waves-dark profile-dd" href="javascript:void(0)" aria-expanded="false">
-                                <img src="~/assets/images/users/1.jpg" class="rounded-circle ms-2" width="30">
-                                <span class="hide-menu">Steve Jection </span>
+                                <img src="@_FileService.ConvertByteArrayToFile(btUser.ImageFileData!, btUser.ImageFileType!,(int)DefaultImage.BTUserImage)" height="50" class="rounded-circle" alt="User Image">
+                                <span class="hide-menu">@btUser.FullName </span>
                             </a>
                             <ul aria-expanded="false" class="collapse  first-level">
                                 <li class="sidebar-item">
