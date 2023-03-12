@@ -26,12 +26,12 @@
                     <div class="card col m-1 p-2">
                         <div class="body">
                             @* Project Name *@
-                            <h5>Project Manager:<div class="mt-1"></div><span class="text-secondary mt-1">@((await _ProjectService.GetProjectManagerAsync(Model.Id))?.FullName ?? "Unassigned")</span> </h5>
+                            <h5>Project Manager:<div class="mt-1"></div><span class="text-info mt-1">@((await _ProjectService.GetProjectManagerAsync(Model.Id))?.FullName ?? "Unassigned")</span> </h5>
                             
                             <h6 class="fw-bold mt-1">Members
                             @foreach (BTUser members in Model.Members)
                             {
-                                <li class=" text-secondary mb-1 mt-1 list-unstyled">@members.FullName</li>
+                                <li class=" text-info mb-1 mt-1 list-unstyled">@members.FullName</li>
                             }
                             </h6>
                             <h4>@Html.DisplayFor(model => model.Name)</h4>

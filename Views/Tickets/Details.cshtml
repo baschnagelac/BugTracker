@@ -4,6 +4,7 @@
 
 @inject IBTFileService _BTFileService
 @inject IBTTicketService _TicketService
+@inject IBTTicketHistoryService _HistoryService
 @{
     ViewData["Title"] = "Details";
 }
@@ -17,7 +18,7 @@
                 <div class="row col-cols-2 mt-5 bg-secondary">
                     <div class="card col m-1 p-2">
                         <div class="card-body">
-                            <h5>Ticket Developer: @(Model.DeveloperUser?.FullName ?? "Unassigned") </h5>
+                            <h5>Ticket Developer:<span class="text-info mt-1"> @(Model.DeveloperUser?.FullName ?? "Unassigned")</span> </h5>
                             @*Title of Ticket*@
                             <h5>@Html.DisplayFor(model => model.Title)</h5>
                             @*Description of Ticket*@
@@ -99,9 +100,9 @@
                                             <li class="comment">
                                                 <div class="comment-body">
                                                     <div class="single-comment">
-@*                                                        <div class="comment-img">
-                                                            <img class="userimg" src="@_BTFileService.ConvertByteArrayToFile(ticketComment.User.ImageFileData!,ticketComment.User.ImageFileType!,(int)DefaultImage.BTUserImage)" alt="User Images">
-                                                        </div>*@
+                                                        <div class="comment-img">
+                                                            <img class="userimg rounded-circle" src="@_BTFileService.ConvertByteArrayToFile(ticketComment.User.ImageFileData!,ticketComment.User.ImageFileType!,(int)DefaultImage.BTUserImage)" height="50" alt="User Images">
+                                                        </div>
                                                         <div class="comment-inner">
                                                             <h6 class="commenter">
                                                                 <a class="hover-flip-item-wrapper" href="#">
@@ -194,7 +195,19 @@
                                 <hr />
                             </div>
                             <div class="card-body" style="overflow-y:auto;height:1000px;background-color:antiquewhite">
-                                @*Loop to show the history entries for the Ticket*@
+                                @foreach (TicketHistory history in Model.Histories)
+                                {
+
+                                    <ul class="list-unstyled">
+
+                                        <li>@history.Description</li>
+                                        <li>Title: @history.Ticket.Title</li> 
+                                        <li>Priority: @history.Ticket.TicketPriority.Name</li>
+                                        <li>Type: @history.Ticket.TicketType.Name</li>
+                                        <li>Status: @history.Ticket.TicketStatus.Name</li>
+                                        <li>Assigned Developer: @history.Ticket.DeveloperUser.FullName</li>
+                                    </ul>
+                                }
                             </div>
                         </div>
                     </div>

@@ -434,15 +434,14 @@
                         <!-- ============================================================== -->
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle waves-effect waves-dark" href="#" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <img src="~/assets/images/users/1.jpg" alt="user" class="rounded-circle" width="36">
-                                <span class="ms-2 font-weight-medium">Steve</span><span class="fas fa-angle-down ms-2"></span>
+                                <img src="@_FileService.ConvertByteArrayToFile(btUser.ImageFileData!, btUser.ImageFileType!,(int)DefaultImage.BTUserImage)" height="40" class="rounded-circle" alt="User Image">
+                                <span class="ms-2 font-weight-medium">@btUser.FirstName</span><span class="fas fa-angle-down ms-2"></span>
                             </a>
                             <div class="dropdown-menu dropdown-menu-end user-dd animated flipInY">
                                 <div class="d-flex no-block align-items-center p-3 bg-info text-white mb-2">
-                                    <div class=""><img src="~/assets/images/users/1.jpg" alt="user" class="rounded-circle" width="60"></div>
+                                    <div class=""><img src="@_FileService.ConvertByteArrayToFile(btUser.ImageFileData!, btUser.ImageFileType!,(int)DefaultImage.BTUserImage)" height="50" class="rounded-circle" alt="User Image"></div>
                                     <div class="ms-2">
-                                        <h4 class="mb-0 text-white">Steave Jobs</h4>
-                                        <p class=" mb-0">varun@gmail.com</p>
+                                        <h4 class="mb-0 text-white">@btUser.FullName</h4>
                                     </div>
                                 </div>
                                 <a class="dropdown-item" href="#">
@@ -482,8 +481,8 @@
                     <ul id="sidebarnav">
                         <li class="sidebar-item">
                             <a class="sidebar-link has-arrow waves-effect waves-dark profile-dd" href="javascript:void(0)" aria-expanded="false">
-                                <img src="@_FileService.ConvertByteArrayToFile(btUser.ImageFileData!, btUser.ImageFileType!,(int)DefaultImage.BTUserImage)" height="50" class="rounded-circle" alt="User Image">
-                                <span class="hide-menu">@btUser.FullName </span>
+                                <img src="@_FileService.ConvertByteArrayToFile(btUser.ImageFileData!, btUser.ImageFileType!,(int)DefaultImage.BTUserImage)" height="40" class="rounded-circle" alt="User Image">
+                               <span class="hide-menu">@btUser.FullName </span>
                             </a>
                             <ul aria-expanded="false" class="collapse  first-level">
                                 <li class="sidebar-item">

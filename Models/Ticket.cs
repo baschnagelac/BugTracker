@@ -72,7 +72,7 @@ namespace BugTracker.Models
 
         //one ticket to one history
 
-        public virtual TicketHistory? History { get; set; }
+        public virtual ICollection<TicketHistory> Histories { get; set; } = new HashSet<TicketHistory>();
 
 
     }

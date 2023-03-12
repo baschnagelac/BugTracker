@@ -98,6 +98,25 @@ namespace BugTracker.Services
             throw new NotImplementedException();
         }
 
+        public async Task<Ticket> GetTicketAsNoTrackingAsync(int? ticketId, int? companyId)
+        {
+            Ticket? newTicket = await _context.Tickets
+                                                .Include(t => t.Project)
+                                                   .ThenInclude(p => p!.Company)
+                                                .Include(t => t.Attachments)
+                                                .Include(t => t.Comments)
+                                                .Include(t => t.DeveloperUser)
+                                                .Include(t => t.Histories)
+                                                .Include(t => t.SubmitterUser)
+                                                .Include(t => t.TicketPriority)
+                                                .Include(t => t.TicketStatus)
+                                                .Include(t => t.TicketType)
+                                                .AsNoTracking()
+                                                .FirstOrDefaultAsync(t => t.Id == ticketId && t.Project!.CompanyId == companyId && t.Archived == false);
+
+            return newTicket!;
+        }
+
         public async Task<TicketAttachment> GetTicketAttachmentByIdAsync(int? ticketAttachmentId)
         {
             try
@@ -125,7 +144,7 @@ namespace BugTracker.Services
                                                  .Include(p => p.Project)
                                                  .Include(p => p.Comments)
                                                  .Include(p => p.Attachments)
-                                                 .Include(p => p.History)
+                                                 .Include(p => p.Histories)
                                                 .FirstOrDefaultAsync(m => m.Id == ticketId);
 
                 return ticket!;

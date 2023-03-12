@@ -81,13 +81,21 @@
                                 {
                                      <tr>
                                         <td><span class="badge bg-light-warning text-warning font-weight-medium">@Html.DisplayFor(modelItem => item.TicketStatus.Name)</span></td>
-                                        <td><a href="ticket-detail.html" class="font-weight-medium link">@Html.DisplayFor(modelItem => item.Title)</a></td>
-                                        <td><a href="ticket-detail.html" class="fw-bold link">@Html.DisplayFor(modelItem => item.Project.Name)</a></td>
+                                        <td><span class="font-weight-medium link">@Html.DisplayFor(modelItem => item.Title)</span></td>
+                                        <td><a asp-action="Details" asp-controller="Projects" asp-route-id="@item.Id" class="fw-bold link">@Html.DisplayFor(modelItem => item.Project.Name)</a></td>
                                         <td>@Html.DisplayFor(modelItem => item.Created)</td>
                                         <td>@Html.DisplayFor(modelItem => item.Updated)</td>
                                         <td>@Html.DisplayFor(modelItem => item.TicketType.Name)</td>
                                         <td>@Html.DisplayFor(modelItem => item.TicketPriority.Name)</td>
                                         <td>
+                                            @if (User.IsInRole("Admin"))
+                                            {
+                                                <a asp-action="AssignTicketDev" asp-controller="Tickets" asp-route-id="@item.Id">Assign Ticket</a> <span>|</span>
+                                            }
+                                            @if (User.IsInRole("ProjectManager"))
+                                            {
+                                                <a asp-action="AssignTicketDev" asp-controller="Tickets" asp-route-id="@item.Id">Assign Ticket</a> <span>|</span>
+                                            }
                                             <a asp-action="Edit" asp-route-id="@item.Id"><i class="bi bi-pencil-fill text-warning fs-6 p-2"></i></a> 
                                             <a asp-action="Details" asp-route-id="@item.Id"><i class="bi bi-info-circle text-info fs-6 p-2"></i></a> 
                                             <a asp-action="Delete" asp-route-id="@item.Id"><i class="bi bi-trash-fill text-danger fs-6 p-2"></i></a>

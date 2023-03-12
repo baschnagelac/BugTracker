@@ -1,4 +1,5 @@
 ﻿using BugTracker.Models;
+using System.ComponentModel.Design;
 
 namespace BugTracker.Services.Interfaces
 {
@@ -31,6 +32,7 @@ namespace BugTracker.Services.Interfaces
 		public Task AddDevToTicketAsync(BTUser? dev, string? selectedUserId, int? ticketId);
 
 
+		public Task<Ticket> GetTicketAsNoTrackingAsync(int? ticketId, int? companyId);
 
-	}
+    }
 }

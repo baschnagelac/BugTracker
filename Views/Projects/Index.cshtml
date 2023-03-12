@@ -11,10 +11,22 @@
 
 }
 
-<p>
-    <a value="Create" class="btn btn-info rounded-pill px-4 waves-effect waves-light" asp-action="Create">Create New Project</a>
 
-</p>
+@if (User.IsInRole("Admin"))
+{
+    <p>
+        <a value="Create" class="btn btn-info rounded-pill px-4 waves-effect waves-light" asp-action="Create">Create New Project</a>
+
+    </p>
+}
+@if (User.IsInRole("ProjectManager"))
+{
+    <p>
+        <a value="Create" class="btn btn-info rounded-pill px-4 waves-effect waves-light" asp-action="Create">Create New Project</a>
+
+    </p>
+}
+
 
 <!-- -------------------------------------------------------------- -->
 <!-- Container fluid  -->
@@ -69,11 +81,20 @@
                                 {
                                     <tr>
                                         <td><span class="font-weight-medium ">@Html.DisplayFor(modelItem => item.Name)</span></td>
-                                        <td><span href="ticket-detail.html" > @Html.DisplayFor(modelItem => item.Created)</span></td>
-                                        <td><span href="ticket-detail.html" class="font-weight-medium "> @Html.DisplayFor(modelItem => item.StartDate)</span></td>
+                                        <td><span> @Html.DisplayFor(modelItem => item.Created)</span></td>
+                                        <td><span class="font-weight-medium "> @Html.DisplayFor(modelItem => item.StartDate)</span></td>
                                         <td><span class="font-weight-medium ">@Html.DisplayFor(modelItem => item.EndDate)</span></td>
                                         <td>@Html.DisplayFor(modelItem => item.ProjectPriority.Name)</td>
                                         <td>
+                                            @if (User.IsInRole("Admin")) 
+                                            {
+                                                <a asp-action="AssignProjectMembers" asp-route-id="@item.Id">Assign Member</a> <span>|</span>
+                                            }
+                                            @if (User.IsInRole("ProjectManager"))
+                                            {
+                                                <a asp-action="AssignProjectMembers" asp-route-id="@item.Id">Assign Member</a> <span>|</span>
+                                            }
+
                                             @if(User.IsInRole("Admin"))
                                             {
                                                 <a asp-action="AssignPM" asp-route-id="@item.Id">Assign PM</a> <span>|</span>

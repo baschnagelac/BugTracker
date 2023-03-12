@@ -35,6 +35,8 @@ builder.Services.AddScoped<IBTRolesService, BTRolesService>();
 
 builder.Services.AddScoped<IBTCompanyService, BTCompanyService>();
 
+builder.Services.AddScoped<IBTTicketHistoryService, BTTicketHistoryService>();
+
 builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
 
 

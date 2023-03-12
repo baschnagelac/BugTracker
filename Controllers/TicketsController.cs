@@ -45,8 +45,13 @@ namespace BugTracker.Controllers
         // GET: Tickets
         public async Task<IActionResult> Index()
         {
-            int companyId = User.Identity.GetCompanyId();
-            var applicationDbContext = _context.Tickets.Include(t => t.DeveloperUser).Include(t => t.Project).Include(t => t.TicketPriority).Include(t => t.TicketStatus).Include(t => t.TicketType);
+            int companyId = User.Identity!.GetCompanyId();
+            var applicationDbContext = _context.Tickets
+                                               .Include(t => t.DeveloperUser)
+                                               .Include(t => t.Project)
+                                               .Include(t => t.TicketPriority)
+                                               .Include(t => t.TicketStatus)
+                                               .Include(t => t.TicketType);
             return View(await applicationDbContext.ToListAsync());
         }
 
@@ -287,7 +292,7 @@ namespace BugTracker.Controllers
                 .Include(t => t.Comments)
                     .ThenInclude(t => t.User)
                 .Include(t => t.Attachments)
-                .Include(t => t.History)
+                .Include(t => t.Histories)
                 .FirstOrDefaultAsync(m => m.Id == id);
 
             if (ticket == null)
@@ -338,20 +343,23 @@ namespace BugTracker.Controllers
                 //todo: add history record 
                 int companyId = User.Identity.GetCompanyId();
 
-                //await _ticketService.GetTicketAsNoTrackingAsync(ticket.Id, companyId)
-                Ticket? newTicket = await _context.Tickets
-                                                 .Include(t => t.Project)
-                                                    .ThenInclude(p => p!.Company)
-                                                 .Include(t => t.Attachments)
-                                                 .Include(t => t.Comments)
-                                                 .Include(t => t.DeveloperUser)
-                                                 .Include(t => t.History)
-                                                 .Include(t => t.SubmitterUser)
-                                                 .Include(t => t.TicketPriority)
-                                                 .Include(t => t.TicketStatus)
-                                                 .Include(t => t.TicketType)
-                                                 .AsNoTracking()
-                                                 .FirstOrDefaultAsync(t => t.Id == ticket.Id && t.Project!.CompanyId == companyId && t.Archived == false);
+         
+
+                //Ticket? newTicket = await _context.Tickets
+                //                                 .Include(t => t.Project)
+                //                                    .ThenInclude(p => p!.Company)
+                //                                 .Include(t => t.Attachments)
+                //                                 .Include(t => t.Comments)
+                //                                 .Include(t => t.DeveloperUser)
+                //                                 .Include(t => t.History)
+                //                                 .Include(t => t.SubmitterUser)
+                //                                 .Include(t => t.TicketPriority)
+                //                                 .Include(t => t.TicketStatus)
+                //                                 .Include(t => t.TicketType)
+                //                                 .AsNoTracking()
+                //                                 .FirstOrDefaultAsync(t => t.Id == ticket.Id && t.Project!.CompanyId == companyId && t.Archived == false);
+
+                Ticket? newTicket = await _ticketService.GetTicketAsNoTrackingAsync(ticket.Id, companyId);
 
                 //call to database
                 await _historyService.AddHistoryAsync(null, newTicket, userId);
@@ -417,7 +425,7 @@ namespace BugTracker.Controllers
                                                  .Include(t => t.Attachments)
                                                  .Include(t => t.Comments)
                                                  .Include(t => t.DeveloperUser)
-                                                 .Include(t => t.History)
+                                                 .Include(t => t.Histories)
                                                  .Include(t => t.SubmitterUser)
                                                  .Include(t => t.TicketPriority)
                                                  .Include(t => t.TicketStatus)
@@ -455,7 +463,7 @@ namespace BugTracker.Controllers
                                                  .Include(t => t.Attachments)
                                                  .Include(t => t.Comments)
                                                  .Include(t => t.DeveloperUser)
-                                                 .Include(t => t.History)
+                                                 .Include(t => t.Histories)
                                                  .Include(t => t.SubmitterUser)
                                                  .Include(t => t.TicketPriority)
                                                  .Include(t => t.TicketStatus)
