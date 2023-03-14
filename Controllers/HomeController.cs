@@ -15,9 +15,20 @@ namespace BugTracker.Controllers
 
         public IActionResult Index()
         {
+
+            if (User.Identity!.IsAuthenticated)
+            {
+                return RedirectToAction(nameof(Dashboard));
+            }
             return View();
+            
         }
 
+
+        public IActionResult Dashboard()
+        {
+            return View();
+        }
 
 
         public IActionResult Privacy()

@@ -55,7 +55,7 @@ namespace BugTracker.Controllers
                                                //.Where(p => p.CompanyId == companyId)
                                                .Include(t => t.DeveloperUser)
                                                .Include(t => t.Project)
-                                                    .ThenInclude(p => p.CompanyId)
+                                                    //.ThenInclude(p => p.CompanyId)
                                                .Include(t => t.TicketPriority)
                                                .Include(t => t.TicketStatus)
                                                .Include(t => t.TicketType);

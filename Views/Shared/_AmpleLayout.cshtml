@@ -42,6 +42,7 @@
 </head>
 
 <body>
+    <partial name="_LogoutPartial" />
     <!-- ============================================================== -->
     <!-- Preloader - style you can find in spinners.css -->
     <!-- ============================================================== -->
@@ -432,6 +433,8 @@
                         <!-- ============================================================== -->
                         <!-- User profile and search -->
                         <!-- ============================================================== -->
+                        @if (User.Identity.IsAuthenticated) 
+                        {
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle waves-effect waves-dark" href="#" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <img src="@_FileService.ConvertByteArrayToFile(btUser.ImageFileData!, btUser.ImageFileType!,(int)DefaultImage.BTUserImage)" height="40" class="rounded-circle" alt="User Image">
@@ -449,7 +452,7 @@
                                     Profile
                                 </a>
                                 <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="#">
+                                <a class="dropdown-item" href="javascript:document.getElementById('logoutForm').submit();">
                                     <i data-feather="log-out"
                                        class="feather-sm text-danger me-1 ms-1"></i> Logout
                                 </a>
@@ -460,6 +463,7 @@
                                 </div>
                             </div>
                         </li>
+                        }
                         <!-- ============================================================== -->
                         <!-- User profile and search -->
                         <!-- ============================================================== -->
@@ -491,7 +495,7 @@
                                         <span class="hide-menu"> My Profile </span>
                                     </a>
                                 <li class="sidebar-item">
-                                    <a href="javascript:void(0)" class="sidebar-link">
+                                    <a href="javascript:document.getElementById('logoutForm').submit();" class="sidebar-link">
                                         <i class="fas fa-power-off"></i>
                                         <span class="hide-menu"> Logout </span>
                                     </a>
@@ -662,7 +666,7 @@
                             </a>
                         </li>*@
                         <li class="sidebar-item">
-                            <a class="sidebar-link waves-effect waves-dark sidebar-link" href="authentication-login3.html" aria-expanded="false">
+                            <a class="sidebar-link waves-effect waves-dark sidebar-link" href="javascript:document.getElementById('logoutForm').submit();" aria-expanded="false">
                                 <i class="mdi mdi-adjust text-info"></i>
                                 <span class="hide-menu">Log Out</span>
                             </a>

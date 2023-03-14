@@ -4,6 +4,7 @@ using BugTracker.Models;
 using BugTracker.Services;
 using BugTracker.Services.Interfaces;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -25,6 +26,10 @@ builder.Services.AddIdentity<BTUser, IdentityRole>(options => options.SignIn.Req
 builder.Services.AddControllersWithViews();
 
 //custom services 
+
+
+builder.Services.AddScoped<IEmailSender, EmailService>();
+
 builder.Services.AddScoped<IBTFileService, BTFileService>();
 
 builder.Services.AddScoped<IBTTicketService, BTTicketService>();
