@@ -72,7 +72,22 @@
                                     <th>@Html.DisplayNameFor(model => model.StartDate)</th>
                                     <th>@Html.DisplayNameFor(model => model.EndDate)</th>
                                     <th>@Html.DisplayNameFor(model => model.ProjectPriority)</th>
-                                    <th>Edit | Details | Delete</th>
+                                    @if (User.IsInRole("Admin"))
+                                    {
+                                        <th> Assign Members & Project Managers <div></div>| Edit | Details | Delete</th>
+                                    }
+                                    @if (User.IsInRole("ProjectManager"))
+                                    {
+                                        <th> Assign Members | Edit | Details | Delete</th>
+                                    }
+                                    @if (User.IsInRole("Developer"))
+                                    {
+                                        <th>Edit | Details | Delete</th>
+                                    }
+                                    @if (User.IsInRole("Submitter"))
+                                    {
+                                        <th>Edit | Details | Delete</th>
+                                    }
                                 </tr>
                             </thead>
                             <tbody>
@@ -86,6 +101,10 @@
                                         <td><span class="font-weight-medium ">@Html.DisplayFor(modelItem => item.EndDate)</span></td>
                                         <td>@Html.DisplayFor(modelItem => item.ProjectPriority.Name)</td>
                                         <td>
+                                            @if (User.IsInRole("Admin"))
+                                            {
+                                                <a asp-action="AssignPM" asp-route-id="@item.Id">Assign PM</a> <span>|</span>
+                                            }
                                             @if (User.IsInRole("Admin")) 
                                             {
                                                 <a asp-action="AssignProjectMembers" asp-route-id="@item.Id">Assign Member</a> <span>|</span>
@@ -95,10 +114,7 @@
                                                 <a asp-action="AssignProjectMembers" asp-route-id="@item.Id">Assign Member</a> <span>|</span>
                                             }
 
-                                            @if(User.IsInRole("Admin"))
-                                            {
-                                                <a asp-action="AssignPM" asp-route-id="@item.Id">Assign PM</a> <span>|</span>
-                                            }
+
                                             <a asp-action="Edit" asp-route-id="@item.Id"><i class="bi bi-pencil-fill text-warning fs-6 p-2"></i></a>
                                             <a asp-action="Details" asp-route-id="@item.Id"><i class="bi bi-info-circle text-info fs-6 p-2"></i></a>
                                             <a asp-action="Delete" asp-route-id="@item.Id"><i class="bi bi-trash-fill text-danger fs-6 p-2"></i></a>
@@ -113,7 +129,22 @@
                                     <th>@Html.DisplayNameFor(model => model.StartDate)</th>
                                     <th>@Html.DisplayNameFor(model => model.EndDate)</th>
                                     <th>@Html.DisplayNameFor(model => model.ProjectPriority)</th>
-                                    <th>Edit | Details | Delete</th>
+                                    @if (User.IsInRole("Admin"))
+                                    {
+                                        <th> Assign Members & Project Managers <div></div> | Edit | Details | Delete</th>
+                                    }
+                                    @if (User.IsInRole("ProjectManager"))
+                                    {
+                                        <th> Assign Members | Edit | Details | Delete</th>
+                                    }
+                                    @if (User.IsInRole("Developer"))
+                                    {
+                                        <th>Edit | Details | Delete</th>
+                                    }
+                                    @if (User.IsInRole("Submitter"))
+                                    {
+                                        <th>Edit | Details | Delete</th>
+                                    }
                                 </tr>
                             </tfoot>
                         </table>
@@ -126,3 +157,27 @@
 <!-- -------------------------------------------------------------- -->
 <!-- End Container fluid  -->
 <!-- -------------------------------------------------------------- -->
+<!-- -------------------------------------------------------------- -->
+<!-- All Jquery -->
+<!-- -------------------------------------------------------------- -->
+<script src="../assets/libs/jquery/dist/jquery.min.js"></script>
+<!-- Bootstrap tether Core JavaScript -->
+<script src="../assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<!-- apps -->
+<script src="../../dist/js/app.min.js"></script>
+<script src="../../dist/js/app.init.js"></script>
+<script src="../../dist/js/app-style-switcher.js"></script>
+<!-- slimscrollbar scrollbar JavaScript -->
+<script src="../assets/libs/perfect-scrollbar/dist/perfect-scrollbar.jquery.min.js"></script>
+<script src="../assets/extra-libs/sparkline/sparkline.js"></script>
+<!--Wave Effects -->
+<script src="../../dist/js/waves.js"></script>
+<!--Menu sidebar -->
+<script src="../../dist/js/sidebarmenu.js"></script>
+<!--Custom JavaScript -->
+<script src="../../dist/js/feather.min.js"></script>
+<script src="../../dist/js/custom.min.js"></script>
+<!--This page plugins -->
+<script src="../assets/extra-libs/datatables.net/js/jquery.dataTables.min.js"></script>
+<script src="../assets/extra-libs/datatables.net-bs4/js/dataTables.responsive.min.js"></script>
+<script src="../../dist/js/pages/datatable/datatable-basic.init.js"></script>
