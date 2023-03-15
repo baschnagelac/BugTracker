@@ -21,7 +21,7 @@ namespace BugTracker.Models
         public string? Description { get; set; }
 
         [DataType(DataType.Date)]
-        [Display(Name = "Project Created On")]
+        [Display(Name = "Project Created")]
         public DateTime Created { get; set; }
 
         [DataType(DataType.Date)]

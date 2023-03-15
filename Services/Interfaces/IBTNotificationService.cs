@@ -4,7 +4,7 @@ namespace BugTracker.Services.Interfaces
 {
     public interface IBTNotificationService
     {
-        public Task AddNotificationAsync(Notification? notification, int? projectId);
+        public Task AddNotificationAsync(Notification? notification);
 
         public Task AdminNotificationAsync(Notification? notification, int? companyId);
 

@@ -66,8 +66,8 @@
                         </div>
                         <!-- Column -->
                     </div>
-                    <div class="table-responsive  mt-4">
-                        <table id="zero_config" class=" dt-responsive table table-bordered table-striped no-wrap fs-3">
+                    <div class="table-responsive dt-responsive mt-4">
+                        <table id="zero_config" class="dt-responsive table table-bordered table-striped no-wrap fs-3">
                             <thead>
                                 <p class="text-success fs-6">Filter by any property via clicking the Headings or via the Search Box.</p>
                                 <tr class ="fs-4 font-weight-bold">
@@ -110,10 +110,9 @@
                                                 string fullName = currentPM?.FullName ?? "Unassigned";
                                             }
                                             @fullName
-                                        </td>
-                                         
+                                        </td>                                        
                                         <td>@(item.DeveloperUser?.FullName ?? "Unassigned")</td>
-                                         <td><span class="badge bg-light-warning text-warning font-weight-medium">@Html.DisplayFor(modelItem => item.TicketStatus.Name)</span></td>
+                                         <td><span class="badge bg-light-success text-success font-weight-medium">@Html.DisplayFor(modelItem => item.TicketStatus.Name)</span></td>
                                         <td><span class="font-weight-medium link">@Html.DisplayFor(modelItem => item.Title)</span></td>
                                         <td><a asp-action="Details" asp-controller="Projects" asp-route-id="@item.Id" class="fw-bold link">@Html.DisplayFor(modelItem => item.Project.Name)</a></td>
                                         <td>@item.Created.ToString("MMM dd, yyyy") </td> @*/*.ToString("MMM dd, yyyy"))*/*@
@@ -121,8 +120,8 @@
                                         <!--
                                             
                                         -->
-                                        <td>@Html.DisplayFor(modelItem => item.TicketType.Name)</td>
-                                        <td>@Html.DisplayFor(modelItem => item.TicketPriority.Name)</td>
+                                        <td><span class="badge bg-light-info text-info font-weight-bold">@Html.DisplayFor(modelItem => item.TicketType.Name)</span></td>
+                                        <td><span class="badge bg-light-danger text-danger font-weight-medium">@Html.DisplayFor(modelItem => item.TicketPriority.Name)</span></td>
                                         <td>
                                             @if (User.IsInRole("Admin"))
                                             {

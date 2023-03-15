@@ -3,6 +3,7 @@
 @using Microsoft.AspNetCore.Identity
 
 @inject IBTFileService _BTFileService
+@inject IBTProjectService  _ProjectService
 
 
 @{
@@ -66,7 +67,9 @@
                     <div class="table-responsive mt-4">
                         <table id="zero_config" class="table table-bordered table-striped no-wrap fs-3">
                             <thead>
+                                <p class="text-success fs-6">Filter by any property via clicking the Headings or via the Search Box.</p>
                                 <tr class="fs-4 font-weight-bold">
+                                    <th>Project Manager</th>
                                     <th >@Html.DisplayNameFor(model => model.Name)</th>
                                     <th>@Html.DisplayNameFor(model => model.Created)</th>
                                     <th>@Html.DisplayNameFor(model => model.StartDate)</th>
@@ -95,11 +98,18 @@
                                 @foreach (var item in Model)
                                 {
                                     <tr>
+                                        <td>
+                                            @{
+                                                BTUser? currentPM = await _ProjectService.GetProjectManagerAsync(item.Id);
+                                                string fullName = currentPM?.FullName ?? "Unassigned";
+                                            }
+                                            @fullName
+                                        </td>
                                         <td><span class="font-weight-medium ">@Html.DisplayFor(modelItem => item.Name)</span></td>
                                         <td><span> @Html.DisplayFor(modelItem => item.Created)</span></td>
                                         <td><span class="font-weight-medium "> @Html.DisplayFor(modelItem => item.StartDate)</span></td>
                                         <td><span class="font-weight-medium ">@Html.DisplayFor(modelItem => item.EndDate)</span></td>
-                                        <td>@Html.DisplayFor(modelItem => item.ProjectPriority.Name)</td>
+                                        <td><span class="badge bg-light-danger text-danger font-weight-medium">@Html.DisplayFor(modelItem => item.ProjectPriority.Name)</span></td>
                                         <td>
                                             @if (User.IsInRole("Admin"))
                                             {
@@ -124,6 +134,7 @@
                             </tbody>
                             <tfoot>
                                 <tr class="fs-4 font-weight-bold" >
+                                    <th>Project Manager</th>
                                     <th>@Html.DisplayNameFor(model => model.Name)</th>
                                     <th>@Html.DisplayNameFor(model => model.Created)</th>
                                     <th>@Html.DisplayNameFor(model => model.StartDate)</th>

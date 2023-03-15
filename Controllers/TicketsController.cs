@@ -16,6 +16,7 @@ using BugTracker.Services.Interfaces;
 using BugTracker.Models.Enums.Enums;
 using BugTracker.Models.ViewModels;
 using System.ComponentModel.Design;
+using Microsoft.CodeAnalysis;
 
 namespace BugTracker.Controllers
 {
@@ -64,11 +65,13 @@ namespace BugTracker.Controllers
 
 
         //GET: My Tickets
-        public async Task<IActionResult> MyTicketsIndex()
+        public async Task<IActionResult> MyTicketsIndex(int? projectId)
         {
             int companyId = User.Identity.GetCompanyId();
 
             string userId = _userManager.GetUserId(User)!;
+
+            BTUser? currentPM = await _projectService.GetProjectManagerAsync(projectId);
 
             List<Ticket> tickets = new List<Ticket>();
 
@@ -102,22 +105,24 @@ namespace BugTracker.Controllers
                 return View(tickets);
 
             }
-            //else
-            //  if (User.IsInRole("ProjectManager"))
-            //{
+            else
+              if (User.IsInRole("ProjectManager"))
+            {
+                
 
-            //    tickets = await _context.Tickets
-            //                             .Where(c => c. == userId)
-            //                             .Include(t => t.Project)
-            //                             .Include(t => t.TicketPriority)
-            //                             .Include(t => t.TicketStatus)
-            //                             .Include(t => t.TicketType)
-            //                             .ToListAsync();
+                tickets = await _context.Tickets
+                                         //.Where (c => c.Members == userId)
+                                         .Include(t => t.ProjectId)
+                                         .Include(t => t.Project)
+                                         .Include(t => t.TicketPriority)
+                                         .Include(t => t.TicketStatus)
+                                         .Include(t => t.TicketType)
+                                         .ToListAsync();
 
 
-            //    return View(tickets);
+                return View(tickets);
 
-            //}
+            }
             else
             {
                 tickets = await _context.Tickets
@@ -158,37 +163,46 @@ namespace BugTracker.Controllers
                 if (userId == null)
                 {
                     tickets = await _context.Tickets
-                                             .Where(c => c.DeveloperUserId == userId)
+                                             //.Where(c => c.DeveloperUserId == userId)
                                              .Include(t => t.Project)
                                              .Include(t => t.TicketPriority)
                                              .Include(t => t.TicketStatus)
                                              .Include(t => t.TicketType)
                                              .ToListAsync();
 
+                    //return View(tickets);
 
-                   
                 }
-                
+
+                //if user is PM > only unassigned for their projects 
+                if (User.IsInRole("ProjectManager"))
+                {
+                    BTUser? currentPM = await _projectService.GetProjectManagerAsync(projectId);
+
+                    if (userId == null)
+                    {
+
+                        tickets = await _context.Tickets
+                                                 //.Where(c => c.DeveloperUserId == userId)
+                                                 .Include(t => t.Project)
+                                                 .Include(t => t.ProjectId)
+                                                 .Include(t => t.TicketPriority)
+                                                 .Include(t => t.TicketStatus)
+                                                 .Include(t => t.TicketType)
+                                                 .ToListAsync();
+
+
+                        //return View(tickets);
+                    }
+                }
+
+
+
             }
+
+
             return View(tickets);
-            //if user is PM > only unassigned for their projects 
-            //if (User.IsInRole("ProjectManager"))
-            //{
-            //    if (userId == null && User.IsInRole("ProjectManager"))
-            //    {                   
 
-            //        tickets = await _context.Tickets
-            //                                 .Where(c => c.DeveloperUserId == userId)
-            //                                 .Include(t => t.Project)
-            //                                 .Include(t => t.TicketPriority)
-            //                                 .Include(t => t.TicketStatus)
-            //                                 .Include(t => t.TicketType)
-            //                                 .ToListAsync();
-
-
-            //        return View(tickets);
-            //    }
-            //}
         }
 
 
@@ -350,7 +364,7 @@ namespace BugTracker.Controllers
 
 
 
-            //await _notificationService.AddNotificationAsync(notification);
+            await _notificationService.AddNotificationAsync(notification);
             await _notificationService.SendEmailNotificationAsync(notification, "New Ticket Added");
 
 
@@ -485,7 +499,7 @@ namespace BugTracker.Controllers
 
                 if (projectManager != null)
                 {
-                    //await _notificationService.AddNotificationAsync(notification);
+                    await _notificationService.AddNotificationAsync(notification);
                     await _notificationService.SendEmailNotificationAsync(notification, "New Ticket Added");
                 }
                 else
@@ -619,7 +633,7 @@ namespace BugTracker.Controllers
 
                 if (projectManager != null)
                 {
-                    //await _notificationService.AddNotificationAsync(notification);
+                    await _notificationService.AddNotificationAsync(notification);
                     await _notificationService.SendEmailNotificationAsync(notification, "New Ticket Added");
                 }
                 else

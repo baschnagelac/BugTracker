@@ -24,7 +24,7 @@ namespace BugTracker.Services
             _emailService = emailService;
             _rolesService = rolesService;
         }
-        public async Task AddNotificationAsync(Notification? notification, int? projectId)
+        public async Task AddNotificationAsync(Notification? notification)
         {
             try
             {
