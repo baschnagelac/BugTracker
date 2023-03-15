@@ -52,15 +52,13 @@ namespace BugTracker.Controllers
         {
             int companyId = User.Identity!.GetCompanyId();
             var applicationDbContext = _context.Tickets
-                                               //.Where(p => p.CompanyId == companyId)
                                                .Include(t => t.DeveloperUser)
                                                .Include(t => t.Project)
-                                                    //.ThenInclude(p => p.CompanyId)
                                                .Include(t => t.TicketPriority)
                                                .Include(t => t.TicketStatus)
                                                .Include(t => t.TicketType);
-                                               //.SelectMany(companyId);
-            //.SelectMany( companyId);
+
+
             return View(await applicationDbContext.ToListAsync());
         }
 
@@ -104,6 +102,22 @@ namespace BugTracker.Controllers
                 return View(tickets);
 
             }
+            //else
+            //  if (User.IsInRole("ProjectManager"))
+            //{
+
+            //    tickets = await _context.Tickets
+            //                             .Where(c => c. == userId)
+            //                             .Include(t => t.Project)
+            //                             .Include(t => t.TicketPriority)
+            //                             .Include(t => t.TicketStatus)
+            //                             .Include(t => t.TicketType)
+            //                             .ToListAsync();
+
+
+            //    return View(tickets);
+
+            //}
             else
             {
                 tickets = await _context.Tickets
@@ -125,22 +139,59 @@ namespace BugTracker.Controllers
 
 
 
-        //public async Task<IActionResult> UnassignedTicketsIndex()
-        //{
-        //    //if user is admin > all unassigned
+        public async Task<IActionResult> UnassignedTicketsIndex(int? projectId, BTUser pm)
+        {
 
-        //    //if user is PM > only unassigned for their projects 
-        //}
+            int companyId = User.Identity.GetCompanyId();
 
-        //public async Task<IActionResult> ListTicketsByProject()
-        //{
+            string userId = _userManager.GetUserId(User)!;
 
-        //}
+            //int project = _projectService.GetProjectByIdAsync(projectId, companyId);
 
-        //public async Task<IActionResult> ListTicketsByDeveloper()
-        //{
+            //string pm = _projectService.GetProjectManagerAsync(projectId);
 
-        //}
+            List<Ticket> tickets = new List<Ticket>();
+
+            //if user is admin > all unassigned
+            if (User.IsInRole("Admin"))
+            {
+                if (userId == null)
+                {
+                    tickets = await _context.Tickets
+                                             .Where(c => c.DeveloperUserId == userId)
+                                             .Include(t => t.Project)
+                                             .Include(t => t.TicketPriority)
+                                             .Include(t => t.TicketStatus)
+                                             .Include(t => t.TicketType)
+                                             .ToListAsync();
+
+
+                   
+                }
+                
+            }
+            return View(tickets);
+            //if user is PM > only unassigned for their projects 
+            //if (User.IsInRole("ProjectManager"))
+            //{
+            //    if (userId == null && User.IsInRole("ProjectManager"))
+            //    {                   
+
+            //        tickets = await _context.Tickets
+            //                                 .Where(c => c.DeveloperUserId == userId)
+            //                                 .Include(t => t.Project)
+            //                                 .Include(t => t.TicketPriority)
+            //                                 .Include(t => t.TicketStatus)
+            //                                 .Include(t => t.TicketType)
+            //                                 .ToListAsync();
+
+
+            //        return View(tickets);
+            //    }
+            //}
+        }
+
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -299,7 +350,7 @@ namespace BugTracker.Controllers
 
 
 
-            await _notificationService.AddNotificationAsync(notification);
+            //await _notificationService.AddNotificationAsync(notification);
             await _notificationService.SendEmailNotificationAsync(notification, "New Ticket Added");
 
 
@@ -434,7 +485,7 @@ namespace BugTracker.Controllers
 
                 if (projectManager != null)
                 {
-                    await _notificationService.AddNotificationAsync(notification);
+                    //await _notificationService.AddNotificationAsync(notification);
                     await _notificationService.SendEmailNotificationAsync(notification, "New Ticket Added");
                 }
                 else
@@ -568,7 +619,7 @@ namespace BugTracker.Controllers
 
                 if (projectManager != null)
                 {
-                    await _notificationService.AddNotificationAsync(notification);
+                    //await _notificationService.AddNotificationAsync(notification);
                     await _notificationService.SendEmailNotificationAsync(notification, "New Ticket Added");
                 }
                 else

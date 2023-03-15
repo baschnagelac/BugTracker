@@ -51,7 +51,26 @@ namespace BugTracker.Controllers
             int companyId = User.Identity!.GetCompanyId();
 
             IEnumerable<BTUser> projectManagers = await _rolesService.GetUsersInRoleAsync(nameof(BTRoles.ProjectManager), companyId);
+            
             BTUser? currentPM = await _projectService.GetProjectManagerAsync(id);
+            string? firstName = currentPM.FirstName;
+
+            string fullName = currentPM?.FullName ?? "Unassigned";
+            string fullNameV2 = (await _projectService.GetProjectManagerAsync(id))?.FullName ?? "Unassigned";
+
+            /*
+             <html>
+            @{
+                BTUser? currentPM = await _projectService.GetProjectManagerAsync(id);
+                string fullName = currentPM?.FullName ?? "Unassigned";
+            }
+            <p>@fullName</p>
+            <p>@( (await _projectService.GetProjectManagerAsync(id))?.FullName ?? "Unassigned" ) </p>
+            </html>
+             
+             */
+
+
             AssignPMViewModel viewModel = new()
             {
                 Project = await _projectService.GetProjectByIdAsync(id, companyId),

@@ -515,9 +515,27 @@
                             </a>
                         </li>
                         <li class="sidebar-item">
+                            <a class="sidebar-link waves-effect waves-dark sidebar-link" asp-action="MyProjectsIndex" asp-controller="Projects" aria-expanded="false">
+                                <i class="bi bi-kanban"></i>
+                                <span class="hide-menu">My Projects</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-item">
                             <a class="sidebar-link waves-effect waves-dark sidebar-link" asp-action="Index" asp-controller="Tickets" aria-expanded="false">
                                 <i class="bi bi-ticket-perforated"></i>
                                 <span class="hide-menu">Tickets</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a class="sidebar-link waves-effect waves-dark sidebar-link" asp-action="MyTicketsIndex" asp-controller="Tickets" aria-expanded="false">
+                                <i class="bi bi-ticket-perforated"></i>
+                                <span class="hide-menu">My Tickets</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a class="sidebar-link waves-effect waves-dark sidebar-link" asp-action="UnassignedTicketsIndex" asp-controller="Tickets" aria-expanded="false">
+                                <i class="bi bi-ticket-perforated"></i>
+                                <span class="hide-menu">Unassigned Tickets</span>
                             </a>
                         </li>
                         @* <li class="sidebar-item">

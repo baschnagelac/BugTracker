@@ -4,6 +4,7 @@ using BugTracker.Models.Enums.Enums;
 using BugTracker.Services.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
+using Microsoft.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Client;
 
@@ -23,12 +24,14 @@ namespace BugTracker.Services
             _emailService = emailService;
             _rolesService = rolesService;
         }
-        public async Task AddNotificationAsync(Notification? notification)
+        public async Task AddNotificationAsync(Notification? notification, int? projectId)
         {
             try
             {
                 if (notification != null)
                 {
+                    //assign valid projectId to notification
+
                     await _context.AddAsync(notification);
                     await _context.SaveChangesAsync();
                 }

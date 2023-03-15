@@ -1,8 +1,13 @@
 ﻿@model IEnumerable<BugTracker.Models.Ticket>
+@using BugTracker.Services.Interfaces;
+
+@inject IBTProjectService _ProjectService
+
 
 @{
     ViewData["Title"] = "UnassignedTicketsIndex";
 }
+
 
 
 <!-- -------------------------------------------------------------- -->
@@ -17,11 +22,53 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-body">
-                    <h4 class="card-title">My Tickets</h4>
+                    <h4 class="card-title">Tickets</h4>
+                    <div class="row mt-4">
+                        <!-- Column -->
+                        <div class="col-md-6 col-lg-3 col-xlg-3">
+                            <div class="card card-hover">
+                                <div class="p-2 rounded bg-light-primary text-center">
+                                    <h1 class="fw-light text-primary">2222</h1>
+                                    <h6 class="text-primary">Total Tickets</h6>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Column -->
+                        <div class="col-md-6 col-lg-3 col-xlg-3">
+                            <div class="card card-hover">
+                                <div class="p-2 rounded bg-light-warning text-center">
+                                    <h1 class="fw-light text-warning">1,738</h1>
+                                    <h6 class="text-warning">In Progress</h6>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Column -->
+                        <div class="col-md-6 col-lg-3 col-xlg-3">
+                            <div class="card card-hover">
+                                <div class="p-2 rounded bg-light-success text-center">
+                                    <h1 class="fw-light text-success">1100</h1>
+                                    <h6 class="text-success">Urgent</h6>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Column -->
+                        <div class="col-md-6 col-lg-3 col-xlg-3">
+                            <div class="card card-hover">
+                                <div class="p-2 rounded bg-light-danger text-center">
+                                    <h1 class="fw-light text-danger">964</h1>
+                                    <h6 class="text-danger">Closed</h6>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Column -->
+                    </div>
                     <div class="table-responsive mt-4">
-                        <table id="zero_config" class="table table-bordered no-wrap fs-3">
+                        <table id="zero_config" class="table table-bordered table-striped no-wrap fs-3">
                             <thead>
-                                <tr>
+                                <p class="text-success fs-6">Filter by any property via clicking the Headings or via the Search Box.</p>
+                                <tr class="fs-4 font-weight-bold">
+                                    <th>Project Manager</th>
+                                    <th>@Html.DisplayNameFor(model => model.DeveloperUser)</th>
                                     <th>@Html.DisplayNameFor(model => model.TicketStatus)</th>
                                     <th>@Html.DisplayNameFor(model => model.Title)</th>
                                     <th>@Html.DisplayNameFor(model => model.Project)</th>
@@ -29,8 +76,23 @@
                                     <th>@Html.DisplayNameFor(model => model.Updated)</th>
                                     <th>@Html.DisplayNameFor(model => model.TicketType)</th>
                                     <th>@Html.DisplayNameFor(model => model.TicketPriority)</th>
-                                    <th>@Html.DisplayNameFor(model => model.DeveloperUser)</th>
-                                    <th>Edit | Details | Delete</th>
+                                    @if (User.IsInRole("Admin"))
+                                    {
+                                        <th> Assign Developer | Edit | Details | Delete</th>
+                                    }
+                                    @if (User.IsInRole("ProjectManager"))
+                                    {
+                                        <th> Assign Developer | Edit | Details | Delete</th>
+                                    }
+                                    @if (User.IsInRole("Developer"))
+                                    {
+                                        <th>Edit | Details | Delete</th>
+                                    }
+                                    @if (User.IsInRole("Submitter"))
+                                    {
+                                        <th>Edit | Details | Delete</th>
+                                    }
+
                                 </tr>
                             </thead>
                             <tbody>
@@ -38,25 +100,36 @@
                                 @foreach (var item in Model)
                                 {
                                     <tr>
+                                        <td>@(await _ProjectService.GetProjectManagerAsync(item.Project.Id))</td>
+                                        <td>@Html.DisplayFor(modelItem => item.DeveloperUser!.FullName)</td>
                                         <td><span class="badge bg-light-warning text-warning font-weight-medium">@Html.DisplayFor(modelItem => item.TicketStatus.Name)</span></td>
-                                        <td><a href="ticket-detail.html" class="font-weight-medium link">@Html.DisplayFor(modelItem => item.Title)</a></td>
-                                        <td><a href="ticket-detail.html" class="fw-bold link">@Html.DisplayFor(modelItem => item.Project.Name)</a></td>
-                                        <td>@Html.DisplayFor(modelItem => item.Created)</td>
+                                        <td><span class="font-weight-medium link">@Html.DisplayFor(modelItem => item.Title)</span></td>
+                                        <td><a asp-action="Details" asp-controller="Projects" asp-route-id="@item.Id" class="fw-bold link">@Html.DisplayFor(modelItem => item.Project.Name)</a></td>
+                                        <td>@Html.DisplayFor(modelItem => item.Created)</td>@*/*.ToString("MMM dd, yyyy"))*/*@
                                         <td>@Html.DisplayFor(modelItem => item.Updated)</td>
                                         <td>@Html.DisplayFor(modelItem => item.TicketType.Name)</td>
                                         <td>@Html.DisplayFor(modelItem => item.TicketPriority.Name)</td>
-                                        <td> @Html.DisplayFor(modelItem => item.DeveloperUser.FullName)</td>
                                         <td>
+                                            @if (User.IsInRole("Admin"))
+                                            {
+                                                <a asp-action="AssignTicketDev" asp-controller="Tickets" asp-route-id="@item.Id">Assign Developer</a> <span>|</span>
+                                            }
+                                            @if (User.IsInRole("ProjectManager"))
+                                            {
+                                                <a asp-action="AssignTicketDev" asp-controller="Tickets" asp-route-id="@item.Id">Assign Developer</a> <span>|</span>
+                                            }
                                             <a asp-action="Edit" asp-route-id="@item.Id"><i class="bi bi-pencil-fill text-warning fs-6 p-2"></i></a>
                                             <a asp-action="Details" asp-route-id="@item.Id"><i class="bi bi-info-circle text-info fs-6 p-2"></i></a>
                                             <a asp-action="Delete" asp-route-id="@item.Id"><i class="bi bi-trash-fill text-danger fs-6 p-2"></i></a>
                                         </td>
                                     </tr>
                                 }
-                                <i class="bi bi-info-circle text-info fs-6"></i>
+
                             </tbody>
                             <tfoot>
-                                <tr>
+                                <tr class="fs-4 font-weight-bold">
+                                    <th>Project Manager</th>
+                                    <th>Developer User</th>
                                     <th>Ticket Status</th>
                                     <th>Title</th>
                                     <th>Project</th>
@@ -64,8 +137,22 @@
                                     <th>Updated</th>
                                     <th>Ticket Type</th>
                                     <th>Ticket Priority</th>
-                                    <th>Developer</th>
-                                    <th>Edit | Details | Delete</th>
+                                    @if (User.IsInRole("Admin"))
+                                    {
+                                        <th> Assign Developer | Edit | Details | Delete</th>
+                                    }
+                                    @if (User.IsInRole("ProjectManager"))
+                                    {
+                                        <th> Assign Developer | Edit | Details | Delete</th>
+                                    }
+                                    @if (User.IsInRole("Developer"))
+                                    {
+                                        <th>Edit | Details | Delete</th>
+                                    }
+                                    @if (User.IsInRole("Submitter"))
+                                    {
+                                        <th>Edit | Details | Delete</th>
+                                    }
                                 </tr>
                             </tfoot>
                         </table>
@@ -78,3 +165,30 @@
 <!-- -------------------------------------------------------------- -->
 <!-- End Container fluid  -->
 <!-- -------------------------------------------------------------- -->
+<script>
+    let table = new DataTable('#zero_config');
+</script>
+<!-- -------------------------------------------------------------- -->
+<!-- All Jquery -->
+<!-- -------------------------------------------------------------- -->
+<script src="../assets/libs/jquery/dist/jquery.min.js"></script>
+<!-- Bootstrap tether Core JavaScript -->
+<script src="../assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<!-- apps -->
+<script src="../../dist/js/app.min.js"></script>
+<script src="../../dist/js/app.init.js"></script>
+<script src="../../dist/js/app-style-switcher.js"></script>
+<!-- slimscrollbar scrollbar JavaScript -->
+<script src="../assets/libs/perfect-scrollbar/dist/perfect-scrollbar.jquery.min.js"></script>
+<script src="../assets/extra-libs/sparkline/sparkline.js"></script>
+<!--Wave Effects -->
+<script src="../../dist/js/waves.js"></script>
+<!--Menu sidebar -->
+<script src="../../dist/js/sidebarmenu.js"></script>
+<!--Custom JavaScript -->
+<script src="../../dist/js/feather.min.js"></script>
+<script src="../../dist/js/custom.min.js"></script>
+<!--This page plugins -->
+<script src="../assets/extra-libs/datatables.net/js/jquery.dataTables.min.js"></script>
+<script src="../assets/extra-libs/datatables.net-bs4/js/dataTables.responsive.min.js"></script>
+<script src="../../dist/js/pages/datatable/datatable-basic.init.js"></script>
