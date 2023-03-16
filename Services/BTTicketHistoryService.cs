@@ -1,6 +1,7 @@
 ﻿using BugTracker.Data;
 using BugTracker.Models;
 using BugTracker.Services.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace BugTracker.Services
 {
@@ -126,15 +127,17 @@ namespace BugTracker.Services
                     // check ticket developer
                     if (oldTicket.DeveloperUserId != newTicket.DeveloperUserId)
                     {
+                        BTUser? newDeveloperUser = await _context.Users.FirstOrDefaultAsync(m => m.Id == newTicket.DeveloperUserId);
+
                         TicketHistory history = new()
                         {
                             TicketId = newTicket.Id,
                             PropertyName = "Developer",
                             OldValue = oldTicket.DeveloperUser?.FullName ?? "Not Assigned",
-                            NewValue = newTicket.DeveloperUser?.FullName,
+                            NewValue = newDeveloperUser?.FullName,
                             Created = DataUtility.GetPostGresDate(DateTime.Now),
                             UserId = userId,
-                            Description = $"Ticket Developer Updated  from: {oldTicket.DeveloperUser?.FullName} to : {newTicket.DeveloperUser?.FullName}"
+                            Description = $"Ticket Developer Updated  from: {oldTicket.DeveloperUser?.FullName} to : {newDeveloperUser?.FullName}"
                         };
 
                         await _context.TicketHistories.AddAsync(history);

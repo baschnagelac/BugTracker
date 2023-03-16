@@ -125,11 +125,13 @@ namespace BugTracker.Controllers
         }
 
         // GET: Companies
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            return _context.Companies != null ?
-                        View(await _context.Companies.ToListAsync()) :
-                        Problem("Entity set 'ApplicationDbContext.Companies'  is null.");
+
+
+            int companyId = User.Identity!.GetCompanyId();
+
+            return RedirectToAction(nameof(Details), new { companyId });
         }
 
         // GET: Companies/Details/5

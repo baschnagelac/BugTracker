@@ -15,14 +15,18 @@ namespace BugTracker.Services
         private readonly ApplicationDbContext _context;
         private readonly IBTRolesService _rolesService;
         private readonly IEmailSender _emailService;
+        private readonly IBTProjectService _projectService;
+
 
         public BTNotificationService(ApplicationDbContext context,
                                     IEmailSender emailService,
-                                    IBTRolesService rolesService)
+                                    IBTRolesService rolesService,
+                                    IBTProjectService projectService)
         {
             _context = context;
             _emailService = emailService;
             _rolesService = rolesService;
+            _projectService = projectService;
         }
         public async Task AddNotificationAsync(Notification? notification)
         {
@@ -30,7 +34,9 @@ namespace BugTracker.Services
             {
                 if (notification != null)
                 {
-                    //assign valid projectId to notification
+
+
+
 
                     await _context.AddAsync(notification);
                     await _context.SaveChangesAsync();

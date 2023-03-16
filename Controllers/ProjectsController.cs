@@ -53,10 +53,10 @@ namespace BugTracker.Controllers
             IEnumerable<BTUser> projectManagers = await _rolesService.GetUsersInRoleAsync(nameof(BTRoles.ProjectManager), companyId);
             
             BTUser? currentPM = await _projectService.GetProjectManagerAsync(id);
-            string? firstName = currentPM.FirstName;
+            //string? firstName = currentPM.FirstName;
 
-            string fullName = currentPM?.FullName ?? "Unassigned";
-            string fullNameV2 = (await _projectService.GetProjectManagerAsync(id))?.FullName ?? "Unassigned";
+            //string fullName = currentPM?.FullName ?? "Unassigned";
+            //string fullNameV2 = (await _projectService.GetProjectManagerAsync(id))?.FullName ?? "Unassigned";
 
             /*
              <html>
