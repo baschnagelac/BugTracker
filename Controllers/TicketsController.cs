@@ -456,6 +456,12 @@ namespace BugTracker.Controllers
 
         }
 
+        public IActionResult ArchiveCheckT()
+        {
+            return View();
+        }
+
+
 
 
         // GET: Tickets/Details/5

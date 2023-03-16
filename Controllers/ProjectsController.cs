@@ -263,6 +263,10 @@ namespace BugTracker.Controllers
 
         }
 
+        public IActionResult ArchiveCheckP()
+        {
+            return View();
+        }
 
 
 

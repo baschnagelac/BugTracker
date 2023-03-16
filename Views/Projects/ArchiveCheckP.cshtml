@@ -46,32 +46,3 @@
 
 
 
-<div class="row">
-    <div class="col-12 col-md-8 offset-md-2">
-        <h2>Are you sure?</h2>
-        <p class="text-lead text-muted">This ticket will no longer be available for development.</p>
-        <div class="card mb-3">
-            <div class="row g-0">
-
-                <div class="col-md-5">
-                    <div class="card-body">
-
-                        <div class="col-md-4 square-img-container">
-                            <img src="@_BTFileService.ConvertByteArrayToFile(project.ImageFileData!,project.ImageFileType!,(int)DefaultImage.ProjectImage)" alt="Project Image" />
-                        </div>
-                        <h5 class="card-title">@project.Name</h5>
-
-                        <div class="card-text">
-                            <span class="fw-bold me-2">@project.Description</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <form class="d-flex justify-content-between" asp-action="ProjectArchive" asp-route-id="@project.Id">
-            <input hidden asp-for="@project.Id" />
-            <a asp-action="Index" asp-controller="Projects" class="btn btn-outline-secondary rounded-pill btnLink">Cancel</a>
-            <button type="submit" class="btn btn-danger rounded-pill btnLink">YES Archive Project</button>
-        </form>
-    </div>
-</div>
