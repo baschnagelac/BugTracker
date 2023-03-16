@@ -176,9 +176,14 @@ namespace BugTracker.Services
             }
         }
 
-        public Task<IEnumerable<Project>> GetProjectsAsync(int companyId)
+        public async Task<IEnumerable<Project>> GetProjectsAsync(int companyId)
         {
-            throw new NotImplementedException();
+            List<Project> projects = new();
+            projects = await _context.Projects
+                                   .Where(c => c.CompanyId == companyId)
+                                   .ToListAsync();
+
+            return projects;
         }
 
         public async Task<bool> RemoveMemberFromProjectAsync(BTUser? member, int? projectId)

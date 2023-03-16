@@ -131,7 +131,7 @@ namespace BugTracker.Controllers
 
             int companyId = User.Identity!.GetCompanyId();
 
-            return RedirectToAction(nameof(Details), new { companyId });
+            return RedirectToAction(nameof(Details), new { id = companyId });
         }
 
         // GET: Companies/Details/5

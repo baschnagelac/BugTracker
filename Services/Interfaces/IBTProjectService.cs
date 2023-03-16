@@ -24,8 +24,8 @@ namespace BugTracker.Services.Interfaces
 
 
 
-  //      //get projectS
-  //      public Task<IEnumerable<Project>> GetProjectsAsync(int companyId);
+		//      //get projectS
+		public Task<IEnumerable<Project>> GetProjectsAsync(int companyId);
 
 		////add project async 
 		//public Task AddProjectAsync(Project project);
@@ -37,7 +37,7 @@ namespace BugTracker.Services.Interfaces
 		//public Task DeleteProjectAsync(Project project);
 
 
-		
+
 
 	}
 }

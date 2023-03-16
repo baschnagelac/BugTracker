@@ -15,6 +15,7 @@ using BugTracker.Extensions;
 using BugTracker.Models.ViewModels;
 using BugTracker.Models.Enums.Enums;
 using System.Collections;
+using BugTracker.Services;
 
 namespace BugTracker.Controllers
 {
@@ -228,6 +229,44 @@ namespace BugTracker.Controllers
 
         }
 
+
+
+        //get tickets archive 
+        [HttpGet]
+        public async Task<IActionResult> ProjectArchive(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var project = await _projectService.GetProjectsAsync(id.Value);
+            if (project == null)
+            {
+                return NotFound();
+            }
+
+            return View(project);
+        }
+
+        //post tickets archive 
+        [HttpPost]
+        [Authorize(Roles = "Admin, ProjectManager")]
+        public async Task<IActionResult> ProjectArchive(Project project)
+        {
+            project.Archived = true;
+            _context.Update(project);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(ProjectArchive));
+
+
+        }
+
+
+
+
+
         // GET: Projects/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -264,7 +303,7 @@ namespace BugTracker.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,BTUserId,CompanyId,Name,Description,Created,StartDate,EndDate,ProjectPriorityId,ImageFileData,ImageFileType,Archived")] Project project)
+        public async Task<IActionResult> Create([Bind("Id,BTUserId,CompanyId,Name,Description,Created,StartDate,EndDate,ProjectPriorityId,ImageFormFile,ImageFileData,ImageFileType,Archived")] Project project)
         {
             ModelState.Remove("CompanyId");
 
@@ -330,7 +369,7 @@ namespace BugTracker.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,CompanyId,Name,Description,Created,StartDate,EndDate,ProjectPriorityId,ImageFileData,ImageFileType,Archived")] Project project)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,CompanyId,Name,Description,Created,StartDate,EndDate,ProjectPriorityId,ImageFileData,ImageFileType,ImageFormFile,Archived")] Project project)
         {
             if (id != project.Id)
             {

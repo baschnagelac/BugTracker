@@ -77,6 +77,18 @@
                                     <th>@Html.DisplayNameFor(model => model.ProjectPriority)</th>
                                     @if (User.IsInRole("Admin"))
                                     {
+                                        <th>
+                                            Archive Project?
+                                        </th>
+                                    }
+                                    @if (User.IsInRole("ProjectManager"))
+                                    {
+                                        <th>
+                                            Archive Project?
+                                        </th>
+                                    }
+                                    @if (User.IsInRole("Admin"))
+                                    {
                                         <th> Assign Members & Project Managers <div></div>| Edit | Details | Delete</th>
                                     }
                                     @if (User.IsInRole("ProjectManager"))
@@ -110,6 +122,14 @@
                                         <td><span class="font-weight-medium "> @Html.DisplayFor(modelItem => item.StartDate)</span></td>
                                         <td><span class="font-weight-medium ">@Html.DisplayFor(modelItem => item.EndDate)</span></td>
                                         <td><span class="badge bg-light-danger text-danger font-weight-medium">@Html.DisplayFor(modelItem => item.ProjectPriority.Name)</span></td>
+                                        @if (User.IsInRole("Admin"))
+                                        {
+                                            <td><input class="form-check-input me-3" type="checkbox" asp-action="ArchiveProject" /></td>
+                                        }
+                                        @if (User.IsInRole("ProjectManager"))
+                                        {
+                                            <td><input class="form-check-input me-3" type="checkbox" asp-action="ArchiveProject" /></td>
+                                        }
                                         <td>
                                             @if (User.IsInRole("Admin"))
                                             {
@@ -140,6 +160,18 @@
                                     <th>@Html.DisplayNameFor(model => model.StartDate)</th>
                                     <th>@Html.DisplayNameFor(model => model.EndDate)</th>
                                     <th>@Html.DisplayNameFor(model => model.ProjectPriority)</th>
+                                    @if (User.IsInRole("Admin"))
+                                    {
+                                        <th>
+                                            Archive Ticket?
+                                        </th>
+                                    }
+                                    @if (User.IsInRole("ProjectManager"))
+                                    {
+                                        <th>
+                                            Archive Ticket?
+                                        </th>
+                                    }
                                     @if (User.IsInRole("Admin"))
                                     {
                                         <th> Assign Members & Project Managers <div></div> | Edit | Details | Delete</th>

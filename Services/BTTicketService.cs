@@ -156,9 +156,14 @@ namespace BugTracker.Services
             }
         }
 
-        public Task<IEnumerable<Ticket>> GetTicketsAsync(int? companyId)
+        public async Task<IEnumerable<Ticket>> GetTicketsAsync(int? companyId)
         {
-            throw new NotImplementedException();
+            List<Ticket> tickets= new();
+            tickets = await _context.Tickets
+                                   .Where(c => c.Project!.CompanyId == companyId)
+                                   .ToListAsync();
+
+            return tickets;
         }
 
         public Task UpdateTicketAsync(Ticket? ticket)

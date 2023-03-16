@@ -17,6 +17,7 @@ using BugTracker.Models.Enums.Enums;
 using BugTracker.Models.ViewModels;
 using System.ComponentModel.Design;
 using Microsoft.CodeAnalysis;
+using Org.BouncyCastle.Bcpg;
 
 namespace BugTracker.Controllers
 {
@@ -49,7 +50,7 @@ namespace BugTracker.Controllers
         }
 
         // GET: Tickets
-        public  IActionResult Index()
+        public IActionResult Index()
         {
             int companyId = User.Identity!.GetCompanyId();
             //var applicationDbContext = _context.Tickets
@@ -61,13 +62,15 @@ namespace BugTracker.Controllers
             //                                   .FirstOrDefaultAsync(t => t.Id == companyId);
 
 
-            IEnumerable<Ticket> tickets =  _context.Tickets
+            IEnumerable<Ticket> tickets =   _context.Tickets
                                                         .Where(c => c.Project!.CompanyId == companyId)
                                                           .Include(t => t.DeveloperUser)
                                                .Include(t => t.Project)
                                                .Include(t => t.TicketPriority)
                                                .Include(t => t.TicketStatus)
-                                               .Include(t => t.TicketType);
+                                               .Include(t => t.TicketType)
+                                               .ToList();
+                                               
 
 
 
@@ -157,7 +160,7 @@ namespace BugTracker.Controllers
 
         }
 
-
+        //Get Unassigned tickets 
         [Authorize(Roles = $"{nameof(BTRoles.Admin)},{nameof(BTRoles.ProjectManager)},{nameof(BTRoles.Developer)}")]
         public async Task<IActionResult> UnassignedTicketsIndex()
         {
@@ -231,6 +234,9 @@ namespace BugTracker.Controllers
             return View(tickets);
 
         }
+
+
+
 
 
 
@@ -417,10 +423,39 @@ namespace BugTracker.Controllers
             return View(viewModel);
         }
 
-        //public async Task<IActionResult> UnassignedTicketIndex()
-        //{
 
-        //}
+
+
+        //get tickets archive 
+        public async Task<IActionResult> TicketArchive(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var ticket = await _ticketService.GetTicketsAsync(id.Value);
+            if (ticket == null)
+            {
+                return NotFound();
+            }
+
+            return View(ticket);
+        }
+
+        //post tickets archive 
+
+        public async Task<IActionResult> TicketArchive(Ticket ticket)
+        {
+            ticket.Archived = true;
+            _context.Update(ticket);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(TicketArchive));
+
+
+        }
+
 
 
         // GET: Tickets/Details/5
@@ -457,13 +492,21 @@ namespace BugTracker.Controllers
         public IActionResult Create()
         {
             int companyId = User.Identity.GetCompanyId();
+
+            Ticket ticket = new();
+
+            int currentProject= ticket.ProjectId!;
+
             ViewData["DeveloperUserId"] = new SelectList(_context.Users, "Id", "FullName");
-            ViewData["ProjectId"] = new SelectList(_context.Projects, "Id", "Description");
+
+            ViewData["ProjectId"] = new SelectList(_context.Projects.Where(p => p.Id == companyId), "Id", "Name", currentProject);
+
             ViewData["TicketPriorityId"] = new SelectList(_context.TicketPriorities, "Id", "Name");
             ViewData["TicketStatusId"] = new SelectList(_context.TicketStatuses, "Id", "Name");
             ViewData["TicketTypeId"] = new SelectList(_context.TicketTypes, "Id", "Name");
             return View();
         }
+
 
         // POST: Tickets/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
@@ -542,9 +585,12 @@ namespace BugTracker.Controllers
                     await _notificationService.SendAdminEmailNotificationAsync(notification, "New Project Ticket Added", companyId);
                 }
 
-
+                
                 return RedirectToAction(nameof(Index));
             }
+
+            
+
             ViewData["DeveloperUserId"] = new SelectList(_context.Users, "Id", "FullName", ticket.DeveloperUserId);
             ViewData["ProjectId"] = new SelectList(_context.Projects, "Id", "Name", ticket.ProjectId);
             ViewData["TicketPriorityId"] = new SelectList(_context.TicketPriorities, "Id", "Name", ticket.TicketPriorityId);

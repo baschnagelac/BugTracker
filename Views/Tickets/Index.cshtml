@@ -70,7 +70,7 @@
                         <table id="zero_config" class="dt-responsive table table-bordered table-striped no-wrap fs-3">
                             <thead>
                                 <p class="text-success fs-6">Filter by any property via clicking the Headings or via the Search Box.</p>
-                                <tr class ="fs-4 font-weight-bold">
+                                <tr class="fs-4 font-weight-bold">
                                     <th>Project Manager</th>
                                     <th>@Html.DisplayNameFor(model => model.DeveloperUser)</th>
                                     <th>@Html.DisplayNameFor(model => model.TicketStatus)</th>
@@ -82,11 +82,24 @@
                                     <th>@Html.DisplayNameFor(model => model.TicketPriority)</th>
                                     @if (User.IsInRole("Admin"))
                                     {
+                                        <th>
+                                            Archive Ticket?
+                                        </th>
+                                    }
+                                    @if (User.IsInRole("ProjectManager"))
+                                    {
+                                        <th>
+                                            Archive Ticket?
+                                        </th>
+                                    }
+
+                                    @if (User.IsInRole("Admin"))
+                                    {
                                         <th> Assign Developer | Edit | Details | Delete</th>
                                     }
                                     @if (User.IsInRole("ProjectManager"))
                                     {
-                                        <th> Assign Developer | Edit | Details | Delete</th>
+                                        <th>Assign Developer | Edit | Details | Delete</th>
                                     }
                                     @if (User.IsInRole("Developer"))
                                     {
@@ -96,32 +109,38 @@
                                     {
                                         <th>Edit | Details | Delete</th>
                                     }
-                                    
+
                                 </tr>
                             </thead>
                             <tbody>
 
-                                @foreach (var item in Model) 
+                                @foreach (var item in Model)
                                 {
-                                     <tr>
+                                    <tr>
                                         <td>
                                             @{
                                                 BTUser? currentPM = await _ProjectService.GetProjectManagerAsync(item.ProjectId);
                                                 string fullName = currentPM?.FullName ?? "Unassigned";
                                             }
                                             @fullName
-                                        </td>                                        
+                                        </td>
                                         <td>@(item.DeveloperUser?.FullName ?? "Unassigned")</td>
-                                         <td><span class="badge bg-light-success text-success font-weight-medium">@Html.DisplayFor(modelItem => item.TicketStatus.Name)</span></td>
+                                        <td><span class="badge bg-light-success text-success font-weight-medium">@Html.DisplayFor(modelItem => item.TicketStatus.Name)</span></td>
                                         <td><span class="font-weight-medium link">@Html.DisplayFor(modelItem => item.Title)</span></td>
                                         <td><a asp-action="Details" asp-controller="Projects" asp-route-id="@item.Id" class="fw-bold link">@Html.DisplayFor(modelItem => item.Project.Name)</a></td>
                                         <td>@item.Created.ToString("MMM dd, yyyy") </td> @*/*.ToString("MMM dd, yyyy"))*/*@
                                         <td>@(item.Updated.HasValue ? item.Updated.Value.ToString("MMM dd, yyyy") : item.Created.ToString("MMM dd, yyyy"))</td>
-                                        <!--
-                                            
-                                        -->
                                         <td><span class="badge bg-light-info text-info font-weight-bold">@Html.DisplayFor(modelItem => item.TicketType.Name)</span></td>
                                         <td><span class="badge bg-light-danger text-danger font-weight-medium">@Html.DisplayFor(modelItem => item.TicketPriority.Name)</span></td>
+                                        @if (User.IsInRole("Admin"))
+                                        {
+                                            <td><input class="form-check-input me-3" type="checkbox" asp-action="ArchiveProject" /></td>
+                                        }
+                                        @if (User.IsInRole("ProjectManager"))
+                                        {
+                                            <td><input class="form-check-input me-3" type="checkbox" asp-action="ArchiveProject" /></td>
+                                        }
+
                                         <td>
                                             @if (User.IsInRole("Admin"))
                                             {
@@ -131,11 +150,11 @@
                                             {
                                                 <a asp-action="AssignTicketDev" asp-controller="Tickets" asp-route-id="@item.Id">Assign Developer</a> <span>|</span>
                                             }
-                                            <a asp-action="Edit" asp-route-id="@item.Id"><i class="bi bi-pencil-fill text-warning fs-6 p-2"></i></a> 
-                                            <a asp-action="Details" asp-route-id="@item.Id"><i class="bi bi-info-circle text-info fs-6 p-2"></i></a> 
-                                            <a asp-action="Delete" asp-route-id="@item.Id"><i class="bi bi-trash-fill text-danger fs-6 p-2"></i></a> 
+                                            <a asp-action="Edit" asp-route-id="@item.Id"><i class="bi bi-pencil-fill text-warning fs-6 p-2"></i></a>
+                                            <a asp-action="Details" asp-route-id="@item.Id"><i class="bi bi-info-circle text-info fs-6 p-2"></i></a>
+                                            <a asp-action="Delete" asp-route-id="@item.Id"><i class="bi bi-trash-fill text-danger fs-6 p-2"></i></a>
                                         </td>
-                                     </tr>
+                                    </tr>
                                 }
 
                             </tbody>
@@ -150,6 +169,18 @@
                                     <th>Updated</th>
                                     <th>Ticket Type</th>
                                     <th>Ticket Priority</th>
+                                    @if (User.IsInRole("Admin"))
+                                    {
+                                        <th>
+                                            Archive Ticket?
+                                        </th>
+                                    }
+                                    @if (User.IsInRole("ProjectManager"))
+                                    {
+                                        <th>
+                                            Archive Ticket?
+                                        </th>
+                                    }
                                     @if (User.IsInRole("Admin"))
                                     {
                                         <th> Assign Developer | Edit | Details | Delete</th>
