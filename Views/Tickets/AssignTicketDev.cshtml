@@ -16,7 +16,9 @@
             <form asp-action="AssignTicketDev" asp-controller="Tickets" method="post" class="d-flex flex-column">
                 <input type="hidden" asp-for="Ticket!.Id" />
                 <select asp-items="Model.DevList" asp-for="SelectedDev" class="form-control" required>
+                    <option>Unassigned</option>
                 </select>
+
                 <span asp-validation-for="SelectedDev" class="text-danger"></span>
                 <button type="submit" class="btn btn-primary my-3">Save</button>
                 <a asp-action="Details" asp-route-id="@Model.Ticket?.Id" class="btn btn-secondary">Cancel</a>

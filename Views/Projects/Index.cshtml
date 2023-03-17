@@ -67,26 +67,14 @@
                     <div class="table-responsive mt-4">
                         <table id="zero_config" class="table table-bordered table-striped no-wrap fs-3">
                             <thead>
-                                <p class="text-success fs-6">Filter by any property via clicking the Headings or via the Search Box.</p>
+
                                 <tr class="fs-4 font-weight-bold">
-                                    <th>Project Manager</th>
-                                    <th >@Html.DisplayNameFor(model => model.Name)</th>
-                                    <th>@Html.DisplayNameFor(model => model.Created)</th>
-                                    <th>@Html.DisplayNameFor(model => model.StartDate)</th>
-                                    <th>@Html.DisplayNameFor(model => model.EndDate)</th>
-                                    <th>@Html.DisplayNameFor(model => model.ProjectPriority)</th>
-                                    @if (User.IsInRole("Admin"))
-                                    {
-                                        <th>
-                                            Archive Project?
-                                        </th>
-                                    }
-                                    @if (User.IsInRole("ProjectManager"))
-                                    {
-                                        <th>
-                                            Archive Project?
-                                        </th>
-                                    }
+                                    <th role="button"><i class="bi bi-sort-down"></i>Project Manager</th>
+                                    <th role="button"><i class="bi bi-sort-down"></i>@Html.DisplayNameFor(model => model.Name)</th>
+                                    <th role="button"><i class="bi bi-sort-down"></i>@Html.DisplayNameFor(model => model.Created)</th>
+                                    <th role="button"><i class="bi bi-sort-down"></i>@Html.DisplayNameFor(model => model.StartDate)</th>
+                                    <th role="button"><i class="bi bi-sort-down"></i>@Html.DisplayNameFor(model => model.EndDate)</th>
+                                    <th role="button"><i class="bi bi-sort-down"></i>@Html.DisplayNameFor(model => model.ProjectPriority)</th>                                 
                                     @if (User.IsInRole("Admin"))
                                     {
                                         <th> Assign Members & Project Managers <div></div>| Edit | Details | Delete</th>
@@ -121,15 +109,7 @@
                                         <td><span> @Html.DisplayFor(modelItem => item.Created)</span></td>
                                         <td><span class="font-weight-medium "> @Html.DisplayFor(modelItem => item.StartDate)</span></td>
                                         <td><span class="font-weight-medium ">@Html.DisplayFor(modelItem => item.EndDate)</span></td>
-                                        <td><span class="badge bg-light-danger text-danger font-weight-medium">@Html.DisplayFor(modelItem => item.ProjectPriority.Name)</span></td>
-                                        @if (User.IsInRole("Admin"))
-                                        {
-                                            <td><input class="form-check-input me-3" type="checkbox" asp-action="ArchiveProject" /></td>
-                                        }
-                                        @if (User.IsInRole("ProjectManager"))
-                                        {
-                                            <td><input class="form-check-input me-3" type="checkbox" asp-action="ArchiveProject" /></td>
-                                        }
+                                        <td><span class="badge bg-light-danger text-danger font-weight-medium fs-3">@Html.DisplayFor(modelItem => item.ProjectPriority.Name)</span></td>                                   
                                         <td>
                                             @if (User.IsInRole("Admin"))
                                             {
@@ -159,19 +139,7 @@
                                     <th>@Html.DisplayNameFor(model => model.Created)</th>
                                     <th>@Html.DisplayNameFor(model => model.StartDate)</th>
                                     <th>@Html.DisplayNameFor(model => model.EndDate)</th>
-                                    <th>@Html.DisplayNameFor(model => model.ProjectPriority)</th>
-                                    @if (User.IsInRole("Admin"))
-                                    {
-                                        <th>
-                                            Archive Ticket?
-                                        </th>
-                                    }
-                                    @if (User.IsInRole("ProjectManager"))
-                                    {
-                                        <th>
-                                            Archive Ticket?
-                                        </th>
-                                    }
+                                    <th>@Html.DisplayNameFor(model => model.ProjectPriority)</th>                                                               
                                     @if (User.IsInRole("Admin"))
                                     {
                                         <th> Assign Members & Project Managers <div></div> | Edit | Details | Delete</th>

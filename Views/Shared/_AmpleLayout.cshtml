@@ -105,7 +105,7 @@
                         <!-- ============================================================== -->
                         <!-- Messages -->
                         <!-- ============================================================== -->
-                        <li class="nav-item dropdown">
+@*                        <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle waves-effect waves-dark" href="" id="2" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <i class="fs-5 mdi mdi-gmail"></i>
                                 <div class="notify">
@@ -190,7 +190,7 @@
                                     </li>
                                 </ul>
                             </div>
-                        </li>
+                        </li>*@
                         <!-- ============================================================== -->
                         <!-- Comment -->
                         <!-- ============================================================== -->
@@ -213,57 +213,24 @@
                                         <div class="message-center notifications position-relative"
                                              style="height:230px;">
                                             <!-- Message -->
-                                            <a href="javascript:void(0)"
-                                               class="message-item d-flex align-items-center border-bottom px-3 py-2">
-                                                <span class="btn btn-light-danger text-danger btn-circle">
-                                                    <i data-feather="link" class="feather-sm fill-white"></i>
-                                                </span>
-                                                <div class="w-75 d-inline-block v-middle ps-3">
-                                                    <h5 class="message-title mb-0 mt-1 fs-3 fw-bold">Luanch Admin</h5> <span class="fs-2 text-nowrap d-block time text-truncate fw-normal text-muted mt-1">
-                                                        Just see
-                                                        the my new admin!
-                                                    </span> <span class="fs-2 text-nowrap d-block subtext text-muted">9:30 AM</span>
-                                                </div>
-                                            </a>
-                                            <!-- Message -->
-                                            <a href="javascript:void(0)"
-                                               class="message-item d-flex align-items-center border-bottom px-3 py-2">
-                                                <span class="btn btn-light-success text-success btn-circle">
-                                                    <i data-feather="calendar" class="feather-sm fill-white"></i>
-                                                </span>
-                                                <div class="w-75 d-inline-block v-middle ps-3">
-                                                    <h5 class="message-title mb-0 mt-1 fs-3 fw-bold">Event today</h5> <span class="fs-2 text-nowrap d-block time text-truncate fw-normal text-muted mt-1">
-                                                        Just a
-                                                        reminder that you have event
-                                                    </span> <span class="fs-2 text-nowrap d-block subtext text-muted">9:10 AM</span>
-                                                </div>
-                                            </a>
-                                            <!-- Message -->
-                                            <a href="javascript:void(0)"
-                                               class="message-item d-flex align-items-center border-bottom px-3 py-2">
-                                                <span class="btn btn-light-info text-info btn-circle">
-                                                    <i data-feather="settings" class="feather-sm fill-white"></i>
-                                                </span>
-                                                <div class="w-75 d-inline-block v-middle ps-3">
-                                                    <h5 class="message-title mb-0 mt-1 fs-3 fw-bold">Settings</h5> <span class="fs-2 text-nowrap d-block time text-truncate fw-normal text-muted mt-1">
-                                                        You can
-                                                        customize this template as you want
-                                                    </span> <span class="fs-2 text-nowrap d-block subtext text-muted">9:08 AM</span>
-                                                </div>
-                                            </a>
-                                            <!-- Message -->
-                                            <a href="javascript:void(0)"
-                                               class="message-item d-flex align-items-center border-bottom px-3 py-2">
-                                                <span class="btn btn-light-primary text-primary btn-circle">
-                                                    <i data-feather="users" class="feather-sm fill-white"></i>
-                                                </span>
-                                                <div class="w-75 d-inline-block v-middle ps-3">
-                                                    <h5 class="message-title mb-0 mt-1 fs-3 fw-bold">Pavan kumar</h5> <span class="fs-2 text-nowrap d-block time text-truncate fw-normal text-muted mt-1">
-                                                        Just see
-                                                        the my admin!
-                                                    </span> <span class="fs-2 text-nowrap d-block subtext text-muted">9:02 AM</span>
-                                                </div>
-                                            </a>
+                                           @* @foreach (Notification? notification in Model.Notification)
+                                            {
+                                                <a href="javascript:void(0)"
+                                                   class="message-item d-flex align-items-center border-bottom px-3 py-2">
+                                                    <span class="btn btn-light-danger text-danger btn-circle">
+                                                        <i data-feather="link" class="feather-sm fill-white"></i>
+                                                    </span>
+                                                    <div class="w-75 d-inline-block v-middle ps-3">
+                                                        <h5 class="message-title mb-0 mt-1 fs-3 fw-bold">@notification?.Title</h5> <span class="fs-2 text-nowrap d-block time text-truncate fw-normal text-muted mt-1">
+                                                            @notification?.Project
+                                                            @notification?.Sender
+
+                                                        </span> <span class="fs-2 text-nowrap d-block subtext text-muted">@notification?.Created.ToString("MMM dd, yyyy");</span>
+                                                    </div>
+                                                </a>
+                                            }*@
+                                            
+
                                         </div>
                                     </li>
                                     <li>

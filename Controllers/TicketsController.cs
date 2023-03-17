@@ -427,6 +427,7 @@ namespace BugTracker.Controllers
 
 
         //get tickets archive 
+        [HttpGet]
         public async Task<IActionResult> TicketArchive(int? id)
         {
             if (id == null)
@@ -435,6 +436,7 @@ namespace BugTracker.Controllers
             }
 
             var ticket = await _ticketService.GetTicketsAsync(id.Value);
+
             if (ticket == null)
             {
                 return NotFound();
@@ -444,7 +446,7 @@ namespace BugTracker.Controllers
         }
 
         //post tickets archive 
-
+        [HttpPost]
         public async Task<IActionResult> TicketArchive(Ticket ticket)
         {
             ticket.Archived = true;
