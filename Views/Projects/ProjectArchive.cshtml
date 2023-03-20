@@ -28,18 +28,18 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-body">
-                    <h4 class="card-title">My Projects</h4>
+                    <h4 class="card-title">Archived Projects</h4>
 
-                    <div class="table-responsive mt-4">
+                    <div class="dt-responsive mt-4">
                         <table id="zero_config" class="table table-bordered table-striped no-wrap fs-3">
                             <thead>
                                 <tr class="fs-4 font-weight-bold">
-                                    <th>@Html.DisplayNameFor(model => model.Name)</th>
-                                    <th>@Html.DisplayNameFor(model => model.Created)</th>
-                                    <th>@Html.DisplayNameFor(model => model.StartDate)</th>
-                                    <th>@Html.DisplayNameFor(model => model.EndDate)</th>
-                                    <th>@Html.DisplayNameFor(model => model.Company)</th>
-                                    <th>@Html.DisplayNameFor(model => model.ProjectPriority)</th>
+                                    <th role="button"><i class="bi bi-sort-down"></i>@Html.DisplayNameFor(model => model.Name)</th>
+                                    <th role="button"><i class="bi bi-sort-down"></i>@Html.DisplayNameFor(model => model.Created)</th>
+                                    <th role="button"><i class="bi bi-sort-down"></i>@Html.DisplayNameFor(model => model.StartDate)</th>
+                                    <th role="button"><i class="bi bi-sort-down"></i>@Html.DisplayNameFor(model => model.EndDate)</th>
+                                    <th role="button"><i class="bi bi-sort-down"></i>@Html.DisplayNameFor(model => model.Company)</th>
+                                    <th role="button"><i class="bi bi-sort-down"></i>@Html.DisplayNameFor(model => model.ProjectPriority)</th>
                                     @if (User.IsInRole("Admin"))
                                     {
                                         <th>
@@ -115,3 +115,24 @@
 <!-- -------------------------------------------------------------- -->
 <!-- End Container fluid  -->
 <!-- -------------------------------------------------------------- -->
+<script src="../assets/libs/jquery/dist/jquery.min.js"></script>
+<!-- Bootstrap tether Core JavaScript -->
+<script src="../assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<!-- apps -->
+<script src="../../dist/js/app.min.js"></script>
+<script src="../../dist/js/app.init.js"></script>
+<script src="../../dist/js/app-style-switcher.js"></script>
+<!-- slimscrollbar scrollbar JavaScript -->
+<script src="../assets/libs/perfect-scrollbar/dist/perfect-scrollbar.jquery.min.js"></script>
+<script src="../assets/extra-libs/sparkline/sparkline.js"></script>
+<!--Wave Effects -->
+<script src="../../dist/js/waves.js"></script>
+<!--Menu sidebar -->
+<script src="../../dist/js/sidebarmenu.js"></script>
+<!--Custom JavaScript -->
+<script src="../../dist/js/feather.min.js"></script>
+<script src="../../dist/js/custom.min.js"></script>
+<!--This page plugins -->
+<script src="../assets/extra-libs/datatables.net/js/jquery.dataTables.min.js"></script>
+<script src="../assets/extra-libs/datatables.net-bs4/js/dataTables.responsive.min.js"></script>
+<script src="../../dist/js/pages/datatable/datatable-basic.init.js"></script>

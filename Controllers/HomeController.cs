@@ -1,5 +1,7 @@
 ﻿using BugTracker.Extensions;
 using BugTracker.Models;
+using BugTracker.Models.ChartModels;
+using BugTracker.Models.Enums.Enums;
 using BugTracker.Models.ViewModels;
 using BugTracker.Services;
 using BugTracker.Services.Interfaces;
@@ -20,7 +22,7 @@ namespace BugTracker.Controllers
             _logger = logger;
             _projectService = projectService;
             _companyService = companyService;
-            _ticketService = ticketService; 
+            _ticketService = ticketService;
         }
 
         public IActionResult Index()
@@ -31,25 +33,98 @@ namespace BugTracker.Controllers
                 return RedirectToAction(nameof(Dashboard));
             }
             return View();
-            
+
         }
 
 
-        public async Task<IActionResult> Dashboard(DashboardViewModel viewModel)
+        public async Task<IActionResult> Dashboard()
+        {
+            DashboardViewModel viewModel = new();
+
+
+            int companyId = User.Identity!.GetCompanyId();
+
+
+
+            viewModel.Company = await _companyService.GetCompanyInfoAsync(companyId);
+
+            viewModel.Projects = (await _projectService.GetAllProjectsAsync(companyId)).ToList();
+
+            viewModel.Tickets = (await _ticketService.GetTicketsAsync(companyId)).ToList();
+
+            viewModel.Members = await _companyService.GetMemberAsync(companyId);
+
+
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> GglProjectTickets()
         {
             int companyId = User.Identity!.GetCompanyId();
 
-            await _companyService.GetCompanyInfoAsync(companyId);
+            List<Project> projects = (await _projectService.GetAllProjectsByCompanyAsync(companyId)).ToList();
 
-            await _projectService.GetProjectsAsync(companyId);
+            List<object> chartData = new();
+            chartData.Add(new object[] { "ProjectName", "TicketCount" });
 
-            await _ticketService.GetTicketsAsync(companyId);
+            foreach (Project prj in projects)
+            {
+                chartData.Add(new object[] { prj.Name!, prj.Tickets.Count() });
+            }
 
-            await _companyService.GetMemberAsync(companyId);
+            return Json(chartData);
+        }
 
-           
 
-            return View();
+        [HttpPost]
+        public async Task<JsonResult> GglProjectPriority()
+        {
+            int companyId = User.Identity!.GetCompanyId();
+
+            List<Project> projects = (await _projectService.GetAllProjectsByCompanyAsync(companyId)).ToList();
+
+            List<object> chartData = new();
+            chartData.Add(new object[] { "Priority", "Count" });
+
+
+            foreach (string priority in Enum.GetNames(typeof(BTProjectPriorities)))
+            {
+                int priorityCount = (await _projectService.GetAllProjectsByPriorityAsync(companyId, priority)).Count();
+                chartData.Add(new object[] { priority, priorityCount });
+            }
+
+            return Json(chartData);
+        }
+
+
+        [HttpPost]
+        public async Task<JsonResult> AmCharts()
+        {
+
+            AmChartData amChartData = new();
+            List<AmItem> amItems = new();
+
+            int companyId = User.Identity!.GetCompanyId();
+
+            List<Project> projects = (await _projectService.GetAllProjectsAsync(companyId)).Where(p => p.Archived == false).ToList();
+
+            foreach (Project project in projects)
+            {
+                AmItem item = new();
+
+                item.Project = project.Name!;
+                item.Tickets = project.Tickets.Count;
+                item.Developers = (await _projectService.GetAllProjectMembersByRoleAsync(project.Id, nameof(BTRoles.Developer))).Count();
+
+                amItems.Add(item);
+            }
+
+            amChartData.Data = amItems.ToArray();
+
+
+            return Json(amChartData.Data);
         }
 
 

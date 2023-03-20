@@ -16,8 +16,6 @@ using BugTracker.Services.Interfaces;
 using BugTracker.Models.Enums.Enums;
 using BugTracker.Models.ViewModels;
 using System.ComponentModel.Design;
-using Microsoft.CodeAnalysis;
-using Org.BouncyCastle.Bcpg;
 
 namespace BugTracker.Controllers
 {
@@ -86,7 +84,7 @@ namespace BugTracker.Controllers
 
             string userId = _userManager.GetUserId(User)!;
 
-            BTUser? currentPM = await _projectService.GetProjectManagerAsync(projectId);
+            //BTUser? currentPM = await _projectService.GetProjectManagerAsync(projectId);
 
             List<Ticket> tickets = new List<Ticket>();
 
@@ -497,17 +495,19 @@ namespace BugTracker.Controllers
         }
 
         // GET: Tickets/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            int companyId = User.Identity.GetCompanyId();
+            int companyId = User.Identity!.GetCompanyId();
 
             Ticket ticket = new();
 
-            int currentProject= ticket.ProjectId!;
-
             ViewData["DeveloperUserId"] = new SelectList(_context.Users, "Id", "FullName");
 
-            ViewData["ProjectId"] = new SelectList(_context.Projects.Where(p => p.Id == companyId), "Id", "Name", currentProject);
+            IEnumerable<Project> projects = await _context.Projects
+                                                          .Where(p => p.Archived == false && p.CompanyId == companyId)
+                                                          .ToListAsync();
+
+            ViewData["ProjectId"] = new SelectList(projects, "Id", "Name");
 
             ViewData["TicketPriorityId"] = new SelectList(_context.TicketPriorities, "Id", "Name");
             ViewData["TicketStatusId"] = new SelectList(_context.TicketStatuses, "Id", "Name");

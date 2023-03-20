@@ -17,20 +17,20 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-body">
-                    <h4 class="card-title">My Tickets</h4>
-                    <div class="table-responsive mt-4">
+                    <h1 class="card-title">My Tickets</h1>
+                    <div class="dt-responsive mt-4">
                         <table id="zero_config" class="table table-bordered no-wrap fs-3">
                             <thead>
                                 <tr>
-                                    <th>@Html.DisplayNameFor(model => model.TicketStatus)</th>
-                                    <th>@Html.DisplayNameFor(model => model.Title)</th>
-                                    <th>@Html.DisplayNameFor(model => model.Project)</th>
-                                    <th>@Html.DisplayNameFor(model => model.Created)</th>
-                                    <th>@Html.DisplayNameFor(model => model.Updated)</th>
-                                    <th>@Html.DisplayNameFor(model => model.TicketType)</th>
-                                    <th>@Html.DisplayNameFor(model => model.TicketPriority)</th>
-                                    <th>@Html.DisplayNameFor(model => model.DeveloperUser)</th>
-                                    <th>Edit | Details | Delete</th>
+                                    <th role="button"><i class="bi bi-sort-down">@Html.DisplayNameFor(model => model.TicketStatus)</th>
+                                    <th role="button"><i class="bi bi-sort-down">@Html.DisplayNameFor(model => model.Title)</th>
+                                    <th role="button"><i class="bi bi-sort-down">@Html.DisplayNameFor(model => model.Project)</th>
+                                    <th role="button"><i class="bi bi-sort-down">@Html.DisplayNameFor(model => model.Created)</th>
+                                    <th role="button"><i class="bi bi-sort-down">@Html.DisplayNameFor(model => model.Updated)</th>
+                                    <th role="button"><i class="bi bi-sort-down">@Html.DisplayNameFor(model => model.TicketType)</th>
+                                    <th role="button"><i class="bi bi-sort-down">@Html.DisplayNameFor(model => model.TicketPriority)</th>
+                                    <th role="button"><i class="bi bi-sort-down">@Html.DisplayNameFor(model => model.DeveloperUser)</th>
+                                    <th role="button"><i class="bi bi-sort-down">Edit | Details | Delete</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -53,7 +53,7 @@
                                         </td>
                                     </tr>
                                 }
-                                <i class="bi bi-info-circle text-info fs-6"></i>
+
                             </tbody>
                             <tfoot>
                                 <tr>

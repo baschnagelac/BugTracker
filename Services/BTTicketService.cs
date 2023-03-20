@@ -161,6 +161,12 @@ namespace BugTracker.Services
             List<Ticket> tickets= new();
             tickets = await _context.Tickets
                                    .Where(c => c.Project!.CompanyId == companyId)
+                                   .Include(c => c.TicketStatus)
+                                   .Include(c => c.TicketType)
+                                   .Include(c => c.TicketPriority)
+                                   .Include(c => c.Attachments)
+                                   .Include(c => c.Comments)
+                                   .Include(c => c.Histories)
                                    .ToListAsync();
 
             return tickets;

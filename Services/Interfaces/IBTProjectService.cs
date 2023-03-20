@@ -21,11 +21,15 @@ namespace BugTracker.Services.Interfaces
 
 
 
+        public Task<IEnumerable<Project>> GetAllProjectsByCompanyAsync(int companyId);
+        public Task<IEnumerable<Project>> GetAllProjectsByPriorityAsync(int companyId, string projectPriority);
+        public Task<IEnumerable<BTUser>> GetAllProjectMembersByRoleAsync(int projectId, string roleName);
 
 
 
-		//      //get projectS
-		public Task<IEnumerable<Project>> GetProjectsAsync(int companyId);
+
+        //      //get projectS
+        public Task<IEnumerable<Project>> GetAllProjectsAsync(int companyId);
 
 		////add project async 
 		//public Task AddProjectAsync(Project project);

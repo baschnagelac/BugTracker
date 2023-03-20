@@ -240,7 +240,7 @@ namespace BugTracker.Controllers
                 return NotFound();
             }
 
-            var project = await _projectService.GetProjectsAsync(id.Value);
+            var project = (await _projectService.GetAllProjectsAsync(id.Value)).Where(p=>p.Archived == true);
             if (project == null)
             {
                 return NotFound();
@@ -250,18 +250,18 @@ namespace BugTracker.Controllers
         }
 
         //post tickets archive 
-        [HttpPost]
-        [Authorize(Roles = "Admin, ProjectManager")]
-        public async Task<IActionResult> ProjectArchive(Project project)
-        {
-            project.Archived = true;
-            _context.Update(project);
-            await _context.SaveChangesAsync();
+        //[HttpPost]
+        //[Authorize(Roles = "Admin, ProjectManager")]
+        //public async Task<IActionResult> ProjectArchive(Project project)
+        //{
+        //    project.Archived = true;
+        //    _context.Update(project);
+        //    await _context.SaveChangesAsync();
 
-            return RedirectToAction(nameof(ProjectArchive));
+        //    return RedirectToAction(nameof(ProjectArchive));
 
 
-        }
+        //}
 
         public IActionResult ArchiveCheckP()
         {
