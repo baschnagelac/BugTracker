@@ -1,112 +1,90 @@
-﻿@model IEnumerable<BugTracker.Models.Ticket>
+﻿@model BugTracker.Models.Ticket
+
+@using BugTracker.Services.Interfaces
+@using Microsoft.AspNetCore.Identity
+@using BugTracker.Models.Enums.Enums
+
+@inject IBTFileService _BTFileService
+@inject IBTProjectService _ProjectService
 
 @{
     ViewData["Title"] = "TicketArchive";
 }
 
 
-<!-- -------------------------------------------------------------- -->
-<!-- Container fluid  -->
-<!-- -------------------------------------------------------------- -->
-<div class="container-fluid page-content">
-    <!-- -------------------------------------------------------------- -->
-    <!-- Start Page Content -->
-    <!-- -------------------------------------------------------------- -->
-    <!-- basic table -->
-    <div class="row">
-        <div class="col-12">
-            <div class="card">
-                <div class="card-body">
-                    <h4 class="card-title">Archived Tickets</h4>
-                    <div class="dt-responsive mt-4">
-                        <table id="zero_config" class="table table-bordered no-wrap fs-3">
-                            <thead>
-                                <tr>
-                                    <th role="button"><i class="bi bi-sort-down"></i>@Html.DisplayNameFor(model => model.TicketStatus)</th>
-                                    <th role="button"><i class="bi bi-sort-down"></i>@Html.DisplayNameFor(model => model.Title)</th>
-                                    <th role="button"><i class="bi bi-sort-down"></i>@Html.DisplayNameFor(model => model.Project)</th>
-                                    <th role="button"><i class="bi bi-sort-down"></i>@Html.DisplayNameFor(model => model.Created)</th>
-                                    <th role="button"><i class="bi bi-sort-down"></i>@Html.DisplayNameFor(model => model.Updated)</th>
-                                    <th role="button"><i class="bi bi-sort-down"></i>@Html.DisplayNameFor(model => model.TicketType)</th>
-                                    <th role="button"><i class="bi bi-sort-down"></i>@Html.DisplayNameFor(model => model.TicketPriority)</th>
-                                    @if (User.IsInRole("Admin"))
-                                    {
-                                        <th>
-                                            Archive Ticket?
-                                        </th>
-                                    }
-                                    @if (User.IsInRole("ProjectManager"))
-                                    {
-                                        <th>
-                                            Archive Ticket?
-                                        </th>
-                                    }
-                                    <th>Edit | Details | Delete</th>
-                                </tr>
-                            </thead>
-                            <tbody>
+@{
+    
 
-                                @foreach (var item in Model)
-                                {
-                                    <tr>
-                                        <td><span class="badge bg-light-warning text-warning font-weight-medium">@Html.DisplayFor(modelItem => item.TicketStatus.Name)</span></td>
-                                        <td><a href="ticket-detail.html" class="font-weight-medium link">@Html.DisplayFor(modelItem => item.Title)</a></td>
-                                        <td><a href="ticket-detail.html" class="fw-bold link">@Html.DisplayFor(modelItem => item.Project.Name)</a></td>
-                                        <td>@Html.DisplayFor(modelItem => item.Created)</td>
-                                        <td>@Html.DisplayFor(modelItem => item.Updated)</td>
-                                        <td>@Html.DisplayFor(modelItem => item.TicketType.Name)</td>
-                                        <td>@Html.DisplayFor(modelItem => item.TicketPriority.Name)</td>
-                                        @if (User.IsInRole("Admin"))
-                                        {
-                                            <td><input class="form-check-input me-3" type="checkbox" asp-action="ArchiveProject" /></td>
-                                        }
-                                        @if (User.IsInRole("ProjectManager"))
-                                        {
-                                            <td><input class="form-check-input me-3" type="checkbox" asp-action="ArchiveProject" /></td>
-                                        }
-                                        <td>
-                                            <a asp-action="Edit" asp-route-id="@item.Id"><i class="bi bi-pencil-fill text-warning fs-6 p-2"></i></a>
-                                            <a asp-action="Details" asp-route-id="@item.Id"><i class="bi bi-info-circle text-info fs-6 p-2"></i></a>
-                                            <a asp-action="Delete" asp-route-id="@item.Id"><i class="bi bi-trash-fill text-danger fs-6 p-2"></i></a>
-                                        </td>
-                                    </tr>
-                                }
-                                <i class="bi bi-info-circle text-info fs-6"></i>
-                            </tbody>
-                            <tfoot>
-                                <tr>
-                                    <th>Ticket Status</th>
-                                    <th>Title</th>
-                                    <th>Project</th>
-                                    <th>Created</th>
-                                    <th>Updated</th>
-                                    <th>Ticket Type</th>
-                                    <th>Ticket Priority</th>
-                                    @if (User.IsInRole("Admin"))
-                                    {
-                                        <th>
-                                            Archive Ticket?
-                                        </th>
-                                    }
-                                    @if (User.IsInRole("ProjectManager"))
-                                    {
-                                        <th>
-                                            Archive Ticket?
-                                        </th>
-                                    }
-                                    <th>Edit | Details | Delete</th>
-                                </tr>
-                            </tfoot>
-                        </table>
+    Project project = new();
+
+    Ticket ticket = new();
+}
+
+
+<div class="row">
+    <div class="col-12 col-md-8 offset-md-2">
+        <h2>Are you sure?</h2>
+        <p class="text-lead text-muted">This ticket will be archived and no longer available for development.</p>
+        <div class="card mb-3">
+            <div class="row g-0">
+
+                <div class="col-md-5">
+                    <div class="card-body">
+
+                        <div class="form-group row align-items-center mb-0">
+                            <label asp-for="Title" class="col-4 text-end control-label col-form-label"><strong>Ticket Title</strong></label>
+                            <div class="col-8 border-start pb-2 pt-2">
+                                @Model.Title
+                            </div>
+                        </div>
+                        <div class="form-group row align-items-center mb-0">
+                            <label asp-for="Description" class="col-4 text-end control-label col-form-label">Description</label>
+                            <div class="col-8 border-start pb-2 pt-2">
+                                @Model.Description
+                            </div>
+                        </div>
+                        <div class="form-group row align-items-center mb-0">
+                            <label asp-for="ProjectId" class="col-4 text-end control-label col-form-label"><strong>For the Project: </strong></label>
+                            <div class="col-8 border-start pb-2 pt-2 fs-5">
+                                @Model.Project.Name | 
+                                <img src="@_BTFileService.ConvertByteArrayToFile(project.ImageFileData!,project.ImageFileType!,(int)DefaultImage.ProjectImage)" height="100" class="rounded-3" id="projectimage" height="100" alt="Project Image" />
+                            </div>
+                        </div>
+                        <div class="form-group row align-items-center mb-0">
+                            <label asp-for="TicketTypeId" class="col-4 text-end control-label col-form-label"><strong>Ticket Type</strong> </label>
+                            <div class="col-8 border-start pb-2 pt-2 badge bg-light-info text-info font-weight-medium fs-3">
+                                @Model.TicketType.Name
+                            </div>
+                        </div>
+                        <div class="form-group row align-items-center mb-0">
+                            <label asp-for="TicketStatusId" class="col-4 text-end control-label col-form-label"><strong>Ticket Status</strong> </label>
+                            <div class="col-8 border-start pb-2 pt-2 badge bg-light-success text-success font-weight-medium fs-3">
+                                @Model.TicketStatus.Name
+                            </div>
+                        </div>
+                        <div class="form-group row align-items-center mb-0">
+                            <label asp-for="TicketPriorityId" class="col-4 text-end control-label col-form-label"><strong>Ticket Priority</strong></label>
+                            <div class="col-8 border-start pb-2 pt-2 badge bg-light-danger text-danger font-weight-medium fs-3">
+                                @Model.TicketPriority.Name
+                            </div>
+                        </div>
+                        <div class="form-group row align-items-center mb-0">
+                            <label asp-for="DeveloperUserId" class="col-4 text-end control-label col-form-label"><strong>Assigned to: </strong></label>
+                            <div class="col-8 border-start pb-2 pt-2 ">
+                                @Model.DeveloperUser.FullName
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
+        <form class="d-flex justify-content-between" asp-action="Archive" >
+            <input hidden asp-for="Id" />
+            <a asp-action="Index" asp-controller="Tickets" class="btn btn-outline-secondary rounded-pill btnLink">Cancel</a>
+            <input type="submit" value="Archive" class="btn btn-danger rounded-pill btnLink">
+        </form>
     </div>
 </div>
-<!-- -------------------------------------------------------------- -->
-<!-- End Container fluid  -->
-<!-- -------------------------------------------------------------- -->
 <script src="../assets/libs/jquery/dist/jquery.min.js"></script>
 <!-- Bootstrap tether Core JavaScript -->
 <script src="../assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>

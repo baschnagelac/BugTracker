@@ -183,14 +183,21 @@ namespace BugTracker.Controllers
 
 
         // GET: Projects
-        public async Task<IActionResult> Index(int? ticketId)
+        public async Task<IActionResult> Index(Project project)
         {
 
 
             int companyId = User.Identity!.GetCompanyId();
 
+            if (project.ImageFormFile != null)
+            {
+                project.ImageFileData = await _btFileService.ConvertFileToByteArrayAsync(project.ImageFormFile);
+                project.ImageFileType = project.ImageFormFile.ContentType;
+            }
+
             IEnumerable<Project> projects = await _context.Projects
                                                           .Where(p => p.Archived == false && p.CompanyId == companyId)
+                                                          .Include(p => p.Members)
                                                           .Include(p => p.Members)
                                                           .Include(p => p.ProjectPriority)
                                                           .Include(p => p.Tickets)

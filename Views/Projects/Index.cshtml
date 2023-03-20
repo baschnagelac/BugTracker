@@ -44,28 +44,7 @@
             <div class="card">
                 <div class="card-body">
                     <h4 class="card-title">Projects</h4>
-                    <div class="row mt-4">
-                        <!-- Column -->
-                        <div class="col-md-6 col-lg-3 col-xlg-3">
-                            <div class="card card-hover">
-                                <div class="p-2 rounded bg-light-primary text-center">
-                                    <h1 class="fw-light text-primary">2222</h1>
-                                    <h6 class="text-primary">Total Projects</h6>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Column -->
-                        <div class="col-md-6 col-lg-3 col-xlg-3">
-                            <div class="card card-hover">
-                                <div class="p-2 rounded bg-light-danger text-center">
-                                    <h1 class="fw-light text-danger">964</h1>
-                                    <h6 class="text-danger">Finished Projects</h6>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Column -->
-                    </div>
+                    @*Info Pills go here*@
                     <div class="dt-responsive mt-4">
                         <table id="zero_config" class="table table-bordered table-striped no-wrap fs-3">
                             <thead>
@@ -107,7 +86,7 @@
                                             }
                                             @fullName
                                         </td>
-                                        <td><span class="font-weight-medium ">@Html.DisplayFor(modelItem => item.Name) <div></div><img src="@_BTFileService.ConvertByteArrayToFile(item.ImageFileData!,item.ImageFileType!,(int)DefaultImage.ProjectImage)" alt="Project Image" height="100" class="rounded-3 mt-1" /></span></td>
+                                        <td><span class="font-weight-medium ">@Html.DisplayFor(modelItem => item.Name) <div></div><img src="@_BTFileService.ConvertByteArrayToFile(item.ImageFileData!,item.ImageFileType!,(int)DefaultImage.ProjectImage)" alt="Project Image" height="100" class="rounded-3 mt-1" id="projectimage" /></span></td>
                                         <td><span> @Html.DisplayFor(modelItem => item.Created)</span></td>
                                         <td><span class="font-weight-medium "> @Html.DisplayFor(modelItem => item.StartDate)</span></td>
                                         <td><span class="font-weight-medium ">@Html.DisplayFor(modelItem => item.EndDate)</span></td>

@@ -190,6 +190,7 @@ namespace BugTracker.Services
                 List<Project> projects = new();
                 projects = await _context.Projects
                                        .Where(c => c.CompanyId == companyId)
+                                       .Include(c => c.Tickets)
                                        .ToListAsync();
 
                 return projects;

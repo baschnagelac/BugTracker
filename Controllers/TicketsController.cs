@@ -30,12 +30,13 @@ namespace BugTracker.Controllers
         private readonly IBTTicketHistoryService _historyService;
         private readonly IBTProjectService _projectService;
         private readonly IBTNotificationService _notificationService;
+        private readonly IBTCompanyService _companyService;
 
         public TicketsController(ApplicationDbContext context, UserManager<BTUser> userManager,
                                  IBTFileService bTFileService,
                                  IBTTicketService ticketService,
                                  IBTRolesService rolesService,
-                                 IBTTicketHistoryService historyService, IBTProjectService projectService, IBTNotificationService notificationService)
+                                 IBTTicketHistoryService historyService, IBTProjectService projectService, IBTNotificationService notificationService, IBTCompanyService companyService)
         {
             _context = context;
             _userManager = userManager;
@@ -45,6 +46,7 @@ namespace BugTracker.Controllers
             _historyService = historyService;
             _projectService = projectService;
             _notificationService = notificationService;
+            _companyService = companyService;
         }
 
         // GET: Tickets
@@ -424,42 +426,7 @@ namespace BugTracker.Controllers
 
 
 
-        //get tickets archive 
-        [HttpGet]
-        public async Task<IActionResult> TicketArchive(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
 
-            var ticket = await _ticketService.GetTicketsAsync(id.Value);
-
-            if (ticket == null)
-            {
-                return NotFound();
-            }
-
-            return View(ticket);
-        }
-
-        //post tickets archive 
-        [HttpPost]
-        public async Task<IActionResult> TicketArchive(Ticket ticket)
-        {
-            ticket.Archived = true;
-            _context.Update(ticket);
-            await _context.SaveChangesAsync();
-
-            return RedirectToAction(nameof(TicketArchive));
-
-
-        }
-
-        public IActionResult ArchiveCheckT()
-        {
-            return View();
-        }
 
 
 
@@ -501,7 +468,11 @@ namespace BugTracker.Controllers
 
             Ticket ticket = new();
 
-            ViewData["DeveloperUserId"] = new SelectList(_context.Users, "Id", "FullName");
+            await _companyService.GetMemberAsync(companyId);
+
+            //ViewData["DeveloperUserId"] = new SelectList(_context.Users, "Id", "FullName");
+
+            ViewData["DeveloperUserId"] = new SelectList(await _companyService.GetMemberAsync(companyId), "Id", "FullName");
 
             IEnumerable<Project> projects = await _context.Projects
                                                           .Where(p => p.Archived == false && p.CompanyId == companyId)
@@ -747,7 +718,7 @@ namespace BugTracker.Controllers
         }
 
         // GET: Tickets/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> TicketArchive(int? id)
         {
             if (id == null || _context.Tickets == null)
             {
@@ -770,19 +741,31 @@ namespace BugTracker.Controllers
         }
 
         // POST: Tickets/Delete/5
-        [HttpPost, ActionName("Delete")]
+        [HttpPost, ActionName("Archive")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> TicketArchiveConfirmed(int id)
         {
             if (_context.Tickets == null)
             {
                 return Problem("Entity set 'ApplicationDbContext.Tickets'  is null.");
             }
             int companyId = User.Identity.GetCompanyId();
-            var ticket = await _context.Tickets.FindAsync(id);
+
+
+
+            //var ticket = await _context.Tickets.FindAsync(id);
+            var ticket = await _context.Tickets
+               .Include(t => t.DeveloperUser)
+               .Include(t => t.Project)
+               .Include(t => t.TicketPriority)
+               .Include(t => t.TicketStatus)
+               .Include(t => t.TicketType)
+               .FirstOrDefaultAsync(m => m.Id == id);
+
             if (ticket != null)
             {
-                _context.Tickets.Remove(ticket);
+                ticket.Archived = true;
+                _context.Update(ticket);
             }
 
             await _context.SaveChangesAsync();
@@ -794,5 +777,55 @@ namespace BugTracker.Controllers
             int companyId = User.Identity.GetCompanyId();
             return (_context.Tickets?.Any(e => e.Id == id)).GetValueOrDefault();
         }
+
+
+
+
+
+
+
+
+
+
+
+
+        ////get tickets archive 
+        //[HttpGet]
+        //public async Task<IActionResult> TicketArchive(int? id)
+        //{
+        //    if (id == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    var ticket = await _ticketService.GetTicketsAsync(id.Value);
+
+        //    if (ticket == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    return View(ticket);
+        //}
+
+        ////post tickets archive 
+        //[HttpPost]
+        //public async Task<IActionResult> TicketArchive(Ticket ticket)
+        //{
+        //    ticket.Archived = true;
+        //    _context.Update(ticket);
+        //    await _context.SaveChangesAsync();
+
+        //    return RedirectToAction(nameof(TicketArchive));
+
+
+        //}
+
+        //public IActionResult ArchiveCheckT()
+        //{
+        //    return View();
+        //}
+
+
     }
 }
