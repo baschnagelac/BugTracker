@@ -63,12 +63,7 @@
                             <select asp-for="DeveloperUserId" class="form-control" asp-items="ViewBag.DeveloperUserId"></select>
                         </div>
                     </div>
-                    <div class="form-group row align-items-center mb-0">
-                        <label asp-for="Archived" class="col-3 text-end control-label col-form-label">Archive Ticket?</label>
-                        <div class="col-9 border-start pb-2 pt-2">
-                            <input class="form-check-input me-3" type="checkbox" asp-action="ArchiveTicket" />
-                        </div>
-                    </div>
+
                    @* <div class="form-group form-check d-flex my-auto">
                         <label class="form-check-label my-auto me-4">
                             <input class="form-check-input me-3" type="checkbox" asp-action="ArchiveProject" /> Archive Project?

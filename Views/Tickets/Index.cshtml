@@ -30,8 +30,8 @@
                 <div class="card-body">
                     <h4 class="card-title">Tickets</h4>
                     @*Info Pills Go here *@
-                    <div class=" dt-responsive mt-4">
-                        <table id="zero_config" class="dt-responsive table table-bordered table-striped no-wrap fs-3">
+                    <div class="  mt-4">
+                        <table id="zero_config" class=" table table-bordered table-striped no-wrap fs-3">
                             <thead>
                                 <tr class="fs-4 font-weight-bold">
                                     <th role="button"><i class="bi bi-sort-down"></i>Project Manager</th>
@@ -46,19 +46,19 @@
 
                                     @if (User.IsInRole("Admin"))
                                     {
-                                        <th> Assign Developer | Edit | Details | Delete</th>
+                                        <th> Assign Developer | Edit | Details | Archive</th>
                                     }
                                     @if (User.IsInRole("ProjectManager"))
                                     {
-                                        <th>Assign Developer | Edit | Details | Delete</th>
+                                        <th>Assign Developer | Edit | Details | Archive</th>
                                     }
                                     @if (User.IsInRole("Developer"))
                                     {
-                                        <th>Edit | Details | Delete</th>
+                                        <th>Edit | Details </th>
                                     }
                                     @if (User.IsInRole("Submitter"))
                                     {
-                                        <th>Edit | Details | Delete</th>
+                                        <th>Edit | Details </th>
                                     }
 
                                 </tr>
@@ -95,7 +95,16 @@
                                             }
                                             <a asp-action="Edit" asp-route-id="@item.Id"><i class="bi bi-pencil-fill text-warning fs-6 p-2"></i></a>
                                             <a asp-action="Details" asp-route-id="@item.Id"><i class="bi bi-info-circle text-info fs-6 p-2"></i></a>
-                                            <a asp-action="TicketArchive" asp-route-id="@item.Id"><i class="bi bi-trash-fill text-danger fs-6 p-2"></i></a>
+
+                                            @if (User.IsInRole("Admin"))
+                                            {
+                                                <a asp-action="TicketArchive" asp-route-id="@item.Id"><i class="bi bi-archive text-danger fs-6 p-2"></i></a>
+                                            }
+                                            @if (User.IsInRole("ProjectManager"))
+                                            {
+                                                <a asp-action="TicketArchive" asp-route-id="@item.Id"><i class="bi bi-archive text-danger fs-6 p-2"></i></a>
+                                            }
+
                                         </td>
                                     </tr>
                                 }
@@ -114,19 +123,19 @@
                                     <th>Ticket Priority</th>                            
                                     @if (User.IsInRole("Admin"))
                                     {
-                                        <th> Assign Developer | Edit | Details | Delete</th>
+                                        <th> Assign Developer | Edit | Details | Archive</th>
                                     }
                                     @if (User.IsInRole("ProjectManager"))
                                     {
-                                        <th> Assign Developer | Edit | Details | Delete</th>
+                                        <th> Assign Developer | Edit | Details | Archive</th>
                                     }
                                     @if (User.IsInRole("Developer"))
                                     {
-                                        <th>Edit | Details | Delete</th>
+                                        <th>Edit | Details </th>
                                     }
                                     @if (User.IsInRole("Submitter"))
                                     {
-                                        <th>Edit | Details | Delete</th>
+                                        <th>Edit | Details </th>
                                     }
                                 </tr>
                             </tfoot>
@@ -140,30 +149,36 @@
 <!-- -------------------------------------------------------------- -->
 <!-- End Container fluid  -->
 <!-- -------------------------------------------------------------- -->
-<script>
-    let table = new DataTable('#zero_config');
-</script>
-<!-- -------------------------------------------------------------- -->
-<!-- All Jquery -->
-<!-- -------------------------------------------------------------- -->
-<script src="../assets/libs/jquery/dist/jquery.min.js"></script>
-<!-- Bootstrap tether Core JavaScript -->
-<script src="../assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-<!-- apps -->
-<script src="../../dist/js/app.min.js"></script>
-<script src="../../dist/js/app.init.js"></script>
-<script src="../../dist/js/app-style-switcher.js"></script>
-<!-- slimscrollbar scrollbar JavaScript -->
-<script src="../assets/libs/perfect-scrollbar/dist/perfect-scrollbar.jquery.min.js"></script>
-<script src="../assets/extra-libs/sparkline/sparkline.js"></script>
-<!--Wave Effects -->
-<script src="../../dist/js/waves.js"></script>
-<!--Menu sidebar -->
-<script src="../../dist/js/sidebarmenu.js"></script>
-<!--Custom JavaScript -->
-<script src="../../dist/js/feather.min.js"></script>
-<script src="../../dist/js/custom.min.js"></script>
-<!--This page plugins -->
-<script src="../assets/extra-libs/datatables.net/js/jquery.dataTables.min.js"></script>
-<script src="../assets/extra-libs/datatables.net-bs4/js/dataTables.responsive.min.js"></script>
-<script src="../../dist/js/pages/datatable/datatable-basic.init.js"></script>
+
+
+
+@section scripts{
+    <script>
+        let table = new DataTable('#zero_config');
+    </script>
+    <!-- -------------------------------------------------------------- -->
+    <!-- All Jquery -->
+    <!-- -------------------------------------------------------------- -->
+    <script src="../assets/libs/jquery/dist/jquery.min.js"></script>
+    <!-- Bootstrap tether Core JavaScript -->
+    <script src="../assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- apps -->
+    <script src="../../dist/js/app.min.js"></script>
+    <script src="../../dist/js/app.init.js"></script>
+    <script src="../../dist/js/app-style-switcher.js"></script>
+    <!-- slimscrollbar scrollbar JavaScript -->
+    <script src="../assets/libs/perfect-scrollbar/dist/perfect-scrollbar.jquery.min.js"></script>
+    <script src="../assets/extra-libs/sparkline/sparkline.js"></script>
+    <!--Wave Effects -->
+    <script src="../../dist/js/waves.js"></script>
+    <!--Menu sidebar -->
+    <script src="../../dist/js/sidebarmenu.js"></script>
+    <!--Custom JavaScript -->
+    <script src="../../dist/js/feather.min.js"></script>
+    <script src="../../dist/js/custom.min.js"></script>
+    <!--This page plugins -->
+    <script src="../assets/extra-libs/datatables.net/js/jquery.dataTables.min.js"></script>
+    <script src="../assets/extra-libs/datatables.net-bs4/js/dataTables.responsive.min.js"></script>
+    <script src="../../dist/js/pages/datatable/datatable-basic.init.js"></script>
+}
+

@@ -191,13 +191,13 @@ namespace BugTracker.Controllers
             {
                 BTUser? user = await _context.Users
                                              .Include(m => m.Projects)
-                                                .ThenInclude(t =>t.Tickets)
+                                                .ThenInclude(t => t.Tickets)
                                                     .ThenInclude(t => t.TicketPriority)
                                              .Include(m => m.Projects)
-                                                .ThenInclude(t =>t.Tickets)
+                                                .ThenInclude(t => t.Tickets)
                                                     .ThenInclude(t => t.TicketStatus)
                                              .Include(m => m.Projects)
-                                                .ThenInclude(t =>t.Tickets)
+                                                .ThenInclude(t => t.Tickets)
                                                     .ThenInclude(t => t.TicketType)
                                              .FirstOrDefaultAsync(m => m.Id == userId);
 
@@ -236,9 +236,34 @@ namespace BugTracker.Controllers
         }
 
 
+        //Get Archived Tickets 
+        [Authorize(Roles = $"{nameof(BTRoles.Admin)},{nameof(BTRoles.ProjectManager)}")]
+        public async Task<IActionResult> TicketArchiveIndex()
+        {
+            int companyId = User.Identity.GetCompanyId();
+
+            string userId = _userManager.GetUserId(User)!;
+
+            //BTUser? currentPM = await _projectService.GetProjectManagerAsync(projectId);
+
+            List<Ticket> tickets = new List<Ticket>();
+
+
+            tickets = await _context.Tickets
+                                    .Where(c => c.Archived == true)
+                                    .Include(t => t.DeveloperUser)
+                                    .Include(t => t.Project)
+                                    .Include(t => t.TicketPriority)
+                                    .Include(t => t.TicketStatus)
+                                    .Include(t => t.TicketType)
+                                    .ToListAsync();
 
 
 
+            return View(tickets);
+
+
+        }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
