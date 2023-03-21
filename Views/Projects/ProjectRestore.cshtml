@@ -8,7 +8,7 @@
 
 
 @{
-    ViewData["Title"] = "ProjectArchive";
+    ViewData["Title"] = "ProjectRestore";
 }
 
 
@@ -73,10 +73,10 @@
                 </div>
             </div>
         </div>
-        <form class="d-flex justify-content-between" asp-action="Archive">
+        <form class="d-flex justify-content-between" asp-action="Restore">
             <input hidden asp-for="Id" />
             <a asp-action="Index" asp-controller="Projects" class="btn btn-outline-secondary rounded-pill btnLink">Cancel</a>
-            <input type="submit" value="Archive" class="btn btn-danger rounded-pill btnLink">
+            <input type="submit" value="Restore" class="btn btn-success rounded-pill btnLink">
         </form>
     </div>
 </div>

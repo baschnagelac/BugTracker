@@ -16,6 +16,7 @@ using BugTracker.Services.Interfaces;
 using BugTracker.Models.Enums.Enums;
 using BugTracker.Models.ViewModels;
 using System.ComponentModel.Design;
+using Org.BouncyCastle.Bcpg;
 
 namespace BugTracker.Controllers
 {
@@ -63,7 +64,8 @@ namespace BugTracker.Controllers
 
 
             IEnumerable<Ticket> tickets =   _context.Tickets
-                                                        .Where(c => c.Project!.CompanyId == companyId)
+                                                    .Where(c => c.Archived == false)
+                                                    .Where(c => c.Project!.CompanyId == companyId)
                                                           .Include(t => t.DeveloperUser)
                                                .Include(t => t.Project)
                                                .Include(t => t.TicketPriority)
@@ -94,6 +96,7 @@ namespace BugTracker.Controllers
             {
                 tickets = await _context.Tickets
                                         .Where(c => c.SubmitterUserId == userId)
+                                        .Where(c => c.Archived == false)
                                         .Include(t => t.DeveloperUser)
                                         .Include(t => t.Project)
                                         .Include(t => t.TicketPriority)
@@ -110,6 +113,7 @@ namespace BugTracker.Controllers
             {
                 tickets = await _context.Tickets
                                          .Where(c => c.DeveloperUserId == userId)
+                                         .Where(c => c.Archived == false)
                                          .Include(t => t.Project)
                                          .Include(t => t.TicketPriority)
                                          .Include(t => t.TicketStatus)
@@ -137,6 +141,7 @@ namespace BugTracker.Controllers
                 tickets = user.Projects
                               .SelectMany(p => p.Tickets)
                               .Where(t => t.DeveloperUserId == null)
+                              .Where(c => c.Archived == false)
                               .ToList();
 
                 return View(tickets);
@@ -145,6 +150,7 @@ namespace BugTracker.Controllers
             {
                 tickets = await _context.Tickets
                         .Where(c => c.SubmitterUserId == userId)
+                        .Where(c => c.Archived == false)
                         .Include(t => t.DeveloperUser)
                         .Include(t => t.Project)
                         .Include(t => t.TicketPriority)
@@ -179,6 +185,7 @@ namespace BugTracker.Controllers
                 tickets = await _context.Tickets
                                          .Include(t => t.Project)
                                          .Where(c => c.DeveloperUserId == null && c.Project!.CompanyId == companyId)
+                                         .Where(c => c.Archived == false)
                                          .Include(t => t.TicketPriority)
                                          .Include(t => t.TicketStatus)
                                          .Include(t => t.TicketType)
@@ -204,6 +211,7 @@ namespace BugTracker.Controllers
                 tickets = user.Projects
                               .SelectMany(p => p.Tickets)
                               .Where(t => t.DeveloperUserId == null)
+                              .Where(c => c.Archived == false)
                               .ToList();
             }
             else if (User.IsInRole("Developer"))
@@ -223,6 +231,7 @@ namespace BugTracker.Controllers
                 tickets = user.Projects
                               .SelectMany(p => p.Tickets)
                               .Where(t => t.DeveloperUserId == null)
+                              .Where(c => c.Archived == false)
                               .ToList();
             }
 
@@ -326,6 +335,45 @@ namespace BugTracker.Controllers
             }
 
             return RedirectToAction("Details", new { id = ticketAttachment.TicketId, message = statusMessage });
+        }
+
+        // GET: TicketAttachments/Delete/5
+        public async Task<IActionResult> DeleteTicketAttachment(int? id)
+        {
+            if (id == null || _context.TicketAttachments == null)
+            {
+                return NotFound();
+            }
+
+            var ticketAttachment = await _context.TicketAttachments
+                .Include(t => t.BTUser)
+                .Include(t => t.Ticket)
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (ticketAttachment == null)
+            {
+                return NotFound();
+            }
+
+            return RedirectToAction(nameof(DeleteTicketAttachment), new { id = ticketAttachment.Id });
+        }
+
+        // POST: TicketAttachments/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteTicketAttachmentConfirmed(int id)
+        {
+            if (_context.TicketAttachments == null)
+            {
+                return Problem("Entity set 'ApplicationDbContext.TicketAttachments'  is null.");
+            }
+            var ticketAttachment = await _context.TicketAttachments.FindAsync(id);
+            if (ticketAttachment != null)
+            {
+                _context.TicketAttachments.Remove(ticketAttachment);
+            }
+
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(DeleteTicketAttachment), new { id = ticketAttachment.Id });
         }
 
         public async Task<IActionResult> ShowFile(int id)
@@ -616,8 +664,15 @@ namespace BugTracker.Controllers
             {
                 return NotFound();
             }
-            ViewData["DeveloperUserId"] = new SelectList(_context.Users, "Id", "FullName", ticket.DeveloperUserId);
-            ViewData["ProjectId"] = new SelectList(_context.Projects, "Id", "Description", ticket.ProjectId);
+            ViewData["DeveloperUserId"] = new SelectList(await _companyService.GetMemberAsync(companyId), "Id", "FullName", ticket.DeveloperUserId);
+            //ViewData["DeveloperUserId"] = new SelectList(_context.Users, "Id", "FullName", ticket.DeveloperUserId);
+
+            IEnumerable<Project> projects = await _context.Projects
+                                                         .Where(p => p.Archived == false && p.CompanyId == companyId)
+                                                         .ToListAsync();
+
+            ViewData["ProjectId"] = new SelectList(projects, "Id", "Name", ticket.ProjectId);
+            //ViewData["ProjectId"] = new SelectList(_context.Projects, "Id", "Description", ticket.ProjectId);
             ViewData["TicketPriorityId"] = new SelectList(_context.TicketPriorities, "Id", "Name", ticket.TicketPriorityId);
             ViewData["TicketStatusId"] = new SelectList(_context.TicketStatuses, "Id", "Name", ticket.TicketStatusId);
             ViewData["TicketTypeId"] = new SelectList(_context.TicketTypes, "Id", "Name", ticket.TicketTypeId);
@@ -742,7 +797,7 @@ namespace BugTracker.Controllers
             return View(ticket);
         }
 
-        // GET: Tickets/Delete/5
+        // GET: Tickets/Archive/5
         public async Task<IActionResult> TicketArchive(int? id)
         {
             if (id == null || _context.Tickets == null)
@@ -765,7 +820,7 @@ namespace BugTracker.Controllers
             return View(ticket);
         }
 
-        // POST: Tickets/Delete/5
+        // POST: Tickets/Archive/5
         [HttpPost, ActionName("Archive")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> TicketArchiveConfirmed(int id)
@@ -794,8 +849,66 @@ namespace BugTracker.Controllers
             }
 
             await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(TicketArchiveIndex));
+        }
+
+
+
+        // GET: Tickets/Restore/5
+        public async Task<IActionResult> TicketRestore(int? id)
+        {
+            if (id == null || _context.Tickets == null)
+            {
+                return NotFound();
+            }
+            int companyId = User.Identity.GetCompanyId();
+            var ticket = await _context.Tickets
+                .Include(t => t.DeveloperUser)
+                .Include(t => t.Project)
+                .Include(t => t.TicketPriority)
+                .Include(t => t.TicketStatus)
+                .Include(t => t.TicketType)
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (ticket == null)
+            {
+                return NotFound();
+            }
+
+            return View(ticket);
+        }
+
+        // POST: Tickets/Restore/5
+        [HttpPost, ActionName("Restore")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> TicketRestoreConfirmed(int id)
+        {
+            if (_context.Tickets == null)
+            {
+                return Problem("Entity set 'ApplicationDbContext.Tickets'  is null.");
+            }
+            int companyId = User.Identity.GetCompanyId();
+
+
+
+            //var ticket = await _context.Tickets.FindAsync(id);
+            var ticket = await _context.Tickets
+               .Include(t => t.DeveloperUser)
+               .Include(t => t.Project)
+               .Include(t => t.TicketPriority)
+               .Include(t => t.TicketStatus)
+               .Include(t => t.TicketType)
+               .FirstOrDefaultAsync(m => m.Id == id);
+
+            if (ticket != null)
+            {
+                ticket.Archived = false;
+                _context.Update(ticket);
+            }
+
+            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
+
 
         private bool TicketExists(int id)
         {

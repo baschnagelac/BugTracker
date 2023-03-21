@@ -46,11 +46,11 @@
 
                                     @if (User.IsInRole("Admin"))
                                     {
-                                        <th> Assign Developer | Edit | Details | Archive</th>
+                                        <th> Assign Developer | Edit | Details | Restore</th>
                                     }
                                     @if (User.IsInRole("ProjectManager"))
                                     {
-                                        <th>Assign Developer | Edit | Details | Archive</th>
+                                        <th>Assign Developer | Edit | Details | Restore</th>
                                     }
                                     @if (User.IsInRole("Developer"))
                                     {
@@ -98,11 +98,11 @@
 
                                             @if (User.IsInRole("Admin"))
                                             {
-                                                <a asp-action="TicketArchive" asp-route-id="@item.Id"><i class="bi bi-archive text-danger fs-6 p-2"></i></a>
+                                                <a asp-action="TicketRestore" asp-route-id="@item.Id"><i class="bi bi-door-open text-success fs-6 p-2"></i></a>
                                             }
                                             @if (User.IsInRole("ProjectManager"))
                                             {
-                                                <a asp-action="TicketArchive" asp-route-id="@item.Id"><i class="bi bi-archive text-danger fs-6 p-2"></i></a>
+                                                <a asp-action="TicketRestore" asp-route-id="@item.Id"><i class="bi bi-door-open text-success fs-6 p-2"></i></a>
                                             }
 
                                         </td>
@@ -123,11 +123,11 @@
                                     <th>Ticket Priority</th>
                                     @if (User.IsInRole("Admin"))
                                     {
-                                        <th> Assign Developer | Edit | Details | Archive</th>
+                                        <th> Assign Developer | Edit | Details | Restore</th>
                                     }
                                     @if (User.IsInRole("ProjectManager"))
                                     {
-                                        <th> Assign Developer | Edit | Details | Archive</th>
+                                        <th> Assign Developer | Edit | Details | Restore</th>
                                     }
                                     @if (User.IsInRole("Developer"))
                                     {

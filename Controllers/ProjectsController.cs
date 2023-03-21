@@ -225,6 +225,7 @@ namespace BugTracker.Controllers
 
             projects = await _context.Projects
                                      .Where(p => p.Members.Any(users => users.Id == userId))
+                                     .Where(c => c.Archived == false)
                                      .Include(p => p.Company)
                                      .Include(p => p.ProjectPriority)
                                      .ToListAsync();
@@ -239,41 +240,25 @@ namespace BugTracker.Controllers
 
 
         //get tickets archive 
-        [HttpGet]
-        public async Task<IActionResult> ProjectArchive(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var project = (await _projectService.GetAllProjectsAsync(id.Value)).Where(p=>p.Archived == true);
-            if (project == null)
-            {
-                return NotFound();
-            }
-
-            return View(project);
-        }
-
-        //post tickets archive 
-        //[HttpPost]
-        //[Authorize(Roles = "Admin, ProjectManager")]
-        //public async Task<IActionResult> ProjectArchive(Project project)
+        //[HttpGet]
+        //public async Task<IActionResult> ProjectArchive(int? id)
         //{
-        //    project.Archived = true;
-        //    _context.Update(project);
-        //    await _context.SaveChangesAsync();
+        //    if (id == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-        //    return RedirectToAction(nameof(ProjectArchive));
+        //    var project = (await _projectService.GetAllProjectsAsync(id.Value)).Where(p=>p.Archived == true);
+        //    if (project == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-
+        //    return View(project);
         //}
 
-        public IActionResult ArchiveCheckP()
-        {
-            return View();
-        }
+    
+
 
 
 
@@ -430,8 +415,8 @@ namespace BugTracker.Controllers
             return View(project);
         }
 
-        // GET: Projects/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        // GET: Projects/Archive/5
+        public async Task<IActionResult> ProjectArchive(int? id)
         {
             if (id == null || _context.Projects == null)
             {
@@ -452,20 +437,106 @@ namespace BugTracker.Controllers
             return View(project);
         }
 
-        // POST: Projects/Delete/5
-        [HttpPost, ActionName("Delete")]
+        // POST: Projects/Archive/5
+        [HttpPost, ActionName("Archive")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> ProjectArchiveConfirmed(int id)
         {
             if (_context.Projects == null)
             {
                 return Problem("Entity set 'ApplicationDbContext.Projects'  is null.");
             }
+
             int companyId = User.Identity.GetCompanyId();
-            var project = await _context.Projects.FindAsync(id);
+
+            //var project = await _context.Projects.FindAsync(id);
+            var project = await _context.Projects
+                                        .Include(p => p.Company)
+                                        .Include(p => p.ProjectPriority)
+                                        .FirstOrDefaultAsync(m => m.Id == id);
+
+
             if (project != null)
             {
-                _context.Projects.Remove(project);
+                project.Archived = true;
+                _context.Update(project);
+            }
+
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(ProjectArchiveIndex));
+        }
+
+        //Get Archived Projects
+        [Authorize(Roles = $"{nameof(BTRoles.Admin)},{nameof(BTRoles.ProjectManager)}")]
+        public async Task<IActionResult> ProjectArchiveIndex()
+        {
+            int companyId = User.Identity.GetCompanyId();
+
+            string userId = _userManager.GetUserId(User)!;
+
+            //BTUser? currentPM = await _projectService.GetProjectManagerAsync(projectId);
+
+            List<Project> projects = new List<Project>();
+
+
+            projects = await _context.Projects
+                                    .Where(c => c.Archived == true)
+                                    .Include(p => p.Company)
+                                     .Include(p => p.ProjectPriority)
+                                    .ToListAsync();
+
+
+
+            return View(projects);
+
+
+        }
+
+        // GET: Projects/Restore/5
+        public async Task<IActionResult> ProjectRestore(int? id)
+        {
+            if (id == null || _context.Projects == null)
+            {
+                return NotFound();
+            }
+
+            int companyId = User.Identity.GetCompanyId();
+
+            var project = await _context.Projects
+                .Include(p => p.Company)
+                .Include(p => p.ProjectPriority)
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (project == null)
+            {
+                return NotFound();
+            }
+
+            return View(project);
+        }
+
+        // POST: Projects/Restore/5
+        [HttpPost, ActionName("Restore")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ProjectRestoreConfirmed(int id)
+        {
+            if (_context.Projects == null)
+            {
+                return Problem("Entity set 'ApplicationDbContext.Projects'  is null.");
+            }
+
+            int companyId = User.Identity.GetCompanyId();
+
+            //var project = await _context.Projects.FindAsync(id);
+            var project = await _context.Projects
+                                        .Include(p => p.Company)
+                                        .Include(p => p.ProjectPriority)
+                                        .FirstOrDefaultAsync(m => m.Id == id);
+
+
+            if (project != null)
+            {
+                project.Archived = false;
+                _context.Update(project);
             }
 
             await _context.SaveChangesAsync();

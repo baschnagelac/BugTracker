@@ -40,6 +40,7 @@
                                     <p>@ticketComment.Created.ToString("MMM dd, yyyy hh:mm tt")</p>
                                 </div>
                             </li>
+                            
                             <hr />
                         }
                     </ul>
@@ -88,7 +89,9 @@
                                 <small>Size: @_BTFileService.FormatFileSize(item.FileData.Length) </small>
                             </div>
                         </div>
+
                     }
+                    <a asp-action="DeleteTicketAttachment" asp-controller="Tickets" class="btn btn-outline-secondary rounded-pill btnLink">Do you want to remove attachment?</a>
                 </div>
             </div>
 
