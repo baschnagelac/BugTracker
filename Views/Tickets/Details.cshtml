@@ -86,12 +86,12 @@
                                 <div class="file-name">
                                     <strong>@item.Description</strong>
                                 </div>
-                                <small>Size: @_BTFileService.FormatFileSize(item.FileData.Length) </small>
+                                <small>Size: @_BTFileService.FormatFileSize(item.FileData.Length)  </small>
                             </div>
                         </div>
-
+                       @* <a asp-action="Delete" asp-controller="TicketAttachments" asp-route-id="@item.Id" class="btn btn-outline-secondary rounded-pill btnLink">Do you want to remove attachment?</a>*@
                     }
-                    <a asp-action="DeleteTicketAttachment" asp-controller="Tickets" class="btn btn-outline-secondary rounded-pill btnLink">Do you want to remove attachment?</a>
+                    
                 </div>
             </div>
 

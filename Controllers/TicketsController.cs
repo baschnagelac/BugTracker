@@ -68,6 +68,7 @@ namespace BugTracker.Controllers
                                                     .Where(c => c.Project!.CompanyId == companyId)
                                                           .Include(t => t.DeveloperUser)
                                                .Include(t => t.Project)
+                                               
                                                .Include(t => t.TicketPriority)
                                                .Include(t => t.TicketStatus)
                                                .Include(t => t.TicketType)
@@ -338,43 +339,43 @@ namespace BugTracker.Controllers
         }
 
         // GET: TicketAttachments/Delete/5
-        public async Task<IActionResult> DeleteTicketAttachment(int? id)
-        {
-            if (id == null || _context.TicketAttachments == null)
-            {
-                return NotFound();
-            }
+        //public async Task<IActionResult> DeleteTicketAttachment(int? id)
+        //{
+        //    if (id == null || _context.TicketAttachments == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            var ticketAttachment = await _context.TicketAttachments
-                .Include(t => t.BTUser)
-                .Include(t => t.Ticket)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (ticketAttachment == null)
-            {
-                return NotFound();
-            }
+        //    var ticketAttachment = await _context.TicketAttachments
+        //        .Include(t => t.BTUser)
+        //        .Include(t => t.Ticket)
+        //        .FirstOrDefaultAsync(m => m.Id == id);
+        //    if (ticketAttachment == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            return RedirectToAction(nameof(DeleteTicketAttachment), new { id = ticketAttachment.Id });
-        }
+        //    return RedirectToAction(nameof(DeleteTicketAttachment), new { id = ticketAttachment.Id });
+        //}
 
-        // POST: TicketAttachments/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteTicketAttachmentConfirmed(int id)
-        {
-            if (_context.TicketAttachments == null)
-            {
-                return Problem("Entity set 'ApplicationDbContext.TicketAttachments'  is null.");
-            }
-            var ticketAttachment = await _context.TicketAttachments.FindAsync(id);
-            if (ticketAttachment != null)
-            {
-                _context.TicketAttachments.Remove(ticketAttachment);
-            }
+        //// POST: TicketAttachments/Delete/5
+        //[HttpPost, ActionName("Delete")]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> DeleteTicketAttachmentConfirmed(int id)
+        //{
+        //    if (_context.TicketAttachments == null)
+        //    {
+        //        return Problem("Entity set 'ApplicationDbContext.TicketAttachments'  is null.");
+        //    }
+        //    var ticketAttachment = await _context.TicketAttachments.FindAsync(id);
+        //    if (ticketAttachment != null)
+        //    {
+        //        _context.TicketAttachments.Remove(ticketAttachment);
+        //    }
 
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(DeleteTicketAttachment), new { id = ticketAttachment.Id });
-        }
+        //    await _context.SaveChangesAsync();
+        //    return RedirectToAction(nameof(DeleteTicketAttachment), new { id = ticketAttachment.Id });
+        //}
 
         public async Task<IActionResult> ShowFile(int id)
         {
@@ -515,6 +516,7 @@ namespace BugTracker.Controllers
             int companyId = User.Identity.GetCompanyId();
 
             var ticket = await _context.Tickets
+                .Where(c => c.Project!.CompanyId == companyId)
                 .Include(t => t.DeveloperUser)
                 .Include(t => t.Project)
                 .Include(t => t.TicketPriority)
@@ -581,9 +583,18 @@ namespace BugTracker.Controllers
                 ticket.Updated = DataUtility.GetPostGresDate(DateTime.UtcNow);
 
 
-                //todo: call service
-                _context.Add(ticket);
-                await _context.SaveChangesAsync();
+                BTUser? projectManager = await _projectService.GetProjectManagerAsync(ticket.ProjectId);
+
+                if (userId == ticket.SubmitterUserId || userId == ticket.DeveloperUserId || userId == projectManager.Id)
+                {
+                    //todo: call service
+                    _context.Add(ticket);
+                    await _context.SaveChangesAsync();
+                }
+
+
+
+
 
                 //todo: add history record 
                 int companyId = User.Identity!.GetCompanyId();
@@ -611,8 +622,7 @@ namespace BugTracker.Controllers
 
                 BTUser? btUser = await _userManager.GetUserAsync(User);
 
-                //todo: notfication
-                BTUser? projectManager = await _projectService.GetProjectManagerAsync(ticket.ProjectId);
+
 
                 Notification? notification = new()
                 {
@@ -717,12 +727,20 @@ namespace BugTracker.Controllers
 
                     ticket.Created = DataUtility.GetPostGresDate(ticket.Created);
                     ticket.Updated = DataUtility.GetPostGresDate(DateTime.Now);
-
-                    _context.Update(ticket);
-                    await _context.SaveChangesAsync();
-
                     //call to database
                     string userId = _userManager.GetUserId(User)!;
+
+                    BTUser? projectManager = await _projectService.GetProjectManagerAsync(ticket.ProjectId);
+
+                    if (userId == ticket.SubmitterUserId || userId == ticket.DeveloperUserId || userId == projectManager.Id)
+                    {
+                        _context.Update(ticket);
+                        await _context.SaveChangesAsync();
+                    }
+
+
+
+
 
 
                     //call service
@@ -745,8 +763,6 @@ namespace BugTracker.Controllers
 
                     BTUser? btUser = await _userManager.GetUserAsync(User);
 
-                    //todo: notfication
-                    BTUser? projectManager = await _projectService.GetProjectManagerAsync(ticket.ProjectId);
 
                     Notification? notification = new()
                     {

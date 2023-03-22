@@ -5,13 +5,16 @@ using BugTracker.Models.Enums.Enums;
 using BugTracker.Models.ViewModels;
 using BugTracker.Services;
 using BugTracker.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
 namespace BugTracker.Controllers
 {
+    [Authorize]
     public class HomeController : Controller
     {
+        
         private readonly ILogger<HomeController> _logger;
         private readonly IBTProjectService _projectService;
         private readonly IBTCompanyService _companyService;
@@ -25,6 +28,7 @@ namespace BugTracker.Controllers
             _ticketService = ticketService;
         }
 
+        [AllowAnonymous] 
         public IActionResult Index()
         {
 

@@ -3,74 +3,96 @@
 @{
     ViewData["Title"] = "Create";
 }
-<h1>Create</h1>
-<h4>Invite</h4>
-<hr />
-<div class="col-lg-6 col-md-12">
-    <div class="card custom-card">
-        <div class="card-body">
-            <div>
-                <h6 class="main-content-label mb-1">Company Invite</h6>
-                <p class="text-muted card-sub-title">Invite a new user to join your Bug Tracker company.</p>
+
+
+
+
+<!-- Row -->
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">New Company Invite</h4>
+                <h6 class="card-subtitle">Invite a New Member to join your Company.</h6>
             </div>
-            <form asp-action="Create" method="post">
-                <div class="row row-xs align-items-center mg-b-20">
-                    <div class="col-md-4">
-                        <label class="mg-b-0">Email</label>
+            <form asp-action="Create" class="form-horizontal r-separator border-top" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="card-body">
+                    <div class="form-group row align-items-center mb-0">
+                        <label asp-for="InviteeEmail" class="col-3 text-end control-label col-form-label">Email</label>
+                        <div class="col-9 border-start pb-2 pt-2">
+                            <input type="email" asp-for="InviteeEmail" class="form-control" placeholder="EnterEmail">
+                            <span asp-validation-for="InviteeEmail" class="text-danger"></span>
+                        </div>
                     </div>
-                    <div class="col-md-8 mg-t-5 mg-md-t-0">
-                        <input type="email" asp-for="InviteeEmail" class="form-control" placeholder="Enter email">
+                    <div class="form-group row align-items-center mb-0">
+                        <label asp-for="InviteeFirstName" class="col-3 text-end control-label col-form-label">First Name</label>
+                        <div class="col-9 border-start pb-2 pt-2">
+                            <input type="text" class="form-control" asp-for="InviteeFirstName" placeholder="Enter first name">
+                            <span asp-validation-for="InviteeFirstName" class="text-danger"></span>
+                        </div>
                     </div>
+                    <div class="form-group row align-items-center mb-0">
+                        <label asp-for="InviteeLastName" class="col-3 text-end control-label col-form-label">Last Name </label>
+                        <div class="col-9 border-start pb-2 pt-2">
+                            <input type="text" class="form-control" asp-for="InviteeLastName" placeholder="Enter last name">
+                            <span asp-validation-for="InviteeLastName" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="form-group row align-items-center mb-0">
+                        <label asp-for="ProjectId" class="col-3 text-end control-label col-form-label">Select Project </label>
+                        <div class="col-9 border-start pb-2 pt-2">
+                            <select asp-for="ProjectId" class="form-control" asp-items="ViewBag.ProjectId"></select>
+                        </div>
+                    </div>
+                    <div class="form-group row align-items-center mb-0">
+                        <label asp-for="Message" class="col-3 text-end control-label col-form-label">Message </label>
+                        <div class="col-9 border-start pb-2 pt-2">
+                            <textarea asp-for="Message" class="form-control" multiple="multiple"></textarea>
+                        </div>
+                    </div>
+                    
+                    
                 </div>
-                <div class="row row-xs align-items-center mg-b-20">
-                    <div class="col-md-4">
-                        <label class="mg-b-0">Firstname</label>
-                    </div>
-                    <div class="col-md-8 mg-t-5 mg-md-t-0">
-                        <input type="text" asp-for="InviteeFirstName" class="form-control" placeholder="Enter first name">
-                    </div>
-                </div>
-                <div class="row row-xs align-items-center mg-b-20">
-                    <div class="col-md-4">
-                        <label class="mg-b-0">Lastname</label>
-                    </div>
-                    <div class="col-md-8 mg-t-5 mg-md-t-0">
-                        <input type="text" asp-for="InviteeLastName" class="form-control" placeholder="Enter last name">
-                    </div>
-                </div>
-                <div class="row row-xs align-items-center mg-b-20">
-                    <div class="col-md-4">
-                        <label class="mg-b-0">Select Project</label>
-                    </div>
-                    <div class="col-md-8 mg-t-5 mg-md-t-0">
-                        <select class="form-control" asp-for="ProjectId" asp-items="@ViewBag.ProjectId">
-                            <option value="">Select Project</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="row row-xs align-items-center mg-b-20">
-                    <div class="col-md-4">
-                        <label class="mg-b-0">Message</label>
-                    </div>
-                    <div class="col-md-8 mg-t-5 mg-md-t-0">
-                        <textarea asp-for="Message" multiple="multiple" class="form-control"></textarea>
-                    </div>
-                </div>
-                <div class="form-group row justify-content-end mb-0">
-                    <div class="col-md-8 pl-md-2">
-                        <input type="submit" class="btn ripple btn-primary pd-x-30 mg-r-5" value="Send Invite" />
-                        <button class="btn ripple btn-secondary pd-x-30">Cancel</button>
+                <div class="p-3 border-top">
+                    <div class="form-group mb-0 text-end">
+                        <button type="submit" value="Send Invite" class="btn btn-info rounded-pill px-4 waves-effect waves-light">Send Invite</button>
+                        <a value="Cancel" asp-action="Dashboard" asp-controller="Home" class="btn btn-dark rounded-pill px-4 waves-effect waves-light">Cancel</a>
                     </div>
                 </div>
             </form>
         </div>
     </div>
 </div>
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

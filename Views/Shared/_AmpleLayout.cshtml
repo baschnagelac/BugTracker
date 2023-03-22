@@ -33,6 +33,13 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
     <!-- needed css -->
     <link href="~/dist/css/style.min.css" rel="stylesheet">
+
+   @* <!---Landing Page CSS ->
+    <link rel="stylesheet" type="text/css" href="~/css/csslanding/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="~/css/csslanding/css/font-awesome.css">
+    <link rel="stylesheet" type="text/css" href="~/css/csslanding/css/templatemo-art-factory.css">
+    <link rel="stylesheet" type="text/css" href="~/css/csslanding/css/owl-carousel.css">*@
+
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
@@ -414,7 +421,7 @@
                                             <h4 class="mb-0 text-white">@btUser.FullName</h4>
                                         </div>
                                     </div>
-                                    <a class="dropdown-item" href="#">
+                                    <a class="dropdown-item" asp-area="Identity" asp-page="/Account/Manage/Index">
                                         <i data-feather="user" class="feather-sm text-info me-1 ms-1"></i> My
                                         Profile
                                     </a>
@@ -424,10 +431,7 @@
                                            class="feather-sm text-danger me-1 ms-1"></i> Logout
                                     </a>
                                     <div class="dropdown-divider"></div>
-                                    <div class="ps-4 p-2">
-                                        <a href="#"
-                                           class="btn d-block w-100 btn-info rounded-pill">View Profile</a>
-                                    </div>
+                                   
                                 </div>
                             </li>
                         }
@@ -459,12 +463,6 @@
                                     <span class="hide-menu">@btUser.FullName </span>
                                 </a>
                                 <ul aria-expanded="false" class="collapse  first-level">
-                                    <li class="sidebar-item">
-                                        <a href="javascript:void(0)" class="sidebar-link">
-                                            <i class="ti-user"></i>
-                                            <span class="hide-menu"> My Profile </span>
-                                        </a>
-                                    </li>
                                     <li class="sidebar-item">
                                         <a href="javascript:document.getElementById('logoutForm').submit();" class="sidebar-link">
                                             <i class="fas fa-power-off"></i>
@@ -540,12 +538,21 @@
                             </ul>
                         </li>
 
-                        if @if (User.IsInRole("Admin"))
+                        @if (User.IsInRole("Admin"))
                         {
                             <li class="sidebar-item">
                                 <a class="sidebar-link waves-effect waves-dark sidebar-link" asp-action="Create" asp-controller="Invites" aria-expanded="false">
                                     <i class="bi bi-send"></i>
                                     <span class="hide-menu">Invite New Member</span>
+                                </a>
+                            </li>
+                        }
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <li class="sidebar-item">
+                                <a class="sidebar-link waves-effect waves-dark sidebar-link" asp-action="ManageUserRoles" asp-controller="Companies" aria-expanded="false">
+                                    <i class="bi bi-people-fill"></i>
+                                    <span class="hide-menu">Manage User Roles</span>
                                 </a>
                             </li>
                         }
@@ -1051,6 +1058,26 @@
     <script src="~/assets/libs/moment/min/moment.min.js"></script>
     <script src="~/assets/libs/fullcalendar/dist/fullcalendar.min.js"></script>
     <script src="~/dist/js/pages/calendar/cal-init.js"></script>
+
+    <!--Landing Page JS-->
+
+   @* <script src="~/js/jslanding/js/"></script>
+    <!-- jQuery -->
+    <script src="~/js/jslanding/js/jquery-2.1.0.min.js"></script>
+
+    <!-- Bootstrap -->
+    <script src="~/js/jslanding/js/popper.js"></script>
+    <script src="~/js/jslanding/js/bootstrap.min.js"></script>
+
+    <!-- Plugins -->
+    <script src="~/js/jslanding/js/owl-carousel.js"></script>
+    <script src="~/js/jslanding/js/scrollreveal.min.js"></script>
+    <script src="~/js/jslanding/js/waypoints.min.js"></script>
+    <script src="~/js/jslanding/js/jquery.counterup.min.js"></script>
+    <script src="~/js/jslanding/js/imgfix.min.js"></script>*@
+
+    <!-- Global Init -->
+@*    <script src="~/js/jslanding/js/custom.js"></script>*@
     <script>
         $('#calendar').fullCalendar('option', 'height', 650);
 

@@ -7,9 +7,12 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BugTracker.Data;
 using BugTracker.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BugTracker.Controllers
+
 {
+    [Authorize] 
     public class TicketAttachmentsController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -161,9 +164,9 @@ namespace BugTracker.Controllers
             {
                 _context.TicketAttachments.Remove(ticketAttachment);
             }
-            
+            Ticket ticket = new();
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Details", "Tickets", ticketAttachment.Id);
         }
 
         private bool TicketAttachmentExists(int id)

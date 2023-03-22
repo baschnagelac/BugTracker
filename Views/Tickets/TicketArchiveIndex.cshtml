@@ -39,8 +39,6 @@
                                     <th role="button"><i class="bi bi-sort-down"></i>@Html.DisplayNameFor(model => model.TicketStatus)</th>
                                     <th role="button"><i class="bi bi-sort-down"></i>@Html.DisplayNameFor(model => model.Title)</th>
                                     <th role="button"><i class="bi bi-sort-down"></i>@Html.DisplayNameFor(model => model.Project)</th>
-                                    <th role="button"><i class="bi bi-sort-down"></i>@Html.DisplayNameFor(model => model.Created)</th>
-                                    <th role="button"><i class="bi bi-sort-down"></i>@Html.DisplayNameFor(model => model.Updated)</th>
                                     <th role="button"><i class="bi bi-sort-down"></i>@Html.DisplayNameFor(model => model.TicketType)</th>
                                     <th role="button"><i class="bi bi-sort-down"></i>@Html.DisplayNameFor(model => model.TicketPriority)</th>
 
@@ -79,8 +77,8 @@
                                         <td><span class="badge bg-light-success text-success font-weight-medium fs-3">@Html.DisplayFor(modelItem => item.TicketStatus.Name)</span></td>
                                         <td><span class="font-weight-medium link">@Html.DisplayFor(modelItem => item.Title)</span></td>
                                         <td><a asp-action="Details" asp-controller="Projects" asp-route-id="@item.Id" class="fw-bold link">@Html.DisplayFor(modelItem => item.Project.Name)</a></td>
-                                        <td>@item.Created.ToString("MMM dd, yyyy") </td> @*/*.ToString("MMM dd, yyyy"))*/*@
-                                        <td>@(item.Updated.HasValue ? item.Updated.Value.ToString("MMM dd, yyyy") : item.Created.ToString("MMM dd, yyyy"))</td>
+@*                                        <td>@item.Created.ToString("MMM dd, yyyy") </td> @*/*.ToString("MMM dd, yyyy"))*/*@
+@*                                        <td>@(item.Updated.HasValue ? item.Updated.Value.ToString("MMM dd, yyyy") : item.Created.ToString("MMM dd, yyyy"))</td>*@
                                         <td><span class="badge bg-light-info text-info font-weight-medium fs-3">@Html.DisplayFor(modelItem => item.TicketType.Name)</span></td>
                                         <td><span class="badge bg-light-danger text-danger font-weight-medium fs-3">@Html.DisplayFor(modelItem => item.TicketPriority.Name)</span></td>
 
@@ -116,9 +114,7 @@
                                     <th>Developer User</th>
                                     <th>Ticket Status</th>
                                     <th>Title</th>
-                                    <th>Project</th>
-                                    <th>Created</th>
-                                    <th>Updated</th>
+                                    <th>Project</th>>
                                     <th>Ticket Type</th>
                                     <th>Ticket Priority</th>
                                     @if (User.IsInRole("Admin"))

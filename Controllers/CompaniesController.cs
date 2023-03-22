@@ -14,9 +14,11 @@ using BugTracker.Services.Interfaces;
 using BugTracker.Models.Enums.Enums;
 using BugTracker.Services;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BugTracker.Controllers
 {
+    [Authorize]
     public class CompaniesController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -153,10 +155,10 @@ namespace BugTracker.Controllers
         }
 
         // GET: Companies/Create
-        public IActionResult Create()
-        {
-            return View();
-        }
+        //public IActionResult Create()
+        //{
+        //    return View();
+        //}
 
         // POST: Companies/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.

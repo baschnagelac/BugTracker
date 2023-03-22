@@ -1,0 +1,254 @@
+﻿@*@model BugTracker.Models.Invite
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+
+
+
+<!-- Row -->
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Create a New Ticket</h4>
+                <h6 class="card-subtitle">For Development</h6>
+            </div>
+            <form asp-action="Create" class="form-horizontal r-separator border-top">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="card-body">
+                    <div class="form-group row align-items-center mb-0">
+                        <label asp-for="Title" class="col-3 text-end control-label col-form-label">Ticket Title</label>
+                        <div class="col-9 border-start pb-2 pt-2">
+                            <input type="text" asp-for="Title" class="form-control" placeholder="Title Goes Here">
+                            <span asp-validation-for="Title" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="form-group row align-items-center mb-0">
+                        <label asp-for="Description" class="col-3 text-end control-label col-form-label">Description</label>
+                        <div class="col-9 border-start pb-2 pt-2">
+                            <input type="text" class="form-control" asp-for="Description" placeholder="Description ">
+                            <span asp-validation-for="Description" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="form-group row align-items-center mb-0">
+                        <label asp-for="ProjectId" class="col-3 text-end control-label col-form-label">For the Project: </label>
+                        <div class="col-9 border-start pb-2 pt-2">
+                            <select asp-for="ProjectId" class="form-control" asp-items="ViewBag.ProjectId"></select>
+                        </div>
+                    </div>
+                    <div class="form-group row align-items-center mb-0">
+                        <label asp-for="TicketTypeId" class="col-3 text-end control-label col-form-label">Ticket Type </label>
+                        <div class="col-9 border-start pb-2 pt-2">
+                            <select asp-for="TicketTypeId" class="form-control" asp-items="ViewBag.TicketTypeId"></select>
+                        </div>
+                    </div>
+                    <div class="form-group row align-items-center mb-0">
+                        <label asp-for="TicketStatusId" class="col-3 text-end control-label col-form-label">Ticket Status </label>
+                        <div class="col-9 border-start pb-2 pt-2">
+                            <select asp-for="TicketStatusId" class="form-control" asp-items="ViewBag.TicketStatusId"></select>
+                        </div>
+                    </div>
+                    <div class="form-group row align-items-center mb-0">
+                        <label asp-for="TicketPriorityId" class="col-3 text-end control-label col-form-label">Ticket Priority</label>
+                        <div class="col-9 border-start pb-2 pt-2">
+                            <select asp-for="TicketPriorityId" class="form-control" asp-items="ViewBag.TicketPriorityId"></select>
+                        </div>
+                    </div>
+                    <div class="form-group row align-items-center mb-0">
+                        <label asp-for="DeveloperUserId" class="col-3 text-end control-label col-form-label">Assign to Developer</label>
+                        <div class="col-9 border-start pb-2 pt-2">
+                            <select asp-for="DeveloperUserId" class="form-control" asp-items="ViewBag.DeveloperUserId"></select>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-3 border-top">
+                    <div class="form-group mb-0 text-end">
+                        <button type="submit" value="Create" class="btn btn-info rounded-pill px-4 waves-effect waves-light">Create New Ticket</button>
+                        <a asp-action="Index" asp-controller="Tickets" class="btn btn-dark rounded-pill px-4 waves-effect waves-light">Cancel</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h1>New Company Invite</h1>
+
+<hr />
+<div class="col-lg-6 col-md-12">
+    <div class="card custom-card">
+        <div class="card-body">
+            <div>
+                <h4 class="text-muted card-sub-title">Invite a new user to join your company.</h4>
+
+            </div>
+            <form asp-action="Create" method="post">
+                <div class="row row-xs align-items-center mg-b-20">
+                    <div class="col-md-4">
+                        <label class="mg-b-0">Email</label>
+                    </div>
+                    <div class="col-md-8 mg-t-5 mg-md-t-0">
+                        <input type="email" asp-for="InviteeEmail" class="form-control" placeholder="Enter email">
+                    </div>
+                </div>
+                <div class="row row-xs align-items-center mg-b-20">
+                    <div class="col-md-4">
+                        <label class="mg-b-0">Firstname</label>
+                    </div>
+                    <div class="col-md-8 mg-t-5 mg-md-t-0">
+                        <input type="text" asp-for="InviteeFirstName" class="form-control" placeholder="Enter first name">
+                    </div>
+                </div>
+                <div class="row row-xs align-items-center mg-b-20">
+                    <div class="col-md-4">
+                        <label class="mg-b-0">Lastname</label>
+                    </div>
+                    <div class="col-md-8 mg-t-5 mg-md-t-0">
+                        <input type="text" asp-for="InviteeLastName" class="form-control" placeholder="Enter last name">
+                    </div>
+                </div>
+                <div class="row row-xs align-items-center mg-b-20">
+                    <div class="col-md-4">
+                        <label class="mg-b-0">Select Project</label>
+                    </div>
+                    <div class="col-md-8 mg-t-5 mg-md-t-0">
+                        <select class="form-control" asp-for="ProjectId" asp-items="@ViewBag.ProjectId">
+                            <option value="">Select Project</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row row-xs align-items-center mg-b-20">
+                    <div class="col-md-4">
+                        <label class="mg-b-0">Message</label>
+                    </div>
+                    <div class="col-md-8 mg-t-5 mg-md-t-0">
+                        <textarea asp-for="Message" multiple="multiple" class="form-control"></textarea>
+                    </div>
+                </div>
+                <div class="form-group row justify-content-end mb-0">
+                    <div class="col-md-8 pl-md-2">
+                        <input type="submit" class="btn ripple btn-primary pd-x-30 mg-r-5" value="Send Invite" />
+                        <button class="btn ripple btn-secondary pd-x-30">Cancel</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+
+
+
+<!-- Row -->
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Create a New Ticket</h4>
+                <h6 class="card-subtitle">For Development</h6>
+            </div>
+            <form asp-action="Create" class="form-horizontal r-separator border-top">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="card-body">
+                    <div class="form-group row align-items-center mb-0">
+                        <label asp-for="Title" class="col-3 text-end control-label col-form-label">Ticket Title</label>
+                        <div class="col-9 border-start pb-2 pt-2">
+                            <input type="text" asp-for="Title" class="form-control" placeholder="Title Goes Here">
+                            <span asp-validation-for="Title" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="form-group row align-items-center mb-0">
+                        <label asp-for="Description" class="col-3 text-end control-label col-form-label">Description</label>
+                        <div class="col-9 border-start pb-2 pt-2">
+                            <input type="text" class="form-control" asp-for="Description" placeholder="Description ">
+                            <span asp-validation-for="Description" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="form-group row align-items-center mb-0">
+                        <label asp-for="ProjectId" class="col-3 text-end control-label col-form-label">For the Project: </label>
+                        <div class="col-9 border-start pb-2 pt-2">
+                            <select asp-for="ProjectId" class="form-control" asp-items="ViewBag.ProjectId"></select>
+                        </div>
+                    </div>
+                    <div class="form-group row align-items-center mb-0">
+                        <label asp-for="TicketTypeId" class="col-3 text-end control-label col-form-label">Ticket Type </label>
+                        <div class="col-9 border-start pb-2 pt-2">
+                            <select asp-for="TicketTypeId" class="form-control" asp-items="ViewBag.TicketTypeId"></select>
+                        </div>
+                    </div>
+                    <div class="form-group row align-items-center mb-0">
+                        <label asp-for="TicketStatusId" class="col-3 text-end control-label col-form-label">Ticket Status </label>
+                        <div class="col-9 border-start pb-2 pt-2">
+                            <select asp-for="TicketStatusId" class="form-control" asp-items="ViewBag.TicketStatusId"></select>
+                        </div>
+                    </div>
+                    <div class="form-group row align-items-center mb-0">
+                        <label asp-for="TicketPriorityId" class="col-3 text-end control-label col-form-label">Ticket Priority</label>
+                        <div class="col-9 border-start pb-2 pt-2">
+                            <select asp-for="TicketPriorityId" class="form-control" asp-items="ViewBag.TicketPriorityId"></select>
+                        </div>
+                    </div>
+                    <div class="form-group row align-items-center mb-0">
+                        <label asp-for="DeveloperUserId" class="col-3 text-end control-label col-form-label">Assign to Developer</label>
+                        <div class="col-9 border-start pb-2 pt-2">
+                            <select asp-for="DeveloperUserId" class="form-control" asp-items="ViewBag.DeveloperUserId"></select>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-3 border-top">
+                    <div class="form-group mb-0 text-end">
+                        <button type="submit" value="Create" class="btn btn-info rounded-pill px-4 waves-effect waves-light">Create New Ticket</button>
+                        <a asp-action="Index" asp-controller="Tickets" class="btn btn-dark rounded-pill px-4 waves-effect waves-light">Cancel</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+*@

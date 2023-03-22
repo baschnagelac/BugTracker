@@ -1,0 +1,60 @@
+﻿@model BugTracker.Models.Company
+
+@using BugTracker.Services.Interfaces;
+@using BugTracker.Models.Enums.Enums
+
+@inject IBTFileService _BTFileService
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Company Details</h1>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+            </div>
+            <form asp-action="Details" class="form-horizontal r-separator border-top" enctype="multipart/form-data">
+                <input type="hidden" asp-for="Id" name="Id" />
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="card-body">
+                    <div class="form-group row align-items-center mb-0">
+                        <label asp-for="Name" class="col-3 text-end control-label col-form-label">Company Name</label>
+                        <div class="col-9 border-start pb-2 pt-2">
+                           @Model.Name
+                        </div>
+                    </div>
+                    <div class="form-group row align-items-center mb-0">
+                        <label asp-for="Description" class="col-3 text-end control-label col-form-label">Description</label>
+                        <div class="col-9 border-start pb-2 pt-2">
+                            @Model.Description
+                        </div>
+                    </div>
+                    <div class="form-group row align-items-center mb-0">
+                        <label asp-for="ImageFormFile" class="col-3 text-end control-label col-form-label">Upload Company Image</label>
+                        <div class="col-9 border-start pb-2 pt-2">
+                            <img class="img-fluid border rounded-3 m-2" style="max-height: 250px;" src="~/img/DefaultCompanyImage.jpg" id="companyImage">
+                            <input asp-for="ImageFormFile" type="file" class="form-control mt-3 pt-2" accept=".png,.jpg,.jpeg,.gif"
+                                   onchange="document.getElementById('projectImage').src = window.URL.createObjectURL(this.files[0])" />
+                        </div>
+                    </div>
+                    <div class="form-group row align-items-center mb-0">
+                        <label asp-for="Description" class="col-3 text-end control-label col-form-label">Photo</label>
+                        <div class="col-9 border-start pb-2 pt-2">
+                            <img src="@_BTFileService.ConvertByteArrayToFile(Model.ImageFileData!,Model.ImageFileType!,(int)DefaultImage.CompanyImage)" alt="Company Image" height="200" />
+                        </div>
+                    </div>
+
+
+                </div>
+                <div class="p-3 border-top">
+                    <div class="form-group mb-0 text-end">
+                        <button type="submit" value="Create" class="btn btn-info rounded-pill px-4 waves-effect waves-light">Create New Project</button>
+                        <button type="submit" asp-action="Index" asp-controller="Projects" class="btn btn-dark rounded-pill px-4 waves-effect waves-light">Cancel</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
