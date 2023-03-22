@@ -24,7 +24,7 @@
 <div class="row">
     <div class="col-12 col-md-8 offset-md-2">
         <h2>Are you sure?</h2>
-        <p class="text-lead text-muted">This ticket will be archived and no longer available for development.</p>
+        <p class="text-lead text-muted fs-3">This project will be restored and will be available for development again.</p>
         <div class="card mb-3">
             <div class="row g-0">
 
@@ -34,38 +34,49 @@
 
                         <div class="form-group row align-items-center mb-0">
                             <label asp-for="Name" class="col-4 text-end control-label col-form-label"><strong>For the Project: </strong></label>
-                            <div class="col-8 border-start pb-2 pt-2 fs-5">
-                                @Model.Name |
-                                <img src="@_BTFileService.ConvertByteArrayToFile(project.ImageFileData!,project.ImageFileType!,(int)DefaultImage.ProjectImage)" height="100" class="rounded-3" id="projectimage" height="100" alt="Project Image" />
+                            <div class="col-8 border-start pb-2 pt-2 ">
+                                @Model.Name
                             </div>
                         </div>
+                        <hr class="text-muted" />
+                        <div class="form-group row align-items-center mb-0">
+                            <label asp-for="Name" class="col-4 text-end control-label col-form-label"><strong>Project Photo </strong></label>
+                            <div class="col-8 border-start pb-2 pt-2 fs-5">
+                                <img src="@_BTFileService.ConvertByteArrayToFile(project.ImageFileData!,project.ImageFileType!,(int)DefaultImage.ProjectImage)" height="100" class="rounded-3 m-3" id="projectimage" height="100" alt="Project Image" />
+                            </div>
+                        </div>
+                        <hr class="text-muted" />
                         <div class="form-group row align-items-center mb-0">
                             <label asp-for="Created" class="col-4 text-end control-label col-form-label"><strong>Created on: </strong> </label>
-                            <div class="col-8 border-start pb-2 pt-2 badge bg-light-info text-info font-weight-medium fs-3">
+                            <div class="col-8 border-start pb-2 pt-2  font-weight-medium fs-3">
                                 @Model.Created.ToString("MMM dd, yyyy")
                             </div>
                         </div>
+                        <hr class="text-muted" />
                         <div class="form-group row align-items-center mb-0">
                             <label asp-for="StartDate" class="col-4 text-end control-label col-form-label"><strong>Start Date: </strong> </label>
-                            <div class="col-8 border-start pb-2 pt-2 badge bg-light-success text-success font-weight-medium fs-3">
+                            <div class="col-8 border-start pb-2 pt-2  font-weight-medium fs-3">
                                 @Model.StartDate.ToString("MMM dd, yyyy")
                             </div>
                         </div>
+                        <hr class="text-muted" />
                         <div class="form-group row align-items-center mb-0">
                             <label asp-for="EndDate" class="col-4 text-end control-label col-form-label"><strong>End Date: </strong></label>
-                            <div class="col-8 border-start pb-2 pt-2 badge bg-light-danger text-danger font-weight-medium fs-3">
+                            <div class="col-8 border-start pb-2 pt-2 font-weight-medium fs-3">
                                 @Model.EndDate.ToString("MMM dd, yyyy")
                             </div>
                         </div>
+                        <hr class="text-muted" />
                         <div class="form-group row align-items-center mb-0">
                             <label asp-for="Company" class="col-4 text-end control-label col-form-label"><strong>Company: </strong></label>
                             <div class="col-8 border-start pb-2 pt-2 ">
                                 @Model.Company.Name
                             </div>
                         </div>
+                        <hr class="text-muted" />
                         <div class="form-group row align-items-center mb-0">
                             <label asp-for="ProjectPriority" class="col-4 text-end control-label col-form-label"><strong>Project Priority: </strong></label>
-                            <div class="col-8 border-start pb-2 pt-2 ">
+                            <div class="col-8 border-start badge bg-light-danger text-danger font-weight-medium fs-3 pb-2 pt-2 ">
                                 @Model.ProjectPriority.Name
                             </div>
                         </div>

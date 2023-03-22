@@ -85,14 +85,14 @@
                                         <td>
                                             @if (User.IsInRole("Admin"))
                                             {
-                                                <a asp-action="AssignTicketDev" asp-controller="Tickets" asp-route-id="@item.Id">Assign Developer</a> <span>|</span>
+                                                <a asp-action="AssignTicketDev" asp-controller="Tickets" asp-route-id="@item.Id"><i class="bi bi-person-check-fill text-primary fs-6 p-2"></i></a> <span>|</span>
                                             }
                                             @if (User.IsInRole("ProjectManager"))
                                             {
-                                                <a asp-action="AssignTicketDev" asp-controller="Tickets" asp-route-id="@item.Id">Assign Developer</a> <span>|</span>
+                                                <a asp-action="AssignTicketDev" asp-controller="Tickets" asp-route-id="@item.Id"><i class="bi bi-person-check-fill text-primary fs-6 p-2"></i></a> <span>|</span>
                                             }
-                                            <a asp-action="Edit" asp-route-id="@item.Id"><i class="bi bi-pencil-fill text-warning fs-6 p-2"></i></a>
-                                            <a asp-action="Details" asp-route-id="@item.Id"><i class="bi bi-info-circle text-info fs-6 p-2"></i></a>
+                                            <a asp-action="Edit" asp-route-id="@item.Id"><i class="bi bi-pencil-fill text-warning fs-6 p-2"></i></a><span>|</span>
+                                            <a asp-action="Details" asp-route-id="@item.Id"><i class="bi bi-info-circle text-info fs-6 p-2"></i></a><span>|</span>
 
                                             @if (User.IsInRole("Admin"))
                                             {

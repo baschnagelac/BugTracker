@@ -58,11 +58,11 @@
                                     <th role="button"><i class="bi bi-sort-down"></i>@Html.DisplayNameFor(model => model.ProjectPriority)</th>                                 
                                     @if (User.IsInRole("Admin"))
                                     {
-                                        <th> Assign Members & Project Managers <div></div>| Edit | Details | Restore</th>
+                                        <th> Assign Project Managers & Members <div></div>| Edit | Details | Archive</th>
                                     }
                                     @if (User.IsInRole("ProjectManager"))
                                     {
-                                        <th> Assign Members | Edit | Details | Restore</th>
+                                        <th> Assign Members | Edit | Details | Archive</th>
                                     }
                                     @if (User.IsInRole("Developer"))
                                     {
@@ -86,7 +86,7 @@
                                             }
                                             @fullName
                                         </td>
-                                        <td><span class="font-weight-medium ">@Html.DisplayFor(modelItem => item.Name) <div></div><img src="@_BTFileService.ConvertByteArrayToFile(item.ImageFileData!,item.ImageFileType!,(int)DefaultImage.ProjectImage)" alt="Project Image" height="100" class="rounded-3 mt-1" id="projectimage" /></span></td>
+                                        <td><span class="font-weight-medium ">@Html.DisplayFor(modelItem => item.Name) <div></div><img src="@_BTFileService.ConvertByteArrayToFile(item.ImageFileData!,item.ImageFileType!,(int)DefaultImage.ProjectImage)" alt="Project Image" height="100" class="rounded-3 m-2" id="projectimage" /></span></td>
                                         <td>@item.Created.ToString("MMM dd, yyyy") </td>
                                         <td>@item.StartDate.ToString("MMM dd, yyyy") </td>
                                         <td>@item.EndDate.ToString("MMM dd, yyyy") </td>
@@ -94,29 +94,29 @@
                                         <td>
                                             @if (User.IsInRole("Admin"))
                                             {
-                                                <a asp-action="AssignPM" asp-route-id="@item.Id">Assign PM</a> <span>|</span>
+                                                <a asp-action="AssignPM" asp-route-id="@item.Id"><i class="bi bi-person-vcard-fill text-primary fs-6 p-2"></i></a> <span>|</span>
                                             }
                                             @if (User.IsInRole("Admin")) 
                                             {
-                                                <a asp-action="AssignProjectMembers" asp-route-id="@item.Id">Assign Member</a> <span>|</span>
+                                                <a asp-action="AssignProjectMembers" asp-route-id="@item.Id"><i class="bi bi-person-plus text-primary fs-6 p-2"></i></a> <span>|</span>
                                             }
                                             @if (User.IsInRole("ProjectManager"))
                                             {
-                                                <a asp-action="AssignProjectMembers" asp-route-id="@item.Id">Assign Member</a> <span>|</span>
+                                                <a asp-action="AssignProjectMembers" asp-route-id="@item.Id"><i class="bi bi-person-plus text-primary fs-6 p-2"></i></a> <span>|</span>
                                             }
 
 
-                                            <a asp-action="Edit" asp-route-id="@item.Id"><i class="bi bi-pencil-fill text-warning fs-6 p-2"></i></a>
-                                            <a asp-action="Details" asp-route-id="@item.Id"><i class="bi bi-info-circle text-info fs-6 p-2"></i></a>
+                                            <a asp-action="Edit" asp-route-id="@item.Id"><i class="bi bi-pencil-fill text-warning fs-6 p-2"></i></a> <span>|</span>
+                                            <a asp-action="Details" asp-route-id="@item.Id"><i class="bi bi-info-circle text-info fs-6 p-2"></i></a><span>|</span>
 
 
                                             @if (User.IsInRole("Admin"))
                                             {
-                                                <a asp-action="ProjectArchive" asp-route-id="@item.Id"><i class="bi bi-archive text-danger fs-6 p-2"></i></a> <span>|</span>
+                                                <a asp-action="ProjectArchive" asp-route-id="@item.Id"><i class="bi bi-archive text-danger fs-6 p-2"></i></a> 
                                             }
                                             @if (User.IsInRole("ProjectManager"))
                                             {
-                                                <a asp-action="ProjectArchive" asp-route-id="@item.Id"><i class="bi bi-archive text-danger fs-6 p-2"></i></a> <span>|</span>
+                                                <a asp-action="ProjectArchive" asp-route-id="@item.Id"><i class="bi bi-archive text-danger fs-6 p-2"></i></a> 
                                             }
 
 
@@ -136,11 +136,11 @@
                                     <th>@Html.DisplayNameFor(model => model.ProjectPriority)</th>                                                               
                                     @if (User.IsInRole("Admin"))
                                     {
-                                        <th> Assign Members & Project Managers <div></div> | Edit | Details | Restore</th>
+                                        <th> Assign Members & Project Managers <div></div> | Edit | Details | Archive</th>
                                     }
                                     @if (User.IsInRole("ProjectManager"))
                                     {
-                                        <th> Assign Members | Edit | Details | Restore</th>
+                                        <th> Assign Members | Edit | Details | Archive</th>
                                     }
                                     @if (User.IsInRole("Developer"))
                                     {

@@ -3,91 +3,124 @@
 @using BugTracker.Models.Enums.Enums
 
 @inject IBTFileService _BTFileService
- 
-
+@inject IBTTicketService _TicketService
+@inject IBTTicketHistoryService _HistoryService
+@inject IBTProjectService _projectService
 @{
+
     ViewData["Title"] = "Details";
 }
 
-
-
-
-
-<h1>Details</h1>
-
-<div>
-    <h4>Project</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Description)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Description)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Created)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Created)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.StartDate)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.StartDate)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.EndDate)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.EndDate)
-        </dd>
-        @*<dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ImageFileData)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ImageFileData)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ImageFileType)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ImageFileType)
-        </dd>*@
-@*        @foreach (var project in Model.) 
-        {
-            <div class="col-md-4 square-img-container">
-                <img src="@_BTFileService.ConvertByteArrayToFile(Model.ImageFileData!,Model.ImageFileType!,(int)DefaultImage.ProjectImage)" alt="Post Images" />
+<!-- -------------------------------------------------------------- -->
+<!-- Container fluid  -->
+<!-- -------------------------------------------------------------- -->
+<div class="container-fluid page-content">
+    <!-- -------------------------------------------------------------- -->
+    <!-- Start Page Content -->
+    <!-- -------------------------------------------------------------- -->
+    <!-- basic table -->
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title">@Model.Name</h4> @Model.Description
+                    <img src="@_BTFileService.ConvertByteArrayToFile(Model.ImageFileData!,Model.ImageFileType!,(int)DefaultImage.ProjectImage)" alt="Project Image" height="200" />
+                    <h6>Company: @Model.Company.Name</h6>
+                </div>
             </div>
-        }*@
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Archived)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Archived)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Company)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Company.Name)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ProjectPriority)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ProjectPriority.Name)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
-</div>
+
+            <div class="card">
+                <div class="col-md-12 col">
+                    <div class="mt-5 bg-muted">
+                        <div class="card m-1 p-2">
+                            <div class="header">
+                                <h2>Tickets for this Project</h2>
+                            </div>
+                            <div class="body">
+                                <div class="table-responsive" style="overflow-y:auto;height:600px;">
+                                    <table class="table table-hover">
+                                        <thead class="">
+                                            <tr>
+                                                @* Table header *@
+                                                <th>Ticket Status</th>
+                                                <th>Title</th>
+                                                <th>Description</th>
+                                                <th>Created</th>
+                                                <th>Updated</th>
+                                                <th>Ticket Type</th>
+                                                <th>Ticket Priority</th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (Ticket ticket in Model.Tickets)
+                                            {
+                                                @* Table body *@
+                                                <tr>
+                                                    <td>@ticket.TicketStatus!.Name</td>
+                                                    <td>
+                                                        <a asp-action="Details" asp-controller="Tickets" asp-route-id="@ticket.Id">@ticket.Title</a>
+                                                    </td>
+                                                    <td>@ticket.Description</td>
+                                                    <td>@ticket.Created</td>
+                                                    <td>@ticket.Updated</td>
+                                                    <td>@ticket.TicketType!.Name</td>
+                                                    <td>@ticket.TicketPriority!.Name</td>
+
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+
+            </div>
+            <div class="col-lg-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title mb-0">Ticket Info</h4>
+                    </div>
+                    <div class="card-body bg-extra-light">
+                        <div class="row text-center">
+                            <div class="col-6 my-2 text-start">
+                                <strong class=" fs-3 mb-3">Project Priority: </strong> <span class="badge bg-danger  fs-3 mb-3">@Model.ProjectPriority.Name</span>
+                                </br>
+                            </div>
+                            <div class="col-6 my-2">
+                                <strong class=" fs-3 mb-3">Created: </strong> <span class=" fs-3 mb-3">@Model.Created.ToString("MMM dd, yyyy")</span>
+                                <strong class=" fs-3 mb-3">Deadline: </strong> <span class=" fs-3 mb-3">@Model.StartDate.ToString("MMM dd, yyyy")</span>
+                                <strong class=" fs-3 mb-3">Deadline: </strong> <span class=" fs-3 mb-3">@Model.EndDate.ToString("MMM dd, yyyy")</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <h5 class="pt-3">Project Manager</h5>
+                        <span class="text-primary"><strong>@((await _projectService.GetProjectManagerAsync(Model.Id))?.FullName ?? "Unassigned")</strong></span>
+                        <h5 class="mt-4">Project Members</h5>
+                        <span class="text-primary font-weight-bold">
+                            <strong>
+                                @foreach (BTUser members in Model.Members)
+                                {
+                                    <li class=" text-info mb-1 mt-1 list-unstyled">@members.FullName</li>
+                                }
+                                </h6>
+                            </strong>
+                        </span>
+                        <br />
+                        <a type="button" asp-action="Index" asp-controller="Projects" class="mt-3 btn waves-effect waves-light btn-success">Return to Projects Index</a>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+    <!-- -------------------------------------------------------------- -->
+    <!-- End Container fluid  -->
+    <!-- -------------------------------------------------------------- -->

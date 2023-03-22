@@ -277,7 +277,7 @@ namespace BugTracker.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddTicketComment([Bind("Id,Comment,Created,TicketId,UserId")] TicketComment ticketComment, int? ticketId)
+        public async Task<IActionResult> AddTicketComment([Bind("Id,Comment,Created,TicketId,UserId")] TicketComment ticketComment, int? ticketId, Ticket ticket)
         {
             ModelState.Remove("UserId");
 
@@ -291,7 +291,19 @@ namespace BugTracker.Controllers
 
                 ticketComment.Created = DateTime.UtcNow;
 
-                await _ticketService.AddTicketCommentAsync(ticketComment);
+                string userId = _userManager.GetUserId(User)!;
+
+               
+
+                BTUser? projectManager = await _projectService.GetProjectManagerAsync(ticket.ProjectId);
+
+                if (userId == ticket.SubmitterUserId || userId == ticket.DeveloperUserId || userId == projectManager.Id)
+                {
+                    await _ticketService.AddTicketCommentAsync(ticketComment);
+                }
+
+
+               
 
                 //add history 
 
@@ -305,7 +317,7 @@ namespace BugTracker.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddTicketAttachment([Bind("Id,FormFile,Description,TicketId")] TicketAttachment ticketAttachment)
+        public async Task<IActionResult> AddTicketAttachment([Bind("Id,FormFile,Description,TicketId")] TicketAttachment ticketAttachment, Ticket ticket)
         {
             string statusMessage;
             ModelState.Remove("TicketId");
@@ -320,7 +332,26 @@ namespace BugTracker.Controllers
                 ticketAttachment.Created = DataUtility.GetPostGresDate(DateTime.Now);
                 ticketAttachment.BTUserId = _userManager.GetUserId(User);
 
-                await _ticketService.AddTicketAttachmentAsync(ticketAttachment);
+
+                string userId = _userManager.GetUserId(User)!;
+
+
+
+                BTUser? projectManager = await _projectService.GetProjectManagerAsync(ticket.ProjectId);
+
+                if (userId == ticket.SubmitterUserId || userId == ticket.DeveloperUserId || userId == projectManager.Id)
+                {
+                    await _ticketService.AddTicketAttachmentAsync(ticketAttachment);
+                }
+                else 
+                if(User.IsInRole("Admin"))
+                {
+                    await _ticketService.AddTicketAttachmentAsync(ticketAttachment);
+                }
+
+
+
+                
 
                 //add history 
 
