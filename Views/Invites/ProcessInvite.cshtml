@@ -4,24 +4,35 @@
     ViewData["Title"] = "Process Invite";
     //Layout = "_AmpleLayout";
 }
-<div class="panel card-sign">
-    <div class="card-title mt-3 text-center">
-        <h2 class="title text-uppercase font-weight-bold m-0"> Invite</h2>
+
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-body">
+                <h2 class="title text-uppercase font-weight-bold m-0"> Invitation</h2>
+            </div>
+            <div class="header">
+                <h3>
+                    <span class="clearfix title">
+                        <span class="number m-3">Welcome</span><br />
+                        <span class="m-3 text-primary">@Model.InviteeFirstName @Model.InviteeLastName!</span> <br>
+                    </span>
+                </h3>
+                <h5 class="m-3"><span>Welcome to <span class="text-primary">@Model.Company!.Name</span> on Buggy Buddy!</span></h5>
+            </div>
+            <div class="card-body">
+                <p>
+                    <span class="text-primary">@Model.Invitor!.FullName</span> has invited you to collaborate on the <span class="text-info">@Model.Project!.Name</span> project.
+                    <br /><br /> Click the "JOIN" button below to log-in with the company and begin entering tickets.
+                </p>
+                <a class="btn btn-primary btn-lg btn-block" asp-area="Identity" asp-page="/Account/RegisterByInvite" asp-route-id="@Model.Id" asp-route-companyId="@Model.CompanyId"><i class="bi bi-box-arrow-in-right"></i> <span>JOIN</span></a>
+
+
+
+
+            </div>
+        </div>
+  
     </div>
-    <div class="header">
-        <h3>
-            <span class="clearfix title">
-                <span class="number">Welcome</span><br />
-                <span>@Model.InviteeFirstName @Model.InviteeLastName!</span> <br>
-            </span>
-        </h3>
-        <h5><span>Company Name: @Model.Company!.Name </span></h5>
-    </div>
-    <div class="card-body">
-        <p>
-            @Model.Invitor!.FullName has invited you to collaborate on the @Model.Project!.Name project.
-            <br /><br /> Click the "JOIN" button below to register with the company and begin entering tickets.
-        </p>
-        <a class="btn btn-primary btn-lg btn-block" asp-area="Identity" asp-page="/Account/RegisterByInvite" asp-route-id="@Model.Id" asp-route-companyId="@Model.CompanyId"><i class="bi bi-box-arrow-in-right"></i> <span>JOIN</span></a>
-    </div>
+ 
 </div>
