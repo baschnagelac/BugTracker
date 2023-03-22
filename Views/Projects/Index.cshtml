@@ -4,7 +4,8 @@
 @using BugTracker.Models.Enums.Enums
 
 @inject IBTFileService _BTFileService
-@inject IBTProjectService  _ProjectService
+@inject IBTProjectService _ProjectService
+@*@inject AssignPMViewModel viewModel*@
 
 
 @{
@@ -55,7 +56,7 @@
                                     <th role="button"><i class="bi bi-sort-down"></i>@Html.DisplayNameFor(model => model.Created)</th>
                                     <th role="button"><i class="bi bi-sort-down"></i>@Html.DisplayNameFor(model => model.StartDate)</th>
                                     <th role="button"><i class="bi bi-sort-down"></i>@Html.DisplayNameFor(model => model.EndDate)</th>
-                                    <th role="button"><i class="bi bi-sort-down"></i>@Html.DisplayNameFor(model => model.ProjectPriority)</th>                                 
+                                    <th role="button"><i class="bi bi-sort-down"></i>@Html.DisplayNameFor(model => model.ProjectPriority)</th>
                                     @if (User.IsInRole("Admin"))
                                     {
                                         <th> Assign Project Managers & Members <div></div>| Edit | Details | Archive</th>
@@ -90,13 +91,13 @@
                                         <td>@item.Created.ToString("MMM dd, yyyy") </td>
                                         <td>@item.StartDate.ToString("MMM dd, yyyy") </td>
                                         <td>@item.EndDate.ToString("MMM dd, yyyy") </td>
-                                        <td><span class="badge bg-light-danger text-danger font-weight-medium fs-3">@Html.DisplayFor(modelItem => item.ProjectPriority.Name)</span></td>                                   
+                                        <td><span class="badge bg-light-danger text-danger font-weight-medium fs-3">@Html.DisplayFor(modelItem => item.ProjectPriority.Name)</span></td>
                                         <td>
                                             @if (User.IsInRole("Admin"))
                                             {
-                                                <a asp-action="AssignPM" asp-route-id="@item.Id"><i class="bi bi-person-vcard-fill text-primary fs-6 p-2"></i></a> <span>|</span>
+                                                <a asp-action="AssignPM" asp-route-id="@item.Id" data-bs-toggle="modal" data-bs-target="#assignPMModal"><i class="bi bi-person-vcard-fill text-primary fs-6 p-2"></i></a> <span>|</span>
                                             }
-                                            @if (User.IsInRole("Admin")) 
+                                            @if (User.IsInRole("Admin"))
                                             {
                                                 <a asp-action="AssignProjectMembers" asp-route-id="@item.Id"><i class="bi bi-person-plus text-primary fs-6 p-2"></i></a> <span>|</span>
                                             }
@@ -112,28 +113,28 @@
 
                                             @if (User.IsInRole("Admin"))
                                             {
-                                                <a asp-action="ProjectArchive" asp-route-id="@item.Id"><i class="bi bi-archive text-danger fs-6 p-2"></i></a> 
+                                                <a asp-action="ProjectArchive" asp-route-id="@item.Id"><i class="bi bi-archive text-danger fs-6 p-2"></i></a>
                                             }
                                             @if (User.IsInRole("ProjectManager"))
                                             {
-                                                <a asp-action="ProjectArchive" asp-route-id="@item.Id"><i class="bi bi-archive text-danger fs-6 p-2"></i></a> 
+                                                <a asp-action="ProjectArchive" asp-route-id="@item.Id"><i class="bi bi-archive text-danger fs-6 p-2"></i></a>
                                             }
 
 
 
-                                            
+
                                         </td>
                                     </tr>
                                 }
                             </tbody>
                             <tfoot>
-                                <tr class="fs-4 font-weight-bold" >
+                                <tr class="fs-4 font-weight-bold">
                                     <th>Project Manager</th>
                                     <th>@Html.DisplayNameFor(model => model.Name)</th>
                                     <th>@Html.DisplayNameFor(model => model.Created)</th>
                                     <th>@Html.DisplayNameFor(model => model.StartDate)</th>
                                     <th>@Html.DisplayNameFor(model => model.EndDate)</th>
-                                    <th>@Html.DisplayNameFor(model => model.ProjectPriority)</th>                                                               
+                                    <th>@Html.DisplayNameFor(model => model.ProjectPriority)</th>
                                     @if (User.IsInRole("Admin"))
                                     {
                                         <th> Assign Members & Project Managers <div></div> | Edit | Details | Archive</th>
@@ -159,6 +160,48 @@
         </div>
     </div>
 </div>
+
+
+
+<!---MODALS->
+
+
+<!--ASSIGN PM MODAL -->
+
+
+
+<div class="modal fade" id="assignPMModal" tabindex="-1" aria-labelledby="assignPMModal" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="d-flex justify-content-center mt-5 flex-column align-items-center">
+                <h3 class="my-5">Assign Project Manager</h3>
+                <div class="card">
+                    <div class="card-header">
+@*                        <div class="card-title">@viewModel.Project?.Name</div>
+                    </div>
+                    <div class="card-body">
+                        <form asp-action="AssignPM" asp-controller="Projects" method="post" class="d-flex flex-column">
+                            <input type="hidden" asp-for="Model.Project!.Id" />
+                            <select asp-items="viewModel.PMList" asp-for="PMId">
+                                <option value="">Unassigned</option>
+                            </select>
+                            <span asp-validation-for="PMId" class="text-danger"></span>
+                            <button type="submit" class="btn btn-primary my-3">Save</button>
+                            <a asp-action="Details" asp-route-id="@viewModel.Project?.Id" class="btn btn-secondary">Cancel</a>
+                        </form>*@
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-light-danger text-danger font-weight-medium waves-effect" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+
+
 <!-- -------------------------------------------------------------- -->
 <!-- End Container fluid  -->
 <!-- -------------------------------------------------------------- -->

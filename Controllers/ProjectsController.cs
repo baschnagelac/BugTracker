@@ -195,13 +195,15 @@ namespace BugTracker.Controllers
                 project.ImageFileType = project.ImageFormFile.ContentType;
             }
 
-            IEnumerable<Project> projects = await _context.Projects
-                                                          .Where(p => p.Archived == false && p.CompanyId == companyId)
-                                                          .Include(p => p.Members)
-                                                          .Include(p => p.Members)
-                                                          .Include(p => p.ProjectPriority)
-                                                          .Include(p => p.Tickets)
-                                                          .ToListAsync();
+            //IEnumerable<Project> projects = await _context.Projects
+            //                                              .Where(p => p.Archived == false && p.CompanyId == companyId)
+            //                                              .Include(p => p.Members)
+            //                                              .Include(p => p.Members)
+            //                                              .Include(p => p.ProjectPriority)
+            //                                              .Include(p => p.Tickets)
+            //                                              .ToListAsync();
+
+            IEnumerable<Project> projects = await _projectService.GetProjectsAsync(companyId);
 
             return View(projects);
 

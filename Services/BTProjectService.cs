@@ -346,6 +346,25 @@ namespace BugTracker.Services
             }
         }
 
+        public async Task<IEnumerable<Project>> GetProjectsAsync(int companyId)
+        {
+            try
+            {
+                IEnumerable<Project> projects = await _context.Projects
+                                              .Where(p => p.Archived == false && p.CompanyId == companyId)
+                                              .Include(p => p.Members)
+                                              .Include(p => p.Members)
+                                              .Include(p => p.ProjectPriority)
+                                              .Include(p => p.Tickets)
+                                              .ToListAsync();
 
+                return projects;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
     }
 }

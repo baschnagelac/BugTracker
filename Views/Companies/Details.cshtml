@@ -31,52 +31,49 @@
             <div class="card-body">
             </div>
 
-                <div class="card-body">
-                    <div class="form-group row align-items-center mb-0">
-                        <label asp-for="Name" class="col-3 text-end control-label col-form-label"><strong class="fs-6">Company Name</strong></label>
-                        <div class="col-9 border-start pb-2 pt-2">
-                            @Model.Name
-                        </div>
+            <div class="card-body">
+                <div class="form-group row align-items-center mb-0">
+                    <label asp-for="Name" class="col-3 text-end control-label col-form-label"><strong class="fs-4">Company Name</strong></label>
+                    <div class="col-9 border-start pb-2 pt-2">
+                        @Model.Name
                     </div>
-                    <div class="form-group row align-items-center mb-0">
-                        <label asp-for="Description" class="col-3 text-end control-label col-form-label"><strong class="fs-6">Description</strong></label>
-                        <div class="col-9 border-start pb-2 pt-2">
-                            @Model.Description
-                        </div>
-                    </div>
-@*                    <div class="form-group row align-items-center mb-0">
-                        <label asp-for="ImageFormFile" class="col-3 text-end control-label col-form-label"><strong class="fs-6">Upload Company Image</strong></label>
-                        <div class="col-9 border-start pb-2 pt-2">
-                            <img class="img-fluid border rounded-3 m-2" style="max-height: 250px;" src="~/img/DefaultCompanyImage.jpg" id="companyImage">
-                            <input asp-for="ImageFormFile" type="file" class="form-control mt-3 pt-2" accept=".png,.jpg,.jpeg,.gif"
-                                   onchange="document.getElementById('projectImage').src = window.URL.createObjectURL(this.files[0])" />
-                        </div>
-                    </div>*@
-                    <div class="form-group row align-items-center mb-0">
-                        <label asp-for="ImageFormFile" class="col-3 text-end control-label col-form-label"><strong class="fs-6">Company Photo</strong></label>
-                        <div class="col-9 border-start pb-2 pt-2">
-                            <img src="@_BTFileService.ConvertByteArrayToFile(Model.ImageFileData!,Model.ImageFileType!,(int)DefaultImage.CompanyImage)" class="rounded-2" alt="Company Image" height="200" />
-                        </div>
-                    </div>
-                    <div class="form-group row align-items-center mb-0">
-                        <label asp-for="Members" class="col-3 text-end control-label col-form-label"><strong class="fs-6">Company Members</strong></label>
-                        <div class="col-9 border-start pb-2 pt-2">
-                            @foreach (BTUser user in Model.Members)
-                            {
-                                 string roleName = (await _roleService.GetUserRolesAsync(user)).First();
-
-                                <p>@user.FullName</p>
-                                <p>@roleName</p>
-                                
-
-                                           
-                            }
-
-                            
-                        </div>
-                    </div>
-
                 </div>
+                <hr class="text-muted" />
+                <div class="form-group row align-items-center mb-0">
+                    <label asp-for="Description" class="col-3 text-end control-label col-form-label"><strong class="fs-4">Description</strong></label>
+                    <div class="col-9 border-start pb-2 pt-2">
+                        @Model.Description
+                    </div>
+                </div>
+                <hr class="text-muted" />
+                @*                    <div class="form-group row align-items-center mb-0">
+                <label asp-for="ImageFormFile" class="col-3 text-end control-label col-form-label"><strong class="fs-6">Upload Company Image</strong></label>
+                <div class="col-9 border-start pb-2 pt-2">
+                <img class="img-fluid border rounded-3 m-2" style="max-height: 250px;" src="~/img/DefaultCompanyImage.jpg" id="companyImage">
+                <input asp-for="ImageFormFile" type="file" class="form-control mt-3 pt-2" accept=".png,.jpg,.jpeg,.gif"
+                onchange="document.getElementById('projectImage').src = window.URL.createObjectURL(this.files[0])" />
+                </div>
+                </div>*@
+                <div class="form-group row align-items-center mb-0">
+                    <label asp-for="ImageFormFile" class="col-3 text-end control-label col-form-label"><strong class="fs-4">Company Photo</strong></label>
+                    <div class="col-9 border-start pb-2 pt-2">
+                        <img src="@_BTFileService.ConvertByteArrayToFile(Model.ImageFileData!,Model.ImageFileType!,(int)DefaultImage.CompanyImage)" class="rounded-3" alt="Company Image" height="200" id="projectimage" />
+                    </div>
+                </div>
+                <hr class="text-muted" />
+                <div class="form-group row align-items-center mb-0">
+                    <label asp-for="Members" class="col-3 text-end control-label col-form-label"><strong class="fs-4">Company Members</strong></label>
+                    <div class="col-9 border-start pb-2 pt-2">
+
+                        @foreach (BTUser members in Model.Members)
+                        {
+                            <p class=" text-primary mb-1 mt-1 list-unstyled fs-3">@members.FullName</p>
+                        }
+
+                    </div>
+                </div>
+
+            </div>
         </div>
     </div>
 </div>

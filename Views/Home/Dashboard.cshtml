@@ -180,11 +180,11 @@
             <div class="col">
                 <div class="bg-muted">
                     <div class="card m-1 p-2">
-                        <div class="card-header">
-                            <h2>Projects</h2>
+                        <div class="m-3">
+                            <h4>Projects</h4>
                         </div>
                         <div class="card-body">
-                            <div class="dt-responsive mt-4">
+                            <div class="table-responsive" style="overflow-y:auto;height:600px;">
                                 <table id="zero_config" class="table table-bordered table-striped no-wrap fs-3">
                                     <thead>
 
@@ -228,16 +228,17 @@
                     </div>
                 </div>
             </div>
+
             @* Tickets Table *@
             <div class="col">
-                <div class="bg-muted">
+                <div >
                     <div class="card m-1 p-2">
-                        <div class="card-header">
-                            <h2>Unassigned Tickets</h2>
+                        <div class="m-3">
+                            <h4>Unassigned Tickets</h4>
                         </div>
                         <div class="card-body">
 
-                            <div class=" dt-responsive mt-4">
+                            <div class="table-responsive" style="overflow-y:auto;height:600px;" >
                                 <table id="zero_config" class="dt-responsive table table-bordered table-striped no-wrap fs-3">
                                     <thead>
                                         <tr class="fs-4 font-weight-bold">
@@ -288,14 +289,13 @@
             <div class="col-md-2 ">
                 <div class="bg-muted">
                     <div class="card  p-2">
-                        <div class="card-header">
-                            <h2>Members</h2>
-                            <hr />
+                        <div class="m-3">
+                            <h4>Members</h4>
                         </div>
                         <div class="card-body" style="overflow-y:auto;height:600px;background-color:white">
                             @* Looop over Company members. Display Name and Role *@
-                            <div class=" dt-responsive mt-4">
-                                <table id="zero_config" class="dt-responsive table table-bordered table-striped fs-1">
+                            <div class=" table-responsive ">
+                                <table id="zero_config" class="table table-bordered table-striped fs-1">
                                     <thead>
                                         <tr class="fs-4 font-weight-bold">
                                             <th >Name</th>
@@ -329,7 +329,10 @@
                                 </table>
                             </div>
                         </div>
+                        <div class="card-footer">
+                        </div>
                     </div>
+
                 </div>
             </div>
         </div>
