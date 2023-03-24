@@ -14,8 +14,9 @@
 
 <p>
     <a value="Create" class="btn btn-info rounded-pill px-4 waves-effect waves-light" asp-action="Create">Create New Ticket</a>
-
+    
 </p>
+
 <!-- -------------------------------------------------------------- -->
 <!-- Container fluid  -->
 <!-- -------------------------------------------------------------- -->
@@ -28,9 +29,10 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-body">
-                    <h4 class="card-title">Tickets</h4>
+                    <h4 class="card-title">Unassigned Tickets</h4>
                     @*Info Pills Go here *@
                     <div class="table-responsive mt-4" style="overflow-y:auto;height:600px;">
+                        <p><a asp-action="Index" class="mt-3 btn waves-effect waves-light btn-primary">Return to Main Index</a></p>
                         <table id="zero_config" class="dt-responsive table table-bordered table-striped no-wrap fs-3">
                             <thead>
                                 <tr class="fs-4 font-weight-bold">
@@ -147,26 +149,26 @@
     <!-- -------------------------------------------------------------- -->
     <!-- All Jquery -->
     <!-- -------------------------------------------------------------- -->
-    <script src="../assets/libs/jquery/dist/jquery.min.js"></script>
+@*    <script src="~/assets/libs/jquery/dist/jquery.min.js"></script>
+    <script src="~/assets/extra-libs/taskboard/js/jquery-ui.min.js"></script>
     <!-- Bootstrap tether Core JavaScript -->
-    <script src="../assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <!-- apps -->
-    <script src="../../dist/js/app.min.js"></script>
-    <script src="../../dist/js/app.init.js"></script>
-    <script src="../../dist/js/app-style-switcher.js"></script>
+    <script src="~/dist/js/app.min.js"></script>
+    <script src="~/dist/js/app.init.js"></script>
+    <script src="~/dist/js/app-style-switcher.js"></script>
     <!-- slimscrollbar scrollbar JavaScript -->
-    <script src="../assets/libs/perfect-scrollbar/dist/perfect-scrollbar.jquery.min.js"></script>
-    <script src="../assets/extra-libs/sparkline/sparkline.js"></script>
+    <script src="~/assets/libs/perfect-scrollbar/dist/perfect-scrollbar.jquery.min.js"></script>
+    <script src="~/assets/extra-libs/sparkline/sparkline.js"></script>
     <!--Wave Effects -->
-    <script src="../../dist/js/waves.js"></script>
+    <script src="~/dist/js/waves.js"></script>
     <!--Menu sidebar -->
-    <script src="../../dist/js/sidebarmenu.js"></script>
+    <script src="~/dist/js/sidebarmenu.js"></script>
     <!--Custom JavaScript -->
-    <script src="../../dist/js/feather.min.js"></script>
-    <script src="../../dist/js/custom.min.js"></script>
+    <script src="~/dist/js/feather.min.js"></script>
+    <script src="~/dist/js/custom.min.js"></script>*@
     <!--This page plugins -->
     <script src="../assets/extra-libs/datatables.net/js/jquery.dataTables.min.js"></script>
     <script src="../assets/extra-libs/datatables.net-bs4/js/dataTables.responsive.min.js"></script>
     <script src="../../dist/js/pages/datatable/datatable-basic.init.js"></script>
 }
-

@@ -1,14 +1,20 @@
 ﻿@model BugTracker.Models.Ticket
 @using BugTracker.Services.Interfaces;
 @using BugTracker.Models.Enums.Enums
+@using Microsoft.AspNetCore.Identity;
 
 @inject IBTFileService _BTFileService
 @inject IBTTicketService _TicketService
 @inject IBTTicketHistoryService _HistoryService
 @inject IBTProjectService _projectService
+@inject UserManager<BTUser> _UserManager
 @{
     
     ViewData["Title"] = "Details";
+    string userId = _UserManager.GetUserId(User)!;
+
+
+    BTUser? projectManager = await _projectService.GetProjectManagerAsync(Model!.ProjectId);
 }
 
 <!-- -------------------------------------------------------------- -->
@@ -49,31 +55,50 @@
             <div class="card">
                 <div class="card-body ">
                     <h4 class="mb-3">Write a reply</h4>
-                    <form asp-action="AddTicketComment" asp-controller="Tickets" method="post">
-                        <input type="hidden" asp-for="Id" name="TicketId" />
-                        <label for="message"></label>
-                        <textarea id="mymce" name="comment" rows="8" class="w-50"></textarea>
-                        <button type="submit" name="submit" value="Post Comment" class="mt-3 btn waves-effect waves-light btn-success">Leave a reply</button>
-@*                        <button type="button" class="mt-3 btn waves-effect waves-light btn-info">Reply & close</button>*@
-                    </form>
+                    @if (userId == Model.SubmitterUserId || userId == Model.DeveloperUserId || userId == projectManager.Id || User.IsInRole("Admin"))
+                    {
+                        <form asp-action="AddTicketComment" asp-controller="Tickets" method="post">
+                            <input type="hidden" asp-for="Id" name="TicketId" />
+                            <label for="message"></label>
+                            <textarea id="mymce" name="Comment" @*rows="8" class="w-50"*@></textarea>
+                            <button type="submit" name="submit" value="Post Comment" class="mt-3 btn waves-effect waves-light btn-success">Leave a reply</button>
+                            @*                        <button type="button" class="mt-3 btn waves-effect waves-light btn-info">Reply & close</button>*@
+                        </form>
+                    }
+                    else
+                    {
+                        <h3>Cannot Add Comments Unless Assigned to Ticket </h3>
+
+                    }
+
+
                 </div>
             </div>
             <div class="card">
                 <div class="card-body">
                     <h4 class="mb-3">Submit an Attachment</h4>
-                    <form asp-action="AddTicketAttachment" asp-controller="Tickets" enctype="multipart/form-data"  method="post">
-                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                        <input type="hidden" asp-for="Id" name="TicketId" />
-                        <label>
-                            Description
-                            <input asp-for="@Model.Attachments.FirstOrDefault().Description" type="text" class="form-control" />
-                        </label><br />
-                        <label class="btn btn-outline-primary btn-sm">
-                            <input asp-for="@Model.Attachments.FirstOrDefault().FormFile" type="file" class="form-control-file" />
-                        </label>
-                        <button type="submit" name="submit" value="Post Comment" class="mt-3 btn waves-effect waves-light btn-success">Submit Attachment</button>
-                        @*                        <button type="button" class="mt-3 btn waves-effect waves-light btn-info">Reply & close</button>*@
-                    </form>
+                    @if (userId == Model.SubmitterUserId || userId == Model.DeveloperUserId || userId == projectManager.Id || User.IsInRole("Admin"))
+                    {
+                        <form asp-action="AddTicketAttachment" asp-controller="Tickets" enctype="multipart/form-data" method="post">
+                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                            <input type="hidden" asp-for="Id" name="TicketId" />
+                            <label>
+                                Description
+                                <input asp-for="@Model.Attachments.FirstOrDefault().Description" type="text" class="form-control" />
+                            </label><br />
+                            <label class="btn btn-outline-primary btn-sm">
+                                <input asp-for="@Model.Attachments.FirstOrDefault().FormFile" type="file" class="form-control-file" />
+                            </label>
+                            <button type="submit" name="submit" value="Post Comment" class="mt-3 btn waves-effect waves-light btn-success">Submit Attachment</button>
+                            @*                        <button type="button" class="mt-3 btn waves-effect waves-light btn-info">Reply & close</button>*@
+                        </form>
+                    }
+                    else
+                    {
+                        <h3>Cannot Add Attachments Unless Assigned to Ticket </h3>
+
+                    }
+
                     @foreach (TicketAttachment item in Model.Attachments)
                     {
                         <div class="col col-sm-2">

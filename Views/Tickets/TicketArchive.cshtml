@@ -6,6 +6,8 @@
 
 @inject IBTFileService _BTFileService
 @inject IBTProjectService _ProjectService
+@inject UserManager<BTUser> _UserManager
+
 
 @{
     ViewData["Title"] = "TicketArchive";
@@ -14,82 +16,90 @@
 
 @{
     
+    string userId = _UserManager.GetUserId(User)!;
 
-    Project project = new();
 
-    Ticket ticket = new();
+    BTUser? projectManager = await _ProjectService.GetProjectManagerAsync(Model!.ProjectId);
 }
 
+@if (userId == projectManager.Id || User.IsInRole("Admin"))
+{
 
-<div class="row">
-    <div class="col-12 col-md-8 offset-md-2">
-        <h2>Are you sure?</h2>
-        <p class="text-lead text-muted fs-3">This ticket will be archived and no longer available for development.</p>
-        <div class="card mb-3">
-            <div class="row g-0">
+    <div class="row">
+        <div class="col-12 col-md-8 offset-md-2">
+            <h2>Are you sure?</h2>
+            <p class="text-lead text-muted fs-3">This ticket will be archived and no longer available for development.</p>
+            <div class="card mb-3">
+                <div class="row g-0">
 
-                <div class="col-md-5">
-                    <div class="card-body">
+                    <div class="col-md-5">
+                        <div class="card-body">
 
-                        <div class="form-group row align-items-center mb-0">
-                            <label asp-for="Title" class="col-4 text-end control-label col-form-label"><strong>Ticket Title</strong></label>
-                            <div class="col-8 border-start pb-2 pt-2">
-                                @Model.Title
+                            <div class="form-group row align-items-center mb-0">
+                                <label asp-for="Title" class="col-4 text-end control-label col-form-label"><strong>Ticket Title</strong></label>
+                                <div class="col-8 border-start pb-2 pt-2">
+                                    @Model.Title
+                                </div>
                             </div>
-                        </div>
-                        <hr class="text-muted" />
-                        <div class="form-group row align-items-center mb-0">
-                            <label asp-for="Description" class="col-4 text-end control-label col-form-label">Description</label>
-                            <div class="col-8 border-start pb-2 pt-2">
-                                @Model.Description
+                            <hr class="text-muted" />
+                            <div class="form-group row align-items-center mb-0">
+                                <label asp-for="Description" class="col-4 text-end control-label col-form-label">Description</label>
+                                <div class="col-8 border-start pb-2 pt-2">
+                                    @Model.Description
+                                </div>
                             </div>
-                        </div>
-                        <hr class="text-muted" />
-                        <div class="form-group row align-items-center mb-0">
-                            <label asp-for="ProjectId" class="col-4 text-end control-label col-form-label"><strong>For the Project: </strong></label>
-                            <div class="col-8 border-start pb-2 pt-2">
-                                @Model.Project.Name 
+                            <hr class="text-muted" />
+                            <div class="form-group row align-items-center mb-0">
+                                <label asp-for="ProjectId" class="col-4 text-end control-label col-form-label"><strong>For the Project: </strong></label>
+                                <div class="col-8 border-start pb-2 pt-2">
+                                    @Model.Project.Name 
+                                </div>
                             </div>
-                        </div>
-                        <hr class="text-muted" />
-                        <div class="form-group row align-items-center mb-0">
-                            <label asp-for="TicketTypeId" class="col-4 text-end control-label col-form-label"><strong>Ticket Type</strong> </label>
-                            <div class="col-8 border-start pb-2 pt-2 badge bg-light-info text-info font-weight-medium fs-3">
-                                @Model.TicketType.Name
+                            <hr class="text-muted" />
+                            <div class="form-group row align-items-center mb-0">
+                                <label asp-for="TicketTypeId" class="col-4 text-end control-label col-form-label"><strong>Ticket Type</strong> </label>
+                                <div class="col-8 border-start pb-2 pt-2 badge bg-light-info text-info font-weight-medium fs-3">
+                                    @Model.TicketType.Name
+                                </div>
                             </div>
-                        </div>
-                        <hr class="text-muted" />
-                        <div class="form-group row align-items-center mb-0">
-                            <label asp-for="TicketStatusId" class="col-4 text-end control-label col-form-label"><strong>Ticket Status</strong> </label>
-                            <div class="col-8 border-start pb-2 pt-2 badge bg-light-success text-success font-weight-medium fs-3">
-                                @Model.TicketStatus.Name
+                            <hr class="text-muted" />
+                            <div class="form-group row align-items-center mb-0">
+                                <label asp-for="TicketStatusId" class="col-4 text-end control-label col-form-label"><strong>Ticket Status</strong> </label>
+                                <div class="col-8 border-start pb-2 pt-2 badge bg-light-success text-success font-weight-medium fs-3">
+                                    @Model.TicketStatus.Name
+                                </div>
                             </div>
-                        </div>
-                        <hr class="text-muted" />
-                        <div class="form-group row align-items-center mb-0">
-                            <label asp-for="TicketPriorityId" class="col-4 text-end control-label col-form-label"><strong>Ticket Priority</strong></label>
-                            <div class="col-8 border-start pb-2 pt-2 badge bg-light-danger text-danger font-weight-medium fs-3">
-                                @Model.TicketPriority.Name
+                            <hr class="text-muted" />
+                            <div class="form-group row align-items-center mb-0">
+                                <label asp-for="TicketPriorityId" class="col-4 text-end control-label col-form-label"><strong>Ticket Priority</strong></label>
+                                <div class="col-8 border-start pb-2 pt-2 badge bg-light-danger text-danger font-weight-medium fs-3">
+                                    @Model.TicketPriority.Name
+                                </div>
                             </div>
-                        </div>
-                        <hr class="text-muted" />
-                        <div class="form-group row align-items-center mb-0">
-                            <label asp-for="DeveloperUserId" class="col-4 text-end control-label col-form-label"><strong>Assigned to: </strong></label>
-                            <div class="col-8 border-start pb-2 pt-2 ">
-                                @Model.DeveloperUser.FullName
+                            <hr class="text-muted" />
+                            <div class="form-group row align-items-center mb-0">
+                                <label asp-for="DeveloperUserId" class="col-4 text-end control-label col-form-label"><strong>Assigned to: </strong></label>
+                                <div class="col-8 border-start pb-2 pt-2 ">
+                                    @Model.DeveloperUser.FullName
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+            <form class="d-flex justify-content-between" asp-action="Archive" >
+                <input hidden asp-for="Id" />
+                <a asp-action="Index" asp-controller="Tickets" class="btn btn-outline-secondary rounded-pill btnLink">Cancel</a>
+                <input type="submit" value="Archive" class="btn btn-danger rounded-pill btnLink">
+            </form>
         </div>
-        <form class="d-flex justify-content-between" asp-action="Archive" >
-            <input hidden asp-for="Id" />
-            <a asp-action="Index" asp-controller="Tickets" class="btn btn-outline-secondary rounded-pill btnLink">Cancel</a>
-            <input type="submit" value="Archive" class="btn btn-danger rounded-pill btnLink">
-        </form>
     </div>
-</div>
+}
+else
+{
+    <h1>Cannot Archive Tickets You're Not Assigned To </h1>
+    <a asp-action="Index" asp-controller="Tickets" value="Index" class="btn btn-primary rounded-pill px-4 waves-effect waves-light">Back To Main Index</a>
+}
 <script src="../assets/libs/jquery/dist/jquery.min.js"></script>
 <!-- Bootstrap tether Core JavaScript -->
 <script src="../assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>

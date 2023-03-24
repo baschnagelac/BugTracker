@@ -1,76 +1,106 @@
 ﻿@model BugTracker.Models.Ticket
+@using BugTracker.Data;
+@using BugTracker.Extensions;
+@using BugTracker.Services.Interfaces;
+@using Microsoft.AspNetCore.Identity;
+@using Microsoft.EntityFrameworkCore;
+
+
+@inject UserManager<BTUser> _UserManager
+@inject IBTProjectService _projectService
+@inject IBTTicketService _ticketService
+@inject ApplicationDbContext _context
+
 
 @{
     ViewData["Title"] = "Create";
+
+    string userId = _UserManager.GetUserId(User)!;
+
+    BTUser? projectManager = await _projectService.GetProjectManagerAsync(Model.ProjectId);
 }
 
 
+
+
+
+
 <!-- Row -->
-<div class="row">
-    <div class="col-12">
-        <div class="card">
-            <div class="card-body">
-                <h4 class="card-title">Create a New Ticket</h4>
-                <h6 class="card-subtitle">For Development</h6>
-            </div>
-            <form asp-action="Create" class="form-horizontal r-separator border-top">
-                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+@if (userId == Model.SubmitterUserId || userId == Model.DeveloperUserId || userId == projectManager.Id || User.IsInRole("Admin"))
+{
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
                 <div class="card-body">
-                    <div class="form-group row align-items-center mb-0">
-                        <label asp-for="Title" class="col-3 text-end control-label col-form-label">Ticket Title</label>
-                        <div class="col-9 border-start pb-2 pt-2">
-                            <input type="text" asp-for="Title" class="form-control" placeholder="Title Goes Here">
-                            <span asp-validation-for="Title" class="text-danger"></span>
-                        </div>
-                    </div>
-                    <div class="form-group row align-items-center mb-0">
-                        <label asp-for="Description" class="col-3 text-end control-label col-form-label">Description</label>
-                        <div class="col-9 border-start pb-2 pt-2">
-                            <input type="text" class="form-control" asp-for="Description" placeholder="Description ">
-                            <span asp-validation-for="Description" class="text-danger"></span>
-                        </div>
-                    </div>
-                    <div class="form-group row align-items-center mb-0">
-                        <label asp-for="ProjectId" class="col-3 text-end control-label col-form-label">For the Project: </label>
-                        <div class="col-9 border-start pb-2 pt-2">
-                            <select asp-for="ProjectId" class="form-control" asp-items="ViewBag.ProjectId"></select>
-                        </div>
-                    </div>
-                    <div class="form-group row align-items-center mb-0">
-                        <label asp-for="TicketTypeId" class="col-3 text-end control-label col-form-label">Ticket Type </label>
-                        <div class="col-9 border-start pb-2 pt-2">
-                            <select asp-for="TicketTypeId" class="form-control" asp-items="ViewBag.TicketTypeId"></select>
-                        </div>
-                    </div>
-                    <div class="form-group row align-items-center mb-0">
-                        <label asp-for="TicketStatusId" class="col-3 text-end control-label col-form-label">Ticket Status </label>
-                        <div class="col-9 border-start pb-2 pt-2">
-                            <select asp-for="TicketStatusId" class="form-control" asp-items="ViewBag.TicketStatusId"></select>
-                        </div>
-                    </div>
-                    <div class="form-group row align-items-center mb-0">
-                        <label asp-for="TicketPriorityId" class="col-3 text-end control-label col-form-label">Ticket Priority</label>
-                        <div class="col-9 border-start pb-2 pt-2">
-                            <select asp-for="TicketPriorityId" class="form-control" asp-items="ViewBag.TicketPriorityId"></select>
-                        </div>
-                    </div>
-                    <div class="form-group row align-items-center mb-0">
-                        <label asp-for="DeveloperUserId" class="col-3 text-end control-label col-form-label">Assign to Developer</label>
-                        <div class="col-9 border-start pb-2 pt-2">
-                            <select asp-for="DeveloperUserId" class="form-control" asp-items="ViewBag.DeveloperUserId"></select>
-                        </div>
-                    </div>
+                    <h4 class="card-title">Create a New Ticket</h4>
+                    <h6 class="card-subtitle">For Development</h6>
                 </div>
-                <div class="p-3 border-top">
-                    <div class="form-group mb-0 text-end">
-                        <button type="submit" value="Create" class="btn btn-info rounded-pill px-4 waves-effect waves-light">Create New Ticket</button>
-                        <a asp-action="Index" asp-controller="Tickets" class="btn btn-dark rounded-pill px-4 waves-effect waves-light">Cancel</a>
+                <form asp-action="Create" class="form-horizontal r-separator border-top">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="card-body">
+                        <div class="form-group row align-items-center mb-0">
+                            <label asp-for="Title" class="col-3 text-end control-label col-form-label">Ticket Title</label>
+                            <div class="col-9 border-start pb-2 pt-2">
+                                <input type="text" asp-for="Title" class="form-control" placeholder="Title Goes Here">
+                                <span asp-validation-for="Title" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="form-group row align-items-center mb-0">
+                            <label asp-for="Description" class="col-3 text-end control-label col-form-label">Description</label>
+                            <div class="col-9 border-start pb-2 pt-2">
+                                <input type="text" class="form-control" asp-for="Description" placeholder="Description ">
+                                <span asp-validation-for="Description" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="form-group row align-items-center mb-0">
+                            <label asp-for="ProjectId" class="col-3 text-end control-label col-form-label">For the Project: </label>
+                            <div class="col-9 border-start pb-2 pt-2">
+                                <select asp-for="ProjectId" class="form-control" asp-items="ViewBag.ProjectId"></select>
+                            </div>
+                        </div>
+                        <div class="form-group row align-items-center mb-0">
+                            <label asp-for="TicketTypeId" class="col-3 text-end control-label col-form-label">Ticket Type </label>
+                            <div class="col-9 border-start pb-2 pt-2">
+                                <select asp-for="TicketTypeId" class="form-control" asp-items="ViewBag.TicketTypeId"></select>
+                            </div>
+                        </div>
+                        <div class="form-group row align-items-center mb-0">
+                            <label asp-for="TicketStatusId" class="col-3 text-end control-label col-form-label">Ticket Status </label>
+                            <div class="col-9 border-start pb-2 pt-2">
+                                <select asp-for="TicketStatusId" class="form-control" asp-items="ViewBag.TicketStatusId"></select>
+                            </div>
+                        </div>
+                        <div class="form-group row align-items-center mb-0">
+                            <label asp-for="TicketPriorityId" class="col-3 text-end control-label col-form-label">Ticket Priority</label>
+                            <div class="col-9 border-start pb-2 pt-2">
+                                <select asp-for="TicketPriorityId" class="form-control" asp-items="ViewBag.TicketPriorityId"></select>
+                            </div>
+                        </div>
+                        <div class="form-group row align-items-center mb-0">
+                            <label asp-for="DeveloperUserId" class="col-3 text-end control-label col-form-label">Assign to Developer</label>
+                            <div class="col-9 border-start pb-2 pt-2">
+                                <select asp-for="DeveloperUserId" class="form-control" asp-items="ViewBag.DeveloperUserId"></select>
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </form>
+                    <div class="p-3 border-top">
+                        <div class="form-group mb-0 text-end">
+                            <button type="submit" value="Create" class="btn btn-info rounded-pill px-4 waves-effect waves-light">Create New Ticket</button>
+                            <a asp-action="Index" asp-controller="Tickets" class="btn btn-dark rounded-pill px-4 waves-effect waves-light">Cancel</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
-</div>
+}
+else
+{
+    <h1>Cannot Edit Tickets You're Not Assigned To </h1>
+    <a asp-action="Index" asp-controller="Tickets" value="Index" class="btn btn-primary rounded-pill px-4 waves-effect waves-light">Back To Main Index</a>
+}
+
+
 
 @section Scripts {
     @{

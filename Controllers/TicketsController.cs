@@ -277,7 +277,7 @@ namespace BugTracker.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddTicketComment([Bind("Id,Comment,Created,TicketId,UserId")] TicketComment ticketComment, int? ticketId, Ticket ticket)
+        public async Task<IActionResult> AddTicketComment([Bind("Id,Comment,Created,TicketId,UserId")] TicketComment ticketComment, int? ticketId)
         {
             ModelState.Remove("UserId");
 
@@ -291,19 +291,14 @@ namespace BugTracker.Controllers
 
                 ticketComment.Created = DateTime.UtcNow;
 
-                string userId = _userManager.GetUserId(User)!;
+                //string userId = _userManager.GetUserId(User)!;
 
-               
-
-                BTUser? projectManager = await _projectService.GetProjectManagerAsync(ticket.ProjectId);
-
-                if (userId == ticket.SubmitterUserId || userId == ticket.DeveloperUserId || userId == projectManager.Id)
-                {
-                    await _ticketService.AddTicketCommentAsync(ticketComment);
-                }
+                await _ticketService.AddTicketCommentAsync(ticketComment);
 
 
-               
+
+
+                
 
                 //add history 
 
@@ -317,11 +312,12 @@ namespace BugTracker.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddTicketAttachment([Bind("Id,FormFile,Description,TicketId")] TicketAttachment ticketAttachment, Ticket ticket)
+        public async Task<IActionResult> AddTicketAttachment([Bind("Id,FormFile,Description,TicketId")] TicketAttachment ticketAttachment)
         {
             string statusMessage;
             ModelState.Remove("TicketId");
             ModelState.Remove("BTUserId");
+           
             if (ModelState.IsValid && ticketAttachment.FormFile != null)
             {
 
@@ -335,23 +331,13 @@ namespace BugTracker.Controllers
 
                 string userId = _userManager.GetUserId(User)!;
 
-
-
-                BTUser? projectManager = await _projectService.GetProjectManagerAsync(ticket.ProjectId);
-
-                if (userId == ticket.SubmitterUserId || userId == ticket.DeveloperUserId || userId == projectManager.Id)
-                {
-                    await _ticketService.AddTicketAttachmentAsync(ticketAttachment);
-                }
-                else 
-                if(User.IsInRole("Admin"))
-                {
-                    await _ticketService.AddTicketAttachmentAsync(ticketAttachment);
-                }
-
-
-
                 
+
+
+
+
+                await _ticketService.AddTicketAttachmentAsync(ticketAttachment);
+
 
                 //add history 
 
@@ -571,6 +557,7 @@ namespace BugTracker.Controllers
         public async Task<IActionResult> Create()
         {
             int companyId = User.Identity!.GetCompanyId();
+            string userId = _userManager.GetUserId(User)!;
 
             Ticket ticket = new();
 
@@ -583,6 +570,20 @@ namespace BugTracker.Controllers
             IEnumerable<Project> projects = await _context.Projects
                                                           .Where(p => p.Archived == false && p.CompanyId == companyId)
                                                           .ToListAsync();
+
+
+            
+
+            BTUser? projectManager = await _projectService.GetProjectManagerAsync(ticket!.ProjectId);
+
+            if (User.IsInRole("Admin"))
+            {
+                ViewData["ProjectId"] = new SelectList(projects, "Id", "Name");
+            }
+            else if (userId == ticket.SubmitterUserId || userId == ticket.DeveloperUserId || userId == projectManager.Id)
+            {
+                ViewData["ProjectId"] = new SelectList(projects, "Id", "Name");
+            }
 
             ViewData["ProjectId"] = new SelectList(projects, "Id", "Name");
 
@@ -616,16 +617,16 @@ namespace BugTracker.Controllers
 
                 BTUser? projectManager = await _projectService.GetProjectManagerAsync(ticket.ProjectId);
 
-                if (userId == ticket.SubmitterUserId || userId == ticket.DeveloperUserId || userId == projectManager.Id)
-                {
-                    //todo: call service
-                    _context.Add(ticket);
-                    await _context.SaveChangesAsync();
-                }
+                //if (userId == ticket.SubmitterUserId || userId == ticket.DeveloperUserId || userId == projectManager.Id)
+                //{
+                //    
+                //}
 
 
 
-
+                //todo: call service
+                _context.Add(ticket);
+                await _context.SaveChangesAsync();
 
                 //todo: add history record 
                 int companyId = User.Identity!.GetCompanyId();
@@ -758,17 +759,19 @@ namespace BugTracker.Controllers
 
                     ticket.Created = DataUtility.GetPostGresDate(ticket.Created);
                     ticket.Updated = DataUtility.GetPostGresDate(DateTime.Now);
+
+                    _context.Update(ticket);
+                    await _context.SaveChangesAsync();
+
                     //call to database
                     string userId = _userManager.GetUserId(User)!;
 
                     BTUser? projectManager = await _projectService.GetProjectManagerAsync(ticket.ProjectId);
 
-                    if (userId == ticket.SubmitterUserId || userId == ticket.DeveloperUserId || userId == projectManager.Id)
-                    {
-                        _context.Update(ticket);
-                        await _context.SaveChangesAsync();
-                    }
+                    //if (userId == ticket.SubmitterUserId || userId == ticket.DeveloperUserId || userId == projectManager.Id)
+                    //{
 
+                    //}
 
 
 
