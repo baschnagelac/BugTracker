@@ -577,10 +577,9 @@ namespace BugTracker.Controllers
 
             BTUser? projectManager = await _projectService.GetProjectManagerAsync(ticket!.ProjectId);
 
-            if (userId == ticket.SubmitterUserId || userId == ticket.DeveloperUserId || userId == projectManager?.Id || User.IsInRole("Admin"))
-            {
-                ViewData["ProjectId"] = new SelectList(projects, "Id", "Name");
-            }
+
+   ViewData["ProjectId"] = new SelectList(projects, "Id", "Name");
+  
             
 
                 
