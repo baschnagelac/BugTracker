@@ -63,17 +63,17 @@ namespace BugTracker.Controllers
             //                                   .FirstOrDefaultAsync(t => t.Id == companyId);
 
 
-            IEnumerable<Ticket> tickets =   _context.Tickets
+            IEnumerable<Ticket> tickets = _context.Tickets
                                                     .Where(c => c.Archived == false)
                                                     .Where(c => c.Project!.CompanyId == companyId)
                                                           .Include(t => t.DeveloperUser)
                                                .Include(t => t.Project)
-                                               
+
                                                .Include(t => t.TicketPriority)
                                                .Include(t => t.TicketStatus)
                                                .Include(t => t.TicketType)
                                                .ToList();
-                                               
+
 
 
 
@@ -298,7 +298,7 @@ namespace BugTracker.Controllers
 
 
 
-                
+
 
                 //add history 
 
@@ -317,7 +317,7 @@ namespace BugTracker.Controllers
             string statusMessage;
             ModelState.Remove("TicketId");
             ModelState.Remove("BTUserId");
-           
+
             if (ModelState.IsValid && ticketAttachment.FormFile != null)
             {
 
@@ -331,7 +331,7 @@ namespace BugTracker.Controllers
 
                 string userId = _userManager.GetUserId(User)!;
 
-                
+
 
 
 
@@ -554,7 +554,7 @@ namespace BugTracker.Controllers
         }
 
         // GET: Tickets/Create
-  
+
         public async Task<IActionResult> Create()
         {
             int companyId = User.Identity!.GetCompanyId();
@@ -578,11 +578,11 @@ namespace BugTracker.Controllers
             BTUser? projectManager = await _projectService.GetProjectManagerAsync(ticket!.ProjectId);
 
 
-   ViewData["ProjectId"] = new SelectList(projects, "Id", "Name");
-  
-            
+            ViewData["ProjectId"] = new SelectList(projects, "Id", "Name");
 
-                
+
+
+
 
             ViewData["TicketPriorityId"] = new SelectList(_context.TicketPriorities, "Id", "Name");
             ViewData["TicketStatusId"] = new SelectList(_context.TicketStatuses, "Id", "Name");
@@ -677,11 +677,11 @@ namespace BugTracker.Controllers
                     await _notificationService.SendAdminEmailNotificationAsync(notification, "New Project Ticket Added", companyId);
                 }
 
-                
+
                 return RedirectToAction(nameof(Index));
             }
 
-            
+
 
             ViewData["DeveloperUserId"] = new SelectList(_context.Users, "Id", "FullName", ticket.DeveloperUserId);
             ViewData["ProjectId"] = new SelectList(_context.Projects, "Id", "Name", ticket.ProjectId);
