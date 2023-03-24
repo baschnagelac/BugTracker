@@ -573,12 +573,14 @@ namespace BugTracker.Controllers
                                                           .ToListAsync();
 
 
-            
-
-            //BTUser? projectManager = await _projectService.GetProjectManagerAsync(ticket!.ProjectId);
 
 
-            ViewData["ProjectId"] = new SelectList(projects, "Id", "Name");
+            BTUser? projectManager = await _projectService.GetProjectManagerAsync(ticket!.ProjectId);
+
+            if (userId == ticket.SubmitterUserId || userId == ticket.DeveloperUserId || userId == projectManager?.Id || User.IsInRole("Admin"))
+            {
+                ViewData["ProjectId"] = new SelectList(projects, "Id", "Name");
+            }
             
 
                 
