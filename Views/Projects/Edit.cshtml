@@ -15,7 +15,7 @@
 }
 
 <!-- Row -->
-@if (userId == projectManager.Id || User.IsInRole("Admin"))
+@if (userId == projectManager?.Id || User.IsInRole("Admin"))
 {
     <div class="row">
         <div class="col-12">

@@ -17,7 +17,11 @@
 
     string userId = _UserManager.GetUserId(User)!;
 
-    BTUser? projectManager = await _projectService.GetProjectManagerAsync(Model.ProjectId);
+
+    
+
+    Ticket ticket = new();
+
 }
 
 
@@ -26,8 +30,7 @@
 
 
 <!-- Row -->
-@if (userId == Model.SubmitterUserId || userId == Model.DeveloperUserId || userId == projectManager.Id || User.IsInRole("Admin"))
-{
+
     <div class="row">
         <div class="col-12">
             <div class="card">
@@ -70,13 +73,15 @@
                                 <select asp-for="TicketStatusId" class="form-control" asp-items="ViewBag.TicketStatusId"></select>
                             </div>
                         </div>
+
                         <div class="form-group row align-items-center mb-0">
                             <label asp-for="TicketPriorityId" class="col-3 text-end control-label col-form-label">Ticket Priority</label>
                             <div class="col-9 border-start pb-2 pt-2">
                                 <select asp-for="TicketPriorityId" class="form-control" asp-items="ViewBag.TicketPriorityId"></select>
                             </div>
                         </div>
-                        <div class="form-group row align-items-center mb-0">
+                    
+                    <div class="form-group row align-items-center mb-0">
                             <label asp-for="DeveloperUserId" class="col-3 text-end control-label col-form-label">Assign to Developer</label>
                             <div class="col-9 border-start pb-2 pt-2">
                                 <select asp-for="DeveloperUserId" class="form-control" asp-items="ViewBag.DeveloperUserId"></select>
@@ -93,12 +98,7 @@
             </div>
         </div>
     </div>
-}
-else
-{
-    <h1>Cannot Edit Tickets You're Not Assigned To </h1>
-    <a asp-action="Index" asp-controller="Tickets" value="Index" class="btn btn-primary rounded-pill px-4 waves-effect waves-light">Back To Main Index</a>
-}
+
 
 
 

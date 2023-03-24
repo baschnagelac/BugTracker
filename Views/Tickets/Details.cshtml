@@ -55,7 +55,7 @@
             <div class="card">
                 <div class="card-body ">
                     <h4 class="mb-3">Write a reply</h4>
-                    @if (userId == Model.SubmitterUserId || userId == Model.DeveloperUserId || userId == projectManager.Id || User.IsInRole("Admin"))
+                    @if (userId == Model.SubmitterUserId || userId == Model.DeveloperUserId || userId == projectManager?.Id || User.IsInRole("Admin"))
                     {
                         <form asp-action="AddTicketComment" asp-controller="Tickets" method="post">
                             <input type="hidden" asp-for="Id" name="TicketId" />
@@ -77,7 +77,7 @@
             <div class="card">
                 <div class="card-body">
                     <h4 class="mb-3">Submit an Attachment</h4>
-                    @if (userId == Model.SubmitterUserId || userId == Model.DeveloperUserId || userId == projectManager.Id || User.IsInRole("Admin"))
+                    @if (userId == Model.SubmitterUserId || userId == Model.DeveloperUserId || userId == projectManager?.Id || User.IsInRole("Admin"))
                     {
                         <form asp-action="AddTicketAttachment" asp-controller="Tickets" enctype="multipart/form-data" method="post">
                             <div asp-validation-summary="ModelOnly" class="text-danger"></div>

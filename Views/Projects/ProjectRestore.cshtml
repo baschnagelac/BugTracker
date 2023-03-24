@@ -5,6 +5,8 @@
 @using BugTracker.Models.Enums.Enums
 
 @inject IBTFileService _BTFileService
+@inject UserManager<BTUser> _UserManager
+@inject IBTProjectService _projectService
 
 
 @{
@@ -15,12 +17,15 @@
 @{
 
 
-    Project project = new();
+    string userId = _UserManager.GetUserId(User)!;
 
-    Ticket ticket = new();
+
+    BTUser? projectManager = await _projectService.GetProjectManagerAsync(Model!.Id);
+    Project? project = new();
 }
 
-
+@if (userId == projectManager?.Id || User.IsInRole("Admin"))
+{
 <div class="row">
     <div class="col-12 col-md-8 offset-md-2">
         <h2>Are you sure?</h2>
@@ -91,7 +96,12 @@
         </form>
     </div>
 </div>
-
+}
+else
+{
+    <h1>Cannot Restore Projects You're Not Assigned To </h1>
+    <a asp-action="Index" asp-controller="Projects" value="Index" class="btn btn-primary rounded-pill px-4 waves-effect waves-light">Back To Main Index</a>
+}
 @section scripts{
     <script src="../assets/libs/jquery/dist/jquery.min.js"></script>
     <!-- Bootstrap tether Core JavaScript -->

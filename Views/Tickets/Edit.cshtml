@@ -19,7 +19,7 @@
 }
 
 
-@if (userId == Model.SubmitterUserId || userId == Model.DeveloperUserId || userId == projectManager.Id || User.IsInRole("Admin"))
+@if (userId == Model.SubmitterUserId || userId == Model.DeveloperUserId || userId == projectManager?.Id || User.IsInRole("Admin"))
 {
     <!-- Row -->
     <div class="row">

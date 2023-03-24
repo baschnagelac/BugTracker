@@ -554,6 +554,7 @@ namespace BugTracker.Controllers
         }
 
         // GET: Tickets/Create
+  
         public async Task<IActionResult> Create()
         {
             int companyId = User.Identity!.GetCompanyId();
@@ -574,18 +575,13 @@ namespace BugTracker.Controllers
 
             
 
-            BTUser? projectManager = await _projectService.GetProjectManagerAsync(ticket!.ProjectId);
+            //BTUser? projectManager = await _projectService.GetProjectManagerAsync(ticket!.ProjectId);
 
-            if (User.IsInRole("Admin"))
-            {
-                ViewData["ProjectId"] = new SelectList(projects, "Id", "Name");
-            }
-            else if (userId == ticket.SubmitterUserId || userId == ticket.DeveloperUserId || userId == projectManager.Id)
-            {
-                ViewData["ProjectId"] = new SelectList(projects, "Id", "Name");
-            }
 
             ViewData["ProjectId"] = new SelectList(projects, "Id", "Name");
+            
+
+                
 
             ViewData["TicketPriorityId"] = new SelectList(_context.TicketPriorities, "Id", "Name");
             ViewData["TicketStatusId"] = new SelectList(_context.TicketStatuses, "Id", "Name");
@@ -599,6 +595,7 @@ namespace BugTracker.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+
         public async Task<IActionResult> Create([Bind("Id,Title,Description,Created,Updated,Archived,ArchivedByProject,ProjectId,TicketTypeId,TicketStatusId,TicketPriorityId,DeveloperUserId,SubmitterUserId")] Ticket ticket)
         {
 
@@ -694,6 +691,7 @@ namespace BugTracker.Controllers
         }
 
         // GET: Tickets/Edit/5
+
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null || _context.Tickets == null)
@@ -701,7 +699,18 @@ namespace BugTracker.Controllers
                 return NotFound();
             }
             int companyId = User.Identity.GetCompanyId();
-            var ticket = await _context.Tickets.FindAsync(id);
+            var ticket = await _context.Tickets
+               .Where(c => c.Project!.CompanyId == companyId)
+               .Include(t => t.DeveloperUser)
+               .Include(t => t.Project)
+               .Include(t => t.TicketPriority)
+               .Include(t => t.TicketStatus)
+               .Include(t => t.TicketType)
+               .Include(t => t.Comments)
+                   .ThenInclude(t => t.User)
+               .Include(t => t.Attachments)
+               .Include(t => t.Histories)
+               .FirstOrDefaultAsync(m => m.Id == id);
             if (ticket == null)
             {
                 return NotFound();
@@ -726,6 +735,7 @@ namespace BugTracker.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+
         public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Description,Created,Updated,Archived,ArchivedByProject,ProjectId,TicketTypeId,TicketStatusId,TicketPriorityId,DeveloperUserId,SubmitterUserId")] Ticket ticket)
         {
             if (id != ticket.Id)

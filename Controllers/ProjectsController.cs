@@ -289,6 +289,7 @@ namespace BugTracker.Controllers
         }
 
         // GET: Projects/Create
+       
         public async Task<IActionResult> Create()
         {
             int companyId = User.Identity.GetCompanyId();

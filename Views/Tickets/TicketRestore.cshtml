@@ -6,108 +6,126 @@
 
 @inject IBTFileService _BTFileService
 @inject IBTProjectService _ProjectService
+@inject UserManager<BTUser> _UserManager
 
 @{
     ViewData["Title"] = "TicketRestore";
 }
 
-
 @{
 
+    string userId = _UserManager.GetUserId(User)!;
 
-    Project project = new();
 
-    Ticket ticket = new();
+    BTUser? projectManager = await _ProjectService.GetProjectManagerAsync(Model!.ProjectId);
 }
 
 
-<div class="row">
-    <div class="col-12 col-md-8 offset-md-2">
-        <h2>Are you sure?</h2>
-        <p class="text-lead text-muted fs-3">This ticket will be restored and will be available for development again.</p>
-        <div class="card mb-3">
-            <div class="row g-0">
+@if (userId == projectManager?.Id || User.IsInRole("Admin"))
+{
+    <div class="row">
+        <div class="col-12 col-md-8 offset-md-2">
+            <h2>Are you sure?</h2>
+            <p class="text-lead text-muted fs-3">This ticket will be restored and will be available for development again.</p>
+            <div class="card mb-3">
+                <div class="row g-0">
 
-                <div class="col-md-5">
-                    <div class="card-body">
+                    <div class="col-md-5">
+                        <div class="card-body">
 
-                        <div class="form-group row align-items-center mb-0">
-                            <label asp-for="Title" class="col-4 text-end control-label col-form-label"><strong>Ticket Title</strong></label>
-                            <div class="col-8 border-start pb-2 pt-2">
-                                @Model.Title
+                            <div class="form-group row align-items-center mb-0">
+                                <label asp-for="Title" class="col-4 text-end control-label col-form-label"><strong>Ticket Title</strong></label>
+                                <div class="col-8 border-start pb-2 pt-2">
+                                    @Model.Title
+                                </div>
                             </div>
-                        </div>
-                        <hr class="text-muted" />
-                        <div class="form-group row align-items-center mb-0">
-                            <label asp-for="Description" class="col-4 text-end control-label col-form-label">Description</label>
-                            <div class="col-8 border-start pb-2 pt-2">
-                                @Model.Description
+                            <hr class="text-muted" />
+                            <div class="form-group row align-items-center mb-0">
+                                <label asp-for="Description" class="col-4 text-end control-label col-form-label">Description</label>
+                                <div class="col-8 border-start pb-2 pt-2">
+                                    @Model.Description
+                                </div>
                             </div>
-                        </div>
-                        <hr class="text-muted" />
-                        <div class="form-group row align-items-center mb-0">
-                            <label asp-for="ProjectId" class="col-4 text-end control-label col-form-label"><strong>For the Project: </strong></label>
-                            <div class="col-8 border-start pb-2 pt-2">
-                                @Model.Project.Name
+                            <hr class="text-muted" />
+                            <div class="form-group row align-items-center mb-0">
+                                <label asp-for="ProjectId" class="col-4 text-end control-label col-form-label"><strong>For the Project: </strong></label>
+                                <div class="col-8 border-start pb-2 pt-2">
+                                    @Model.Project.Name
+                                </div>
                             </div>
-                        </div>
-                        <hr class="text-muted" />
-                        <div class="form-group row align-items-center mb-0">
-                            <label asp-for="TicketTypeId" class="col-4 text-end control-label col-form-label"><strong>Ticket Type</strong> </label>
-                            <div class="col-8 border-start pb-2 pt-2 badge bg-light-info text-info font-weight-medium fs-3">
-                                @Model.TicketType.Name
+                            <hr class="text-muted" />
+                            <div class="form-group row align-items-center mb-0">
+                                <label asp-for="TicketTypeId" class="col-4 text-end control-label col-form-label"><strong>Ticket Type</strong> </label>
+                                <div class="col-8 border-start pb-2 pt-2 badge bg-light-info text-info font-weight-medium fs-3">
+                                    @Model.TicketType.Name
+                                </div>
                             </div>
-                        </div>
-                        <hr class="text-muted" />
-                        <div class="form-group row align-items-center mb-0">
-                            <label asp-for="TicketStatusId" class="col-4 text-end control-label col-form-label"><strong>Ticket Status</strong> </label>
-                            <div class="col-8 border-start pb-2 pt-2 badge bg-light-success text-success font-weight-medium fs-3">
-                                @Model.TicketStatus.Name
+                            <hr class="text-muted" />
+                            <div class="form-group row align-items-center mb-0">
+                                <label asp-for="TicketStatusId" class="col-4 text-end control-label col-form-label"><strong>Ticket Status</strong> </label>
+                                <div class="col-8 border-start pb-2 pt-2 badge bg-light-success text-success font-weight-medium fs-3">
+                                    @Model.TicketStatus.Name
+                                </div>
                             </div>
-                        </div>
-                        <hr class="text-muted" />
-                        <div class="form-group row align-items-center mb-0">
-                            <label asp-for="TicketPriorityId" class="col-4 text-end control-label col-form-label"><strong>Ticket Priority</strong></label>
-                            <div class="col-8 border-start pb-2 pt-2 badge bg-light-danger text-danger font-weight-medium fs-3">
-                                @Model.TicketPriority.Name
+                            <hr class="text-muted" />
+                            <div class="form-group row align-items-center mb-0">
+                                <label asp-for="TicketPriorityId" class="col-4 text-end control-label col-form-label"><strong>Ticket Priority</strong></label>
+                                <div class="col-8 border-start pb-2 pt-2 badge bg-light-danger text-danger font-weight-medium fs-3">
+                                    @Model.TicketPriority.Name
+                                </div>
                             </div>
-                        </div>
-                        <hr class="text-muted" />
-                        <div class="form-group row align-items-center mb-0">
-                            <label asp-for="DeveloperUserId" class="col-4 text-end control-label col-form-label"><strong>Assigned to: </strong></label>
-                            <div class="col-8 border-start pb-2 pt-2 ">
-                                @Model.DeveloperUser.FullName
+                            <hr class="text-muted" />
+                            <div class="form-group row align-items-center mb-0">
+                                <label asp-for="DeveloperUserId" class="col-4 text-end control-label col-form-label"><strong>Assigned to: </strong></label>
+                                <div class="col-8 border-start pb-2 pt-2 ">
+                                    @Model.DeveloperUser.FullName
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+            <form class="d-flex justify-content-between" asp-action="Restore">
+                <input hidden asp-for="Id" />
+                <a asp-action="Index" asp-controller="Tickets" class="btn btn-outline-secondary rounded-pill btnLink">Cancel</a>
+                <input type="submit" value="Restore" class="btn btn-success rounded-pill btnLink">
+            </form>
         </div>
-        <form class="d-flex justify-content-between" asp-action="Restore">
-            <input hidden asp-for="Id" />
-            <a asp-action="Index" asp-controller="Tickets" class="btn btn-outline-secondary rounded-pill btnLink">Cancel</a>
-            <input type="submit" value="Restore" class="btn btn-success rounded-pill btnLink">
-        </form>
     </div>
-</div>
-<script src="../assets/libs/jquery/dist/jquery.min.js"></script>
-<!-- Bootstrap tether Core JavaScript -->
-<script src="../assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-<!-- apps -->
-<script src="../../dist/js/app.min.js"></script>
-<script src="../../dist/js/app.init.js"></script>
-<script src="../../dist/js/app-style-switcher.js"></script>
-<!-- slimscrollbar scrollbar JavaScript -->
-<script src="../assets/libs/perfect-scrollbar/dist/perfect-scrollbar.jquery.min.js"></script>
-<script src="../assets/extra-libs/sparkline/sparkline.js"></script>
-<!--Wave Effects -->
-<script src="../../dist/js/waves.js"></script>
-<!--Menu sidebar -->
-<script src="../../dist/js/sidebarmenu.js"></script>
-<!--Custom JavaScript -->
-<script src="../../dist/js/feather.min.js"></script>
-<script src="../../dist/js/custom.min.js"></script>
-<!--This page plugins -->
-<script src="../assets/extra-libs/datatables.net/js/jquery.dataTables.min.js"></script>
-<script src="../assets/extra-libs/datatables.net-bs4/js/dataTables.responsive.min.js"></script>
-<script src="../../dist/js/pages/datatable/datatable-basic.init.js"></script>
+}
+else
+{
+    <h1>Cannot Restore Tickets You're Not Assigned To </h1>
+    <a asp-action="Index" asp-controller="Tickets" value="Index" class="btn btn-primary rounded-pill px-4 waves-effect waves-light">Back To Main Index</a>
+}
+@section scripts{
+    <script>
+        let table = new DataTable('#zero_config');
+    </script>
+    <!-- -------------------------------------------------------------- -->
+    <!-- All Jquery -->
+    <!-- -------------------------------------------------------------- -->
+    @*    <script src="~/assets/libs/jquery/dist/jquery.min.js"></script>
+    <script src="~/assets/extra-libs/taskboard/js/jquery-ui.min.js"></script>
+    <!-- Bootstrap tether Core JavaScript -->
+    <script src="~/assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- apps -->
+    <script src="~/dist/js/app.min.js"></script>
+    <script src="~/dist/js/app.init.js"></script>
+    <script src="~/dist/js/app-style-switcher.js"></script>
+    <!-- slimscrollbar scrollbar JavaScript -->
+    <script src="~/assets/libs/perfect-scrollbar/dist/perfect-scrollbar.jquery.min.js"></script>
+    <script src="~/assets/extra-libs/sparkline/sparkline.js"></script>
+    <!--Wave Effects -->
+    <script src="~/dist/js/waves.js"></script>
+    <!--Menu sidebar -->
+    <script src="~/dist/js/sidebarmenu.js"></script>
+    <!--Custom JavaScript -->
+    <script src="~/dist/js/feather.min.js"></script>
+    <script src="~/dist/js/custom.min.js"></script>*@
+    <!--This page plugins -->
+    <script src="../assets/extra-libs/datatables.net/js/jquery.dataTables.min.js"></script>
+    <script src="../assets/extra-libs/datatables.net-bs4/js/dataTables.responsive.min.js"></script>
+    <script src="../../dist/js/pages/datatable/datatable-basic.init.js"></script>
+}
+
